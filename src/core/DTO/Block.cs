@@ -3,8 +3,11 @@ using System.Collections.Generic;
 using System.Security.Cryptography;
 using System.Text;
 
-namespace core
+namespace Core.DTO
 {
+    /// <summary>
+    /// this is a block in a chain
+    /// </summary>
     public class Block
     {
         private readonly DateTime _timeStamp;

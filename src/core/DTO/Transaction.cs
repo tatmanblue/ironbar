@@ -1,5 +1,6 @@
 ﻿using System;
-namespace core
+
+namespace Core.DTO
 {
     public class Transaction
     {
