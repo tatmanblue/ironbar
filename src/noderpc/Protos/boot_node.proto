@@ -1,0 +1,19 @@
+﻿syntax = "proto3";
+
+option csharp_namespace = "noderpc";
+
+package boot_node;
+
+
+service BootNode {
+  rpc AddLink (LinkRequest) returns (LinkReply);
+}
+
+message LinkRequest {
+  string clientPort = 5011;
+}
+
+message LinkReply {
+  string message = 1;
+}
+

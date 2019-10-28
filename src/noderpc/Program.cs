@@ -1,3 +1,4 @@
+using System;
 using CommandLine;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Server.Kestrel.Core;
@@ -21,7 +22,17 @@ namespace noderpc
             Parser.Default.ParseArguments<Options>(args)
                    .WithParsed<Options>(o =>
                    {
-                       CreateHostBuilder(args, o).Build().Run();
+                       // CreateHostBuilder(args, o).Build().Run();
+
+                       IHostBuilder hostBuilder = CreateHostBuilder(args, o);
+                       IHost host = hostBuilder.Build();
+
+                       if (o.ServerRPCPort != o.RPCPort)
+                       {
+                           Console.WriteLine($"Connecting with {o.ServerRPCPort}");
+                       }
+
+                       host.Run();
                    });
         }
 
@@ -41,7 +52,7 @@ namespace noderpc
                 })
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
-                    System.Console.WriteLine($"RPCPort configured to use {cmdOptions.RPCPort}");
+                    Console.WriteLine($"RPCPort configured to use {cmdOptions.RPCPort}");
                     webBuilder.ConfigureKestrel(options =>
                     {
                         // Setup a HTTP/2 endpoint without TLS.

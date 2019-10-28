@@ -31,7 +31,7 @@ namespace noderpc
 
             app.UseEndpoints(endpoints =>
             {
-                endpoints.MapGrpcService<GreeterService>();
+                endpoints.MapGrpcService<BootNodeService>();
 
                 endpoints.MapGet("/", async context =>
                 {
