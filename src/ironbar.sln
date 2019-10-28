@@ -3,11 +3,13 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.26124.0
 MinimumVisualStudioVersion = 15.0.26124.0
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "src", "core\core.csproj", "{2DAA72E3-9835-414D-AFDB-9221576EE409}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "core", "core\core.csproj", "{2DAA72E3-9835-414D-AFDB-9221576EE409}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "console", "console\console.csproj", "{505CE4A1-05D1-41A2-81BF-82B594FB339B}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "node", "node\node.csproj", "{4E10641F-5D10-4A89-92B5-613AACDCE4F4}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "noderpc", "noderpc\noderpc.csproj", "{2ED23C51-2AEF-4BE4-905D-561BAA5E5FDA}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -58,5 +60,17 @@ Global
 		{4E10641F-5D10-4A89-92B5-613AACDCE4F4}.Release|x64.Build.0 = Release|Any CPU
 		{4E10641F-5D10-4A89-92B5-613AACDCE4F4}.Release|x86.ActiveCfg = Release|Any CPU
 		{4E10641F-5D10-4A89-92B5-613AACDCE4F4}.Release|x86.Build.0 = Release|Any CPU
+		{2ED23C51-2AEF-4BE4-905D-561BAA5E5FDA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2ED23C51-2AEF-4BE4-905D-561BAA5E5FDA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2ED23C51-2AEF-4BE4-905D-561BAA5E5FDA}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{2ED23C51-2AEF-4BE4-905D-561BAA5E5FDA}.Debug|x64.Build.0 = Debug|Any CPU
+		{2ED23C51-2AEF-4BE4-905D-561BAA5E5FDA}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{2ED23C51-2AEF-4BE4-905D-561BAA5E5FDA}.Debug|x86.Build.0 = Debug|Any CPU
+		{2ED23C51-2AEF-4BE4-905D-561BAA5E5FDA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2ED23C51-2AEF-4BE4-905D-561BAA5E5FDA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2ED23C51-2AEF-4BE4-905D-561BAA5E5FDA}.Release|x64.ActiveCfg = Release|Any CPU
+		{2ED23C51-2AEF-4BE4-905D-561BAA5E5FDA}.Release|x64.Build.0 = Release|Any CPU
+		{2ED23C51-2AEF-4BE4-905D-561BAA5E5FDA}.Release|x86.ActiveCfg = Release|Any CPU
+		{2ED23C51-2AEF-4BE4-905D-561BAA5E5FDA}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
