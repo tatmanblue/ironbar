@@ -14,3 +14,6 @@ make sure the solution and projects files are correctly updated in your pull req
 
 > dotnet --version  
 > 3.0.100
+
+
+# Design
