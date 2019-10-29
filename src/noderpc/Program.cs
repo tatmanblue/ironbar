@@ -30,6 +30,8 @@ namespace noderpc
                        if (o.ServerRPCPort != o.RPCPort)
                        {
                            Console.WriteLine($"Connecting with {o.ServerRPCPort}");
+                           TestClient client = new TestClient(o);
+                           client.ConnectToBootNode();
                        }
 
                        host.Run();

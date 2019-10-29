@@ -15,10 +15,10 @@ namespace noderpc
 
         public override Task<LinkReply> AddLink(LinkRequest request, ServerCallContext context)
         {
-            _logger.LogInformation($"got a SayHello from {request.ClientPort}");
+            _logger.LogInformation($"got a SayHello from {request.ClientAddr}");
             return Task.FromResult(new LinkReply
             {
-                Message = "Hello " + request.ClientPort
+                Message = "Hello " + request.ClientAddr
             });
         }
 

@@ -2,15 +2,12 @@
 
 option csharp_namespace = "noderpc";
 
-package boot_node;
-
-
 service BootNode {
   rpc AddLink (LinkRequest) returns (LinkReply);
 }
 
 message LinkRequest {
-  string clientPort = 5011;
+  string clientAddr = 1;
 }
 
 message LinkReply {

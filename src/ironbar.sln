@@ -5,8 +5,6 @@ VisualStudioVersion = 15.0.26124.0
 MinimumVisualStudioVersion = 15.0.26124.0
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "core", "core\core.csproj", "{2DAA72E3-9835-414D-AFDB-9221576EE409}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "console", "console\console.csproj", "{505CE4A1-05D1-41A2-81BF-82B594FB339B}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "noderpc", "noderpc\noderpc.csproj", "{2ED23C51-2AEF-4BE4-905D-561BAA5E5FDA}"
 EndProject
 Global

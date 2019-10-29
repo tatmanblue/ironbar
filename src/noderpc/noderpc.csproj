@@ -5,10 +5,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Protobuf Remove="Protos\greet.proto" />
-  </ItemGroup>
-  <ItemGroup>
-    <Protobuf Include="Protos\boot_node.proto" GrpcServices="Server" />
+    <Protobuf Include="Protos\boot_node.proto" />
   </ItemGroup>
 
   <ItemGroup>
