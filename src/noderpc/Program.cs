@@ -2,8 +2,10 @@ using System;
 using CommandLine;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Server.Kestrel.Core;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using noderpc.Services;
 
 namespace noderpc
 {
@@ -13,6 +15,14 @@ namespace noderpc
         public int RPCPort { get; set; } = 5001;
         [Option('s', HelpText = "Server RPC call port")]
         public int ServerRPCPort { get; set; } = 5001;
+
+        public bool IsBootNode
+        {
+            get
+            {
+                return RPCPort == ServerRPCPort;
+            }
+        }
     }
 
     public class Program
@@ -27,7 +37,7 @@ namespace noderpc
                        IHostBuilder hostBuilder = CreateHostBuilder(args, o);
                        IHost host = hostBuilder.Build();
 
-                       if (o.ServerRPCPort != o.RPCPort)
+                       if (o.IsBootNode == false)
                        {
                            Console.WriteLine($"Connecting with {o.ServerRPCPort}");
                            TestClient client = new TestClient(o);
@@ -62,6 +72,11 @@ namespace noderpc
                             HttpProtocols.Http2);
                     });
                     webBuilder.UseStartup<Startup>();
+                })
+                .ConfigureServices(services =>
+                {
+                    if (false == cmdOptions.IsBootNode)
+                        services.AddHostedService<ClientNodeService>();
                 });
         }
 }
