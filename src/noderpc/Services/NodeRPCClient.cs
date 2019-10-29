@@ -4,17 +4,16 @@ using Grpc.Net.Client;
 
 namespace noderpc
 {
-    public class TestClient
+    public class NodeRPCClient
     {
         private readonly Options _options;
-        public TestClient(Options options)
+        public NodeRPCClient(Options options)
         {
             _options = options;
         }
 
-        public async Task ConnectToBootNode()
+        public async Task<bool> ConnectToBootNode()
         {
-            await Task.Run(() =>
             {
                 try
                 {
@@ -25,16 +24,20 @@ namespace noderpc
                     var client = new BootNode.BootNodeClient(channel);
                     var reply = client.AddLink(new LinkRequest { ClientAddr = $"http://localhost:{_options.RPCPort}" });
                     Console.WriteLine("BootNode says: " + reply.Message);
+
+                    return true;
                 }
-                catch(Exception ex)
+                catch (Exception ex)
                 {
                     Console.WriteLine($"ERROR: {ex.Message}");
                     if (ex.InnerException != null)
                         Console.WriteLine($"INNER EXCEPTION: {ex.InnerException}");
                     else
                         Console.WriteLine("no more details");
+
+                    return false;
                 }
-            });
+            }
         }
     }
 }

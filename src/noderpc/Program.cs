@@ -27,22 +27,18 @@ namespace noderpc
 
     public class Program
     {
+        // TODO: would like to make this injectable vs static instance
+        public static Options SystemOptions { get; private set; } = null;
+
         public static void Main(string[] args)
         {
             Parser.Default.ParseArguments<Options>(args)
                    .WithParsed<Options>(o =>
                    {
-                       // CreateHostBuilder(args, o).Build().Run();
+                       Program.SystemOptions = o;
 
                        IHostBuilder hostBuilder = CreateHostBuilder(args, o);
                        IHost host = hostBuilder.Build();
-
-                       if (o.IsBootNode == false)
-                       {
-                           Console.WriteLine($"Connecting with {o.ServerRPCPort}");
-                           TestClient client = new TestClient(o);
-                           client.ConnectToBootNode();
-                       }
 
                        host.Run();
                    });

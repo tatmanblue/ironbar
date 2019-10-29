@@ -7,45 +7,80 @@ using Microsoft.Extensions.Logging;
 
 namespace noderpc.Services
 {
+    public enum ClientNodeServiceState
+    {
+        NotStarted,
+        ConnectingToBootNode,
+        Running,
+        Halted,
+        RetryingConnectionToBootNode,
+    }
+
     public class ClientNodeService : IHostedService, IDisposable
     {
-        private int _executionCount = 0;
-        private readonly ILogger<ClientNodeService> _logger;
-        private Timer _timer;
+        private readonly ILogger<ClientNodeService> logger;
+        private Timer doWorkDelay;
+        private ClientNodeServiceState serviceState = ClientNodeServiceState.NotStarted;
 
         public ClientNodeService(ILogger<ClientNodeService> logger)
         {
-            _logger = logger;
+            this.logger = logger;
         }
 
         public void Dispose()
         {
-            _timer?.Dispose();
+            doWorkDelay?.Dispose();
         }
 
         public Task StartAsync(CancellationToken cancellationToken)
         {
-            _logger.LogInformation("ClientNodeService running.");
+            logger.LogInformation("ClientNodeService is initializing.");
 
-            _timer = new Timer(DoWork, null, TimeSpan.Zero, TimeSpan.FromSeconds(5));
+            doWorkDelay = new Timer(DoWork, null, TimeSpan.Zero, TimeSpan.FromSeconds(5));
 
             return Task.CompletedTask;
         }
 
         public Task StopAsync(CancellationToken cancellationToken)
         {
-            _logger.LogInformation("ClientNodeService is stopping.");
+            logger.LogInformation("ClientNodeService is stopping.");
 
-            _timer?.Change(Timeout.Infinite, 0);
+            doWorkDelay.Change(Timeout.Infinite, 0);
 
             return Task.CompletedTask;
         }
 
         private void DoWork(object state)
         {
-            _executionCount++;
+            logger.LogInformation($"ClientNodeService is state {serviceState}");
 
-            _logger.LogInformation($"ClientNodeService is working. Count: {_executionCount}");
+            switch (serviceState)
+            {
+                case ClientNodeServiceState.NotStarted:
+                case ClientNodeServiceState.Halted:
+                    ConnectToBootNode();
+                    break;
+                case ClientNodeServiceState.ConnectingToBootNode:
+                case ClientNodeServiceState.RetryingConnectionToBootNode:
+                    break;
+                case ClientNodeServiceState.Running:
+                default:
+                    break;
+            }
+        }
+
+        public async void ConnectToBootNode()
+        {
+            if (ClientNodeServiceState.Halted == this.serviceState)
+                this.serviceState = ClientNodeServiceState.RetryingConnectionToBootNode;
+            else
+                this.serviceState = ClientNodeServiceState.ConnectingToBootNode;
+
+            NodeRPCClient client = new NodeRPCClient(Program.SystemOptions);
+            if (true == client.ConnectToBootNode().Result)
+                this.serviceState = ClientNodeServiceState.Running;
+            else
+                this.serviceState = ClientNodeServiceState.Halted;
         }
     }
 }
