@@ -25,6 +25,7 @@ namespace noderpc.Controllers
         {
             List<ConnectedNode> nodes = new List<ConnectedNode>();
             nodes.Add(new ConnectedNode() { Name = "test1" });
+			return nodes;
         }
     }
 }
