@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Core.DTO;
 
-namespace noderpc.Controllers
+namespace node.Controllers
 {
     [ApiController]
     [Route("[controller]")]

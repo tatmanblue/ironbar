@@ -2,7 +2,7 @@
 using System.Threading.Tasks;
 using Grpc.Net.Client;
 
-namespace noderpc
+namespace node
 {
     public class NodeRPCClient
     {

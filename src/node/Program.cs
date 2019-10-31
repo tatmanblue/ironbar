@@ -5,9 +5,9 @@ using Microsoft.AspNetCore.Server.Kestrel.Core;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
-using noderpc.Services;
+using node.Services;
 
-namespace noderpc
+namespace node
 {
     public class Options
     {

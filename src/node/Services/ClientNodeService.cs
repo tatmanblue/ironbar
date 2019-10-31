@@ -5,7 +5,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 
 
-namespace noderpc.Services
+namespace node.Services
 {
     public enum ClientNodeServiceState
     {

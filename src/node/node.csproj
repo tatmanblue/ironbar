@@ -4,11 +4,6 @@
     <TargetFramework>netcoreapp3.0</TargetFramework>
   </PropertyGroup>
 
-  <PropertyGroup Condition=" '$(RunConfiguration)' == 'noderpc' ">
-    <StartAction>Project</StartAction>
-    <LaunchUrl>admin</LaunchUrl>
-    <ApplicationURL>http://localhost:8001</ApplicationURL>
-  </PropertyGroup>
   <ItemGroup>
     <Protobuf Include="Protos\boot_node.proto" />
   </ItemGroup>
