@@ -22,3 +22,19 @@ Nodes are center piece of Iron Bar.  They handle all of the block chain transact
 
 One running node will be sufficient to use Iron bar, but that is not recommended.  At a minimum,
 4 nodes should be running.   
+
+In a 4+ node setup, one node works as the bootnode.  The bootnode is responsible for delegating
+work to additional nodes as well as acting as the public endpoint to apps consuming Iron Bar.
+
+The remaining nodes will be responsible for blockchain management:  creating new chains, validating 
+(ak proofs), and distributed storage of chains (distributed block chain ledger).
+
+When a new block is created, the bootnode will randomly assign creation to 3+ nodes and randomly assign
+validation to one or more nodes.   
+
+When there is only 1 node, the bootnode handles it all and there is no distributed block chain ledger.
+
+### Gateway
+For now, Gateway app is the web interface (web pages and restful API) to consuming Iron Bar.  
+
+We would like to move the webapi into the bootnode if we can figure it out.  
