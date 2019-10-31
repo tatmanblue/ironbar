@@ -17,3 +17,8 @@ make sure the solution and projects files are correctly updated in your pull req
 
 
 # Design
+### Nodes
+Nodes are center piece of Iron Bar.  They handle all of the block chain transactions.
+
+One running node will be sufficient to use Iron bar, but that is not recommended.  At a minimum,
+4 nodes should be running.   
