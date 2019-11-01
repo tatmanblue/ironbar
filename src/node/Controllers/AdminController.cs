@@ -21,11 +21,12 @@ namespace node.Controllers
         }
 
         [HttpGet]
-        public IEnumerable<ConnectedNode> Get()
+        public List<ConnectedNode> Get()
         {
             List<ConnectedNode> nodes = new List<ConnectedNode>();
-            nodes.Add(new ConnectedNode() { Name = "test1" });
-			return nodes;
+            nodes.Add(new ConnectedNode() { Name = "node1" });
+            nodes.Add(new ConnectedNode() { Name = "node2" });
+            return nodes;
         }
     }
 }
