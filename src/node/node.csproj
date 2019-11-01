@@ -22,5 +22,6 @@
     <PackageReference Include="CommandLineParser" Version="2.6.0" />
     <PackageReference Include="Microsoft.Extensions.Logging" Version="3.0.0" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="3.0.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Cors" Version="2.2.0" />
   </ItemGroup>
 </Project>

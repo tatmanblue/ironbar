@@ -16,6 +16,7 @@ namespace node
         // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddCors();
             services.AddGrpc();
             services.AddControllers();
         }
@@ -27,6 +28,11 @@ namespace node
             {
                 app.UseDeveloperExceptionPage();
             }
+
+            app.UseCors(builder => builder
+               .AllowAnyOrigin()
+               .AllowAnyMethod()
+               .AllowAnyHeader());
 
             app.UseRouting();
             app.UseHttpsRedirection();

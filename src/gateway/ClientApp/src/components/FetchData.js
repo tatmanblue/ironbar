@@ -5,7 +5,7 @@ export class FetchData extends Component {
 
     constructor(props) {
         super(props);
-        this.state = { adminData: '', loading: true };
+        this.state = { adminData: [], loading: true };
     }
 
     componentDidMount() {
@@ -17,7 +17,7 @@ export class FetchData extends Component {
 
         return (
             <div>
-                Results: {data}
+                Results: {data[0].name}
             </div>
         );
     }
