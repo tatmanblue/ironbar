@@ -34,6 +34,8 @@ namespace node
 
             app.UseEndpoints(endpoints =>
             {
+                // TODO: seems like this is bootnode configuration but not going to work
+                // for the other nodes
                 endpoints.MapGrpcService<BootNodeService>();
                 endpoints.MapControllers();
             });

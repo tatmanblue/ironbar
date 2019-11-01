@@ -16,7 +16,7 @@ namespace node
         [Option('s', HelpText = "Server RPC call port")]
         public int ServerRPCPort { get; set; } = 5001;
         [Option('a', HelpText = "WebAPI port")]
-        public int APIPort { get; set; } = 8000;
+        public int APIPort { get; set; } = 8080;
 
         public bool IsBootNode
         {
