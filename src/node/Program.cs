@@ -15,6 +15,8 @@ namespace node
         public int RPCPort { get; set; } = 5001;
         [Option('s', HelpText = "Server RPC call port")]
         public int ServerRPCPort { get; set; } = 5001;
+        [Option('a', HelpText = "WebAPI port")]
+        public int APIPort { get; set; } = 8000;
 
         public bool IsBootNode
         {
@@ -64,8 +66,10 @@ namespace node
                     webBuilder.ConfigureKestrel(options =>
                     {
                         // Setup a HTTP/2 endpoint without TLS.
-                        options.ListenLocalhost(cmdOptions.RPCPort, o => o.Protocols =
-                            HttpProtocols.Http2);
+                        options.ListenLocalhost(cmdOptions.RPCPort, o => o.Protocols = HttpProtocols.Http2);
+
+                        if (true == cmdOptions.IsBootNode)
+                            options.ListenLocalhost(cmdOptions.APIPort, o => o.Protocols = HttpProtocols.Http1);
                     });
                     webBuilder.UseStartup<Startup>();
                 })

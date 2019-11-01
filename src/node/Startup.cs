@@ -17,7 +17,7 @@ namespace node
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddGrpc();
-            // services.AddControllers();
+            services.AddControllers();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -29,13 +29,13 @@ namespace node
             }
 
             app.UseRouting();
-            //app.UseHttpsRedirection();
-            //app.UseAuthorization();
+            app.UseHttpsRedirection();
+            app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapGrpcService<BootNodeService>();
-                // endpoints.MapControllers();
+                endpoints.MapControllers();
             });
         }
     }
