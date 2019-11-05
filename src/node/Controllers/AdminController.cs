@@ -8,6 +8,9 @@ using Core.DTO;
 
 namespace node.Controllers
 {
+    /**
+     * This controller provides gateway with data and API for administration of the nodes
+     */
     [ApiController]
     [Route("[controller]")]
     public class AdminController : ControllerBase
