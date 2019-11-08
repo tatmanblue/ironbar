@@ -13,4 +13,4 @@ Currently there are two channels for interprocess communication. A RESTful endpo
 for the gateway to display administrative data and functions.  A gRPC channel has been setup between 
 child nodes and the master node.
 
-![#c5f015](TODO:) Using a message queue might be better than using gRPC.   
+TODO: Using a message queue might be better than using gRPC.   
