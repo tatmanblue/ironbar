@@ -21,13 +21,13 @@ make sure the solution and projects files are correctly updated in your pull req
 The console project is obsolete and will be deleted soon.
 
 ### Nodes
-Nodes are center piece of Iron Bar.  They handle all of the block chain transactions.
+Nodes are center piece of `Iron Bar`.  They handle all of the block chain transactions.
 
-One running node will be sufficient to use Iron bar, but that is not recommended.  At a minimum,
+One running node will be sufficient to use `Iron Bar`, but that is not recommended.  At a minimum,
 4 nodes should be running.   
 
 In a 4+ node setup, one node works as the bootnode.  The bootnode is responsible for delegating
-work to additional nodes as well as acting as the public endpoint to apps consuming Iron Bar.
+work to additional nodes as well as acting as the public endpoint to apps consuming `Iron Bar`.
 
 The remaining nodes will be responsible for blockchain management:  creating new chains, validating 
 (ak proofs), and distributed storage of chains (distributed block chain ledger).
@@ -41,3 +41,7 @@ When there is only 1 node, the bootnode handles it all and there is no distribut
 For now, Gateway app is the web interface (web pages and restful API) to consuming Iron Bar.  
 
 We would like to move the webapi into the bootnode if we can figure it out.  
+
+### Credentials
+The credentials project is an injectable service used by `nodes` to provide revokable credential services to `Iron Bar`.
+It also serves as an example to the community how to extend `Iron Bar` functionality.
