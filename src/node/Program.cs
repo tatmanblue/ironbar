@@ -17,6 +17,8 @@ namespace node
         public int ServerRPCPort { get; set; } = 5001;
         [Option('a', HelpText = "WebAPI port")]
         public int APIPort { get; set; } = 8080;
+        [Option('p', HelpText = "plug-ins path")]
+        public string PluginPath { get; set; } = "plugins";
 
         public bool IsBootNode
         {
