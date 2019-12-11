@@ -4,10 +4,11 @@
 Consumer - a general person, typically the holder of a credential   
 Prover - specific consumer that owns schemas and can prove a credential is valid.  
 User - a specific consumer that requests proof a credential meets their criteria.  
-Credential - a set if data that can be used to prove (or disprove) a consumer meets specific criteria.  
+Credential - a set of data that can be used to prove (or disprove) a consumer meets specific criteria.  
 
 
 ## References
+[Hyperledger](https://hyperledger-indy.readthedocs.io/projects/hipe/en/latest/text/0011-cred-revocation/README.html)  
 [Revocable Blockcahin](https://tykn.tech/identity-revocation-blockchain/)
 
 ## API
