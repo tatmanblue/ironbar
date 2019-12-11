@@ -1,9 +1,11 @@
 # Revocable Credentials
 
 ## Terms
-Consumer - general user  
-Prover - specific consumer that owns schemas and can prove a credential is valid  
-User - a specific consumer that requests proof a credential meets their criteria.
+Consumer - a general person, typically the holder of a credential   
+Prover - specific consumer that owns schemas and can prove a credential is valid.  
+User - a specific consumer that requests proof a credential meets their criteria.  
+Credential - a set if data that can be used to prove (or disprove) a consumer meets specific criteria.  
+
 
 ## References
 [Revocable Blockcahin](https://tykn.tech/identity-revocation-blockchain/)
