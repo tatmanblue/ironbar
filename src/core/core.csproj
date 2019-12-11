@@ -8,5 +8,6 @@
     <Folder Include="DTO\" />
     <Folder Include="chain\" />
     <Folder Include="node\" />
-  </ItemGroup>
+    <Folder Include="plugin\" />  
+</ItemGroup>
 </Project>
