@@ -17,6 +17,9 @@ make sure the solution and projects files are correctly updated in your pull req
 
 
 # Design
+### console project
+The console project is obsolete and will be deleted soon.
+
 ### Nodes
 Nodes are center piece of Iron Bar.  They handle all of the block chain transactions.
 
