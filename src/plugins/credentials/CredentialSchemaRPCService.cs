@@ -5,7 +5,7 @@ using Microsoft.Extensions.Logging;
 
 namespace Credentials
 {
-    public class CredentialSchemaService : CredentialSchema.CredentialSchemaBase
+    public class CredentialSchemaRPCService : CredentialSchemaRPC.CredentialSchemaRPCBase
     {
     }
 }
