@@ -9,5 +9,6 @@
     <Folder Include="chain\" />
     <Folder Include="node\" />
     <Folder Include="plugin\" />  
+    <Folder Include="Ledger\" />
 </ItemGroup>
 </Project>
