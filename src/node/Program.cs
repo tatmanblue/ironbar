@@ -1,33 +1,16 @@
 using System;
-using CommandLine;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Server.Kestrel.Core;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using CommandLine;
 using node.Services;
+using node.General;
 
 namespace node
 {
-    public class Options
-    {
-        [Option('r', HelpText = "Port to listen for RPC calls")]
-        public int RPCPort { get; set; } = 5001;
-        [Option('s', HelpText = "Server RPC call port")]
-        public int ServerRPCPort { get; set; } = 5001;
-        [Option('a', HelpText = "WebAPI port")]
-        public int APIPort { get; set; } = 8080;
-        [Option('p', HelpText = "plug-ins path")]
-        public string PluginPath { get; set; } = "plugins";
 
-        public bool IsBootNode
-        {
-            get
-            {
-                return RPCPort == ServerRPCPort;
-            }
-        }
-    }
 
     public class Program
     {

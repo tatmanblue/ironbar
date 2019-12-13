@@ -24,4 +24,8 @@
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="3.0.0" />
     <PackageReference Include="Microsoft.AspNetCore.Cors" Version="2.2.0" />
   </ItemGroup>
+  <ItemGroup>
+    <Folder Include="General\" />
+    <Folder Include="Ledger\" />
+  </ItemGroup>
 </Project>
