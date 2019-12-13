@@ -11,7 +11,7 @@ namespace node.General
         bool IsBootNode { get; }
         /// <summary>
         /// port for grpc calls when node is not bootnode
-        /// unused when node is bootnode
+        /// unused when node is bootnode (it should be the same as ServerRPCPort)
         /// </summary>
         int RPCPort { get; }
         /// <summary>
@@ -27,6 +27,10 @@ namespace node.General
         /// path to plugins
         /// </summary>
         string PluginPath { get; }
+        /// <summary>
+        /// where all of the blockchain stuff goes
+        /// </summary>
+        string DataPath { get; }
     }
 
     public class Options : IOptions
@@ -39,6 +43,8 @@ namespace node.General
         public int APIPort { get; set; } = 8080;
         [Option('p', HelpText = "plug-ins path")]
         public string PluginPath { get; set; } = "plugins";
+        [Option('d', HelpText = "where the ledger data lives")]
+        public string DataPath { get; set; } = "data";
 
         public bool IsBootNode
         {
