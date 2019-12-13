@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using node.Ledger;
 
 namespace node
 {
@@ -19,6 +20,8 @@ namespace node
             services.AddCors();
             services.AddGrpc();
             services.AddControllers();
+
+            services.AddSingleton<ILedgerManager, LedgerManager>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -45,6 +48,8 @@ namespace node
                 endpoints.MapGrpcService<BootNodeService>();
                 endpoints.MapControllers();
             });
+
+            app.StartLedger();
         }
     }
 }
