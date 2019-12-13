@@ -8,6 +8,7 @@ namespace Core.DTO
     /// <summary>
     /// this is a block in a chain
     /// </summary>
+    [Obsolete]
     public class Block
     {
         private readonly DateTime _timeStamp;

@@ -2,6 +2,7 @@
 
 namespace Core.DTO
 {
+    [Obsolete]
     public class Transaction
     {
         public string From { get; }

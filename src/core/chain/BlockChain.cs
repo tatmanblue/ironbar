@@ -8,6 +8,7 @@ namespace Core.Chain
     /// This is block chain management.
     /// todo: 1) persist 2) restore 
     /// </summary>
+    [Obsolete]
     public class BlockChain
     {
         private readonly int _proofOfWorkDifficulty;
