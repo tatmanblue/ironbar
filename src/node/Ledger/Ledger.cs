@@ -1,21 +1,13 @@
-﻿using System;
+﻿using core.Ledger;
 
 namespace node.Ledger
 {
-    public enum LedgerState
-    {
-        Nonfunctional,
-        StartingUp,
-        Available,
-        ShuttingDown,
-    }
-
     /// <summary>
     /// A ledger, which consistents of blockchain entries
     /// There is at least 1 ledger, most likely multiple.  The
     /// ledger with ID=1 is the master ledger.
     /// </summary>
-    public class Ledger
+    public class Ledger : ILedger
     {
         /// <summary>
         /// Ledger ID.  1 is master ledger.  It is controlled by the nodes
