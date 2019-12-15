@@ -60,6 +60,8 @@ namespace node
                 })
                 .ConfigureServices(services =>
                 {
+                    services.AddSingleton<IOptions>(Program.SystemOptions);
+
                     if (false == cmdOptions.IsBootNode)
                         services.AddHostedService<ClientNodeService>();
                 });

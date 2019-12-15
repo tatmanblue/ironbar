@@ -7,8 +7,8 @@ namespace node
 {
     public class NodeRPCClient
     {
-        private readonly Options _options;
-        public NodeRPCClient(Options options)
+        private readonly IOptions _options;
+        public NodeRPCClient(IOptions options)
         {
             _options = options;
         }

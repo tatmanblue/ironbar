@@ -3,7 +3,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
-
+using node.General;
 
 namespace node.Services
 {
@@ -18,13 +18,16 @@ namespace node.Services
 
     public class ClientNodeService : IHostedService, IDisposable
     {
-        private readonly ILogger<ClientNodeService> logger;
+        private readonly ILogger<ClientNodeService> _logger;
+        private readonly IOptions _options;
+
         private Timer doWorkDelay;
         private ClientNodeServiceState serviceState = ClientNodeServiceState.NotStarted;
 
-        public ClientNodeService(ILogger<ClientNodeService> logger)
+        public ClientNodeService(ILogger<ClientNodeService> logger, IOptions options)
         {
-            this.logger = logger;
+            _logger = logger;
+            _options = options;
         }
 
         public void Dispose()
@@ -34,7 +37,7 @@ namespace node.Services
 
         public Task StartAsync(CancellationToken cancellationToken)
         {
-            logger.LogInformation("ClientNodeService is initializing.");
+            _logger.LogInformation("ClientNodeService is initializing.");
 
             doWorkDelay = new Timer(DoWork, null, TimeSpan.Zero, TimeSpan.FromSeconds(5));
 
@@ -43,7 +46,7 @@ namespace node.Services
 
         public Task StopAsync(CancellationToken cancellationToken)
         {
-            logger.LogInformation("ClientNodeService is stopping.");
+            _logger.LogInformation("ClientNodeService is stopping.");
 
             doWorkDelay.Change(Timeout.Infinite, 0);
 
@@ -52,7 +55,7 @@ namespace node.Services
 
         private void DoWork(object state)
         {
-            logger.LogInformation($"ClientNodeService is state {serviceState}");
+            _logger.LogInformation($"ClientNodeService is state {serviceState}");
 
             switch (serviceState)
             {
@@ -76,7 +79,7 @@ namespace node.Services
             else
                 this.serviceState = ClientNodeServiceState.ConnectingToBootNode;
 
-            NodeRPCClient client = new NodeRPCClient(Program.SystemOptions);
+            NodeRPCClient client = new NodeRPCClient(_options);
             if (true == client.ConnectToBootNode().Result)
                 this.serviceState = ClientNodeServiceState.Running;
             else
