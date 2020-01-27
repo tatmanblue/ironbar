@@ -45,3 +45,11 @@ We would like to move the webapi into the bootnode if we can figure it out.
 ### Credentials
 The credentials project is an injectable service used by `nodes` to provide revokable credential services to `Iron Bar`.
 It also serves as an example to the community how to extend `Iron Bar` functionality.
+
+# Status
+Prototype/irregular updates
+
+IronBar is functional but functionality is limited.  Updates are made and project is active.
+
+## Revision
+2020.01.26
