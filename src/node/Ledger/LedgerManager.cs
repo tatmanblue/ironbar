@@ -34,8 +34,6 @@ namespace node.Ledger
         public LedgerManager(ILogger<LedgerManager> logger, IOptions options)
         {
             _logger = logger;
-            _logger.LogInformation("LedgerManager is allocated");
-
             _options = options;
         }
 
@@ -72,8 +70,7 @@ namespace node.Ledger
                 _logger.LogError(lex, string.Empty, null);
 
                 // TODO:  this node isn't good, no matter what.  in the case
-                // when this is the bootnode...guess theres more to do figuring
-                // that out
+                // when this is the bootnode...guess theres more to do 
             }
         }
 

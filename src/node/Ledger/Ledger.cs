@@ -38,7 +38,7 @@ namespace node.Ledger
             catch(Exception e)
             {
                 State = LedgerState.Nonfunctional;
-                throw e;
+                throw new LedgerException(Id.ToString(), e);
             }
             
         }
