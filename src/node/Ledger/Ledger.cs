@@ -1,4 +1,5 @@
-﻿using core.Ledger;
+﻿using System;
+using core.Ledger;
 
 namespace node.Ledger
 {
@@ -24,6 +25,22 @@ namespace node.Ledger
         {
             Id = id;
             Path = path;
+        }
+
+        public void Validate()
+        {
+            State = LedgerState.StartingUp;
+
+            try
+            {
+                State = LedgerState.Available;
+            }
+            catch(Exception e)
+            {
+                State = LedgerState.Nonfunctional;
+                throw e;
+            }
+            
         }
     }
 }
