@@ -10,10 +10,11 @@ namespace core.Ledger
     /// </summary>
     public interface ILedgerPhysicalBlock
     {
+        int ParentId { get; }
+        string ParentHash { get; }
         int LedgerId { get; }
         DateTime TimeStamp { get; }
         long Nonce { get; }
-        string PreviousHash { get; }
         string Hash { get; }
         byte[] TransactionData { get; }
         public BlockStatus Status { get; }

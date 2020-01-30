@@ -4,7 +4,7 @@ using System.Text;
 
 namespace core.Ledger
 {
-    interface ILedgerReader
+    public interface ILedgerReader
     {
     }
 }

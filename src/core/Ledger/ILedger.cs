@@ -10,6 +10,12 @@ namespace core.Ledger
         string Path { get; }
         LedgerState State { get; }
 
+        // TODO: NOT Entirely sure ledger should know this.  It might add an additional
+        // layer of security if the reader and writers are accessed by some other
+        // means
+        ILedgerWriter Writer { get; }
+        ILedgerReader Reader { get; }
+
         /// <summary>
         /// Very important:  a ledger instance has to be valid to be used
         /// each ledger knows what it means to be valid, but in general it

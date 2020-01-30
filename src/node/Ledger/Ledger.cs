@@ -21,6 +21,10 @@ namespace node.Ledger
         public string Path { get; private set; }
         public LedgerState State { get; private set; } = LedgerState.Nonfunctional;
 
+        public ILedgerWriter Writer => throw new NotImplementedException();
+
+        public ILedgerReader Reader => throw new NotImplementedException();
+
         public Ledger(int id, string path)
         {
             Id = id;
