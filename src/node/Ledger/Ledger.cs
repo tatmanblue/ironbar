@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using core.Ledger;
 
 namespace node.Ledger
@@ -15,6 +16,7 @@ namespace node.Ledger
         /// with the master bootnode overall "overseer"
         /// </summary>
         public int Id { get; private set; } = 0;
+        public string Name { get; private set; }
         /// <summary>
         /// where the ledger is saved.  This is a subdirectory of Option.DataPath
         /// </summary>
@@ -25,15 +27,54 @@ namespace node.Ledger
 
         public ILedgerReader Reader => throw new NotImplementedException();
 
-        public Ledger(int id, string path)
+        private string LedgerPath
+        {
+            get
+            {
+                return System.IO.Path.Combine(this.Path, this.Name);
+            }
+        }
+
+        private string LedgerFileName
+        {
+            get
+            {
+                return System.IO.Path.Combine(LedgerPath, "data.txt");
+            }
+        }
+
+        private string LedgerIndexFileName
+        {
+            get
+            {
+                return System.IO.Path.Combine(LedgerPath, "index.txt");
+            }
+        }
+
+        public Ledger(int id, string name, string path)
         {
             Id = id;
+            Name = name;
             Path = path;
+        }
+
+        public void Initialize()
+        {
+            if (false == Directory.Exists(LedgerPath))
+                Directory.CreateDirectory(LedgerPath);
+
+            PhysicalBlock block = new PhysicalBlock();
+            block.LedgerId = Id;
+            block.TransactionData = System.Text.Encoding.ASCII.GetBytes("ledger initialized");
+            block.SignBlock = new SignBlock();
         }
 
         public void Validate()
         {
             State = LedgerState.StartingUp;
+
+            if (false == File.Exists(LedgerFileName))
+                throw new LedgerNotFoundException(Name);
 
             try
             {
@@ -42,7 +83,7 @@ namespace node.Ledger
             catch(Exception e)
             {
                 State = LedgerState.Nonfunctional;
-                throw new LedgerException(Id.ToString(), e);
+                throw new LedgerException(Name, e);
             }
             
         }

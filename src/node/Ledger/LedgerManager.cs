@@ -47,16 +47,27 @@ namespace node.Ledger
             // 2 - open the master ledger secrets file and initalize the master ledger
             // TODO: get path from cmd + config and post fix master path
             // TODO: make master path name something else
-            Ledger masterLedger = new Ledger(MASTER_LEDGER_ID, "master");
+            Ledger masterLedger = new Ledger(MASTER_LEDGER_ID, "master", _options.DataPath);
             _ledger.Add(masterLedger);
 
             try
             {
-                // 3 - validate it
-                // 4 - add new checkpoint record
-                // 5 - save it
-                // 6 - set status to OK
-                masterLedger.Validate();
+                try
+                {
+                    // 3 - validate it
+                    // 4 - add new checkpoint record
+                    // 5 - save it
+                    // 6 - set status to OK
+                    masterLedger.Validate();
+                }
+                catch (LedgerNotFoundException)
+                {
+                    // TODO: what would happen if the ledger missing is an error
+                    // instead of new case of the ledger running?
+                    masterLedger.Initialize();
+                    masterLedger.Validate();
+                }
+
                 _isOperational = true;
                 // 7 - inform bootnode, if appropriate, that this nodes master ledger is functional
 

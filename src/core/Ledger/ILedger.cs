@@ -7,6 +7,7 @@ namespace core.Ledger
     public interface ILedger
     {
         int Id { get; }
+        string Name { get; }
         string Path { get; }
         LedgerState State { get; }
 
@@ -22,5 +23,10 @@ namespace core.Ledger
         /// means each transaction on the ledger matches criteria for being valid
         /// </summary>
         void Validate();
+
+        /// <summary>
+        /// This creates a whole new ledger.  Danger! if the ledger already exists
+        /// </summary>
+        void Initialize();
     }
 }
