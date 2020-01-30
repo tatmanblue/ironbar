@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using core.Utility;
 
 namespace core.Ledger
 {
@@ -12,7 +13,7 @@ namespace core.Ledger
     {
         int LedgerId { get; }
         DateTime TimeStamp { get; }
-        long Nonce { get; }
+        Nonce Nonce { get; }
         string PreviousHash { get; }
         string Hash { get; }
         List<T> TransactionData { get; }

@@ -1,6 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
+using core.Utility;
 
 namespace core.Ledger
 {
@@ -14,10 +13,12 @@ namespace core.Ledger
         string ParentHash { get; }
         int LedgerId { get; }
         DateTime TimeStamp { get; }
-        long Nonce { get; }
+        Nonce Nonce { get; }
         string Hash { get; }
         byte[] TransactionData { get; }
-        public BlockStatus Status { get; }
+        BlockStatus Status { get; }
+        ILedgerSignBlock SignBlock { get; }
+
         string ComputeHash();
     }
 }
