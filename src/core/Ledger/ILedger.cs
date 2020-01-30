@@ -26,6 +26,7 @@ namespace core.Ledger
 
         /// <summary>
         /// This creates a whole new ledger.  Danger! if the ledger already exists
+        /// it gets over written
         /// </summary>
         void Initialize();
     }
