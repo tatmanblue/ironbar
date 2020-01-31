@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using core.Ledger;
+using core.Utility;
 
 namespace node.Ledger
 {
@@ -18,7 +19,7 @@ namespace node.Ledger
 
         public override string ToString()
         {
-            return $"{BlockID}:{Hash}:{Created}";
+            return $"{BlockID}:{Hash}:{Created.ToFileDateTime()}";
         }
     }
 
