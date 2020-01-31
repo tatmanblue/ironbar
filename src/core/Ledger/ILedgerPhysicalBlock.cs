@@ -9,6 +9,7 @@ namespace core.Ledger
     /// </summary>
     public interface ILedgerPhysicalBlock
     {
+        int Id { get; }
         int ParentId { get; }
         string ParentHash { get; }
         int LedgerId { get; }

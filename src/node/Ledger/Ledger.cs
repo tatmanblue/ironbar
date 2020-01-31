@@ -51,11 +51,15 @@ namespace node.Ledger
             }
         }
 
+        private LedgerIndexManager Indexes { get; set; }
+
         public Ledger(int id, string name, string path)
         {
             Id = id;
             Name = name;
             Path = path;
+
+            Indexes = new LedgerIndexManager(LedgerIndexFileName);
         }
 
         public void Initialize()
@@ -67,6 +71,9 @@ namespace node.Ledger
             block.LedgerId = Id;
             block.TransactionData = System.Text.Encoding.ASCII.GetBytes("ledger initialized");
             block.SignBlock = new SignBlock();
+            block.ComputeHash();
+
+            LedgerIndex index = Indexes.Add(block.Hash, block.TimeStamp);
         }
 
         public void Validate()

@@ -7,5 +7,6 @@ namespace core.Ledger
     {
         Nonce Nonce { get; }
         DateTime DateStamp { get; }
+        // TODO: need signature
     }
 }
