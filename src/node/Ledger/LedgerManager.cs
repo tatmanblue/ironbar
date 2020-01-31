@@ -64,6 +64,7 @@ namespace node.Ledger
                 {
                     // TODO: what would happen if the ledger missing is an error
                     // instead of new case of the ledger running?
+                    _logger.LogInformation($"ledger {masterLedger.Name} not found....initializing");
                     masterLedger.Initialize();
                     masterLedger.Validate();
                 }

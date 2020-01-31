@@ -59,7 +59,7 @@ namespace node.Ledger
             Name = name;
             Path = path;
 
-            Indexes = new LedgerIndexManager(LedgerIndexFileName);
+            Indexes = new LedgerIndexManager(Name, LedgerIndexFileName);
         }
 
         public void Initialize()
@@ -67,13 +67,23 @@ namespace node.Ledger
             if (false == Directory.Exists(LedgerPath))
                 Directory.CreateDirectory(LedgerPath);
 
+            Indexes.Initialize();
             PhysicalBlock block = new PhysicalBlock();
+            block.Id = Indexes.GetNextBlockId();
             block.LedgerId = Id;
             block.TransactionData = System.Text.Encoding.ASCII.GetBytes("ledger initialized");
             block.SignBlock = new SignBlock();
             block.ComputeHash();
 
             LedgerIndex index = Indexes.Add(block.Hash, block.TimeStamp);
+
+            if (block.Id != index.BlockID)
+                throw new LedgerException(Name, $"ID mismatch {block.Id}/{index.BlockID}");
+
+            // TODO: these next two steps are technically a transaction, need to determine what happens when
+            // one step fails.
+            System.Console.WriteLine($"saving indexes to {LedgerIndexFileName}");
+            Indexes.Save();
         }
 
         public void Validate()

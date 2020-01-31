@@ -12,7 +12,7 @@ namespace node.Ledger
         {
         }
 
-        public int Id { get; protected set; } = -1;
+        public int Id { get; internal set; } = -1;
 
         public int ParentId { get; private set; } = -1;
 
