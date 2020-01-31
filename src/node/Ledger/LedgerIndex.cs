@@ -35,7 +35,7 @@ namespace node.Ledger
         public string IndexFile { get; private set; }
         public string LedgerName { get; private set; }
 
-        public LedgerIndexManager(string indexFile, string name)
+        public LedgerIndexManager(string name, string indexFile)
         {
             IndexFile = indexFile;
             LedgerName = name;
@@ -58,7 +58,9 @@ namespace node.Ledger
 
         public void Initialize()
         {
-            // TODO: blow away any file that exists!
+            if (true == File.Exists(IndexFile))
+                File.Delete(IndexFile);
+
             isLoaded = true;
         }
 
