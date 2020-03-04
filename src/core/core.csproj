@@ -9,7 +9,6 @@
     <Folder Include="chain\" />
     <Folder Include="node\" />
     <Folder Include="plugin\" />
-    <Folder Include="Utility\" />
     <Folder Include="Security\" />
 </ItemGroup>
 </Project>

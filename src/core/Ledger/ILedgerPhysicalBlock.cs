@@ -9,8 +9,19 @@ namespace core.Ledger
     /// </summary>
     public interface ILedgerPhysicalBlock
     {
+        /// <summary>
+        /// ID of THIS block
+        /// </summary>
         int Id { get; }
+        /// <summary>
+        /// ID of parent block, should be sequential thus ID - 1
+        /// </summary>
         int ParentId { get; }
+        /// <summary>
+        /// ID of block that this block has a reference to.  Reference
+        /// being a change in the block data. Does not have to be sequential
+        /// </summary>
+        int ReferenceId { get; }
         string ParentHash { get; }
         int LedgerId { get; }
         DateTime TimeStamp { get; }

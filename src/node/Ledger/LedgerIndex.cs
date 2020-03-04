@@ -13,13 +13,13 @@ namespace node.Ledger
         /// <summary>
         /// Ledger.Id
         /// </summary>
-        public int BlockID { get; internal set; }
+        public int BlockId { get; internal set; }
         public string Hash { get; internal set; }
         public DateTime Created { get; internal set; }
 
         public override string ToString()
         {
-            return $"{BlockID}:{Hash}:{Created.ToFileDateTime()}";
+            return $"{BlockId}:{Hash}:{Created.ToFileDateTime()}";
         }
     }
 
@@ -48,7 +48,7 @@ namespace node.Ledger
                 throw new LedgerException(LedgerName, "Attempted to add index before loading");
 
             LedgerIndex index = new LedgerIndex();
-            index.BlockID = GetNextBlockId();
+            index.BlockId = GetNextBlockId();
             index.Created = created;
             index.Hash = hash;
 
@@ -72,6 +72,8 @@ namespace node.Ledger
 
         public void Save()
         {
+            // TODO:  we are writing all longs so AppendText is not a good call
+            // eval and fix
             using (StreamWriter sw = File.AppendText(IndexFile))
             {
                 foreach (LedgerIndex idx in data)
@@ -86,8 +88,8 @@ namespace node.Ledger
 
         public int GetNextBlockId()
         {
-            LedgerIndex mostrecent = data.OrderByDescending(u => u.BlockID).FirstOrDefault();
-            return (mostrecent == null ? 0 : mostrecent.BlockID) + 1 ;
+            LedgerIndex mostrecent = data.OrderByDescending(u => u.BlockId).FirstOrDefault();
+            return (mostrecent == null ? 0 : mostrecent.BlockId) + 1 ;
         }
     }
 }
