@@ -21,75 +21,19 @@ namespace node.Ledger
         {
             return $"{BlockId}:{Hash}:{Created.ToFileDateTime()}";
         }
-    }
 
-    /// <summary>
-    /// Ledger index is a simplified collection of data about
-    /// ledger blocks (currently physical blocks).  The manager
-    /// provides the functionality for accessing the data
-    /// </summary>
-    public class LedgerIndexManager
-    {
-        private List<LedgerIndex> data = new List<LedgerIndex>();
-        private bool isLoaded = false;
-
-        public string IndexFile { get; private set; }
-        public string LedgerName { get; private set; }
-
-        public LedgerIndexManager(string name, string indexFile)
+        public static LedgerIndex FromString(string data)
         {
-            IndexFile = indexFile;
-            LedgerName = name;
-        }
-
-        public LedgerIndex Add(string hash, DateTime created)
-        {
-            if (false == isLoaded)
-                throw new LedgerException(LedgerName, "Attempted to add index before loading");
-
+            string[] elements = data.Split(":");
             LedgerIndex index = new LedgerIndex();
-            index.BlockId = GetNextBlockId();
-            index.Created = created;
-            index.Hash = hash;
+            index.BlockId = Convert.ToInt32(elements[0]);
+            index.Hash = elements[1];
+            DateTime expectedDate;
+            if (false == DateTime.TryParseExact(elements[2], "dd MMMM yyyy HHmmss", System.Globalization.CultureInfo.InvariantCulture, System.Globalization.DateTimeStyles.None, out expectedDate))
+                throw new LedgerNotValidException($"index is not valid");
 
-            data.Add(index);
-
+            index.Created = expectedDate;
             return index;
-        }
-
-        public void Initialize()
-        {
-            if (true == File.Exists(IndexFile))
-                File.Delete(IndexFile);
-
-            isLoaded = true;
-        }
-
-        public void Load()
-        {
-            isLoaded = true;
-        }
-
-        public void Save()
-        {
-            // TODO:  we are writing all longs so AppendText is not a good call
-            // eval and fix
-            using (StreamWriter sw = File.AppendText(IndexFile))
-            {
-                foreach (LedgerIndex idx in data)
-                {
-                    sw.WriteLine(idx.ToString());
-                }
-
-                sw.Flush();
-                sw.Close();
-            }
-        }
-
-        public int GetNextBlockId()
-        {
-            LedgerIndex mostrecent = data.OrderByDescending(u => u.BlockId).FirstOrDefault();
-            return (mostrecent == null ? 0 : mostrecent.BlockId) + 1 ;
         }
     }
 }

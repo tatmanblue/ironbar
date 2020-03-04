@@ -31,23 +31,15 @@ namespace node.Ledger
         public string Path { get; private set; }
         public LedgerState State { get; private set; } = LedgerState.Nonfunctional;
 
-        public ILedgerWriter Writer => new DefaultTextFileLedgerIO();
-
-        public ILedgerReader Reader => throw new NotImplementedException();
+        public ILedgerWriter Writer { get; private set; }
+        
+        public ILedgerReader Reader { get; private set; }
 
         private string LedgerPath
         {
             get
             {
                 return System.IO.Path.Combine(this.Path, this.Name);
-            }
-        }
-
-        private string LedgerFileName
-        {
-            get
-            {
-                return System.IO.Path.Combine(LedgerPath, "data.txt");
             }
         }
 
@@ -66,7 +58,8 @@ namespace node.Ledger
             Id = id;
             Name = name;
             Path = path;
-
+            Writer = new DefaultTextFileLedgerWriter(LedgerPath);
+            Reader =  new DefaultTextFileLedgerReader(LedgerPath);
             Indexes = new LedgerIndexManager(Name, LedgerIndexFileName);
         }
 
@@ -76,11 +69,13 @@ namespace node.Ledger
                 Directory.CreateDirectory(LedgerPath);
 
             Indexes.Initialize();
-            PhysicalBlock block = new PhysicalBlock();
-            block.Id = Indexes.GetNextBlockId();
-            block.LedgerId = Id;
-            block.TransactionData = System.Text.Encoding.ASCII.GetBytes("ledger initialized");
-            block.SignBlock = new SignBlock();
+            PhysicalBlock block = new PhysicalBlock
+            {
+                Id = Indexes.GetNextBlockId(),
+                LedgerId = Id,
+                TransactionData = System.Text.Encoding.ASCII.GetBytes("ledger initialized"),
+                SignBlock = new SignBlock()
+            };
             block.ComputeHash();
 
             LedgerIndex index = Indexes.Add(block.Hash, block.TimeStamp);
@@ -92,7 +87,7 @@ namespace node.Ledger
             // one step fails.
             System.Console.WriteLine($"saving indexes to {LedgerIndexFileName}");
             // step 1 save the block
-            Writer.SaveBlock(LedgerPath, block);
+            Writer.SaveBlock(block);
             // step 2 save the index
             // TODO: move index save to Writer
             Indexes.Save();
@@ -107,7 +102,11 @@ namespace node.Ledger
 
             try
             {
-                // TODO:  count blocks and make sure blocks on disk match what is in the index
+                Indexes.Load();
+
+                if (Reader.CountBlocks() != Indexes.Count())
+                    throw new LedgerNotValidException($"{Reader.CountBlocks()} != {Indexes.Count()}");
+
                 // TODO:  validate hash of some blocks.   maybe the root block and last blocks or something
                 State = LedgerState.Available;
             }
