@@ -6,6 +6,12 @@ namespace core.Utility
 {
     public static class ByteExtentionMethods
     {
+        /// <summary>
+        /// Converts byte[] into hex string representation.
+        /// Found in core.Utility.ByteExtentionMethods
+        /// </summary>
+        /// <param name="data"></param>
+        /// <returns></returns>
         public static string ToHexString(this byte[] data)
         {
             // Create a new Stringbuilder to collect the bytes

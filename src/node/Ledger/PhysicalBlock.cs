@@ -54,6 +54,7 @@ namespace node.Ledger
         /// <returns></returns>
         private string HashString()
         {
+            // TODO: what about the sign block
             string transactionDataString = Encoding.UTF8.GetString(TransactionData, 0, TransactionData.Length);
             string objectString = $"{ParentId}:{Id}:{ParentHash}:{ReferenceId}:{LedgerId}:{TimeStamp}:{Nonce}:{transactionDataString}";
 
@@ -62,6 +63,7 @@ namespace node.Ledger
 
         public override string ToString()
         {
+            // TODO: what about the sign block
             string transactionDataString = Encoding.UTF8.GetString(TransactionData, 0, TransactionData.Length); 
             string objectString = $"{ParentId}:{Id}:{ParentHash}:{ReferenceId}:{LedgerId}:{TimeStamp}:{Nonce}:{transactionDataString}:{Hash}";
 

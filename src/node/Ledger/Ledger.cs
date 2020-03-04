@@ -94,6 +94,7 @@ namespace node.Ledger
             // step 1 save the block
             Writer.SaveBlock(LedgerPath, block);
             // step 2 save the index
+            // TODO: move index save to Writer
             Indexes.Save();
         }
 
@@ -101,11 +102,13 @@ namespace node.Ledger
         {
             State = LedgerState.StartingUp;
 
-            if (false == File.Exists(LedgerFileName))
-                throw new LedgerNotFoundException(Name);
+            if (false == File.Exists(LedgerIndexFileName))
+                throw new LedgerNotFoundException(LedgerIndexFileName);
 
             try
             {
+                // TODO:  count blocks and make sure blocks on disk match what is in the index
+                // TODO:  validate hash of some blocks.   maybe the root block and last blocks or something
                 State = LedgerState.Available;
             }
             catch(Exception e)
