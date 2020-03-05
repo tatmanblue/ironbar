@@ -12,7 +12,7 @@ namespace core.Utility
         /// <returns></returns>
         public static string ToFileDateTime(this DateTime when)
         {
-            return when.ToString("dd MMMM yyyy HHmmss");
+            return when.ToString(Constants.DateTimeFormat);
         }
     }
 }

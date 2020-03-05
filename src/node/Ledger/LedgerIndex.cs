@@ -26,7 +26,7 @@ namespace node.Ledger
             index.BlockId = Convert.ToInt32(elements[0]);
             index.Hash = elements[1];
             DateTime expectedDate;
-            if (false == DateTime.TryParseExact(elements[2], "dd MMMM yyyy HHmmss", System.Globalization.CultureInfo.InvariantCulture, System.Globalization.DateTimeStyles.None, out expectedDate))
+            if (false == DateTime.TryParseExact(elements[2], Constants.DateTimeFormat, System.Globalization.CultureInfo.InvariantCulture, System.Globalization.DateTimeStyles.None, out expectedDate))
                 throw new LedgerNotValidException($"index is not valid");
 
             index.Created = expectedDate;

@@ -74,7 +74,7 @@ namespace node.Ledger
         {
             string[] elements = data.Split(":");
             DateTime timeStamp;
-            if (false == DateTime.TryParseExact(elements[5], "dd MMMM yyyy HHmmss", System.Globalization.CultureInfo.InvariantCulture, System.Globalization.DateTimeStyles.None, out timeStamp))
+            if (false == DateTime.TryParseExact(elements[5], Constants.DateTimeFormat, System.Globalization.CultureInfo.InvariantCulture, System.Globalization.DateTimeStyles.None, out timeStamp))
                 throw new LedgerNotValidException($"{elements[5]}");
 
             PhysicalBlock block = new PhysicalBlock()

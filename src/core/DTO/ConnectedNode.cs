@@ -4,6 +4,7 @@ using System.Text;
 
 namespace Core.DTO
 {
+    [Obsolete]
     [Serializable]
     public class ConnectedNode
     {
