@@ -11,5 +11,11 @@ namespace core.Ledger
         /// </summary>
         /// <returns></returns>
         int CountBlocks();
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        ILedgerPhysicalBlock GetLedgerPhysicalBlock(int id, Func<string, ILedgerPhysicalBlock> blockAllocator);
     }
 }

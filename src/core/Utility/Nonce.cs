@@ -28,5 +28,12 @@ namespace core.Utility
 
             return nonce;
         }
+
+        public static Nonce FromString(string data)
+        {
+            Nonce nonce = new Nonce();
+            nonce.Value = Convert.ToInt32(data);
+            return nonce;
+        }
     }
 }

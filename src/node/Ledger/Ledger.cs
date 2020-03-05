@@ -108,6 +108,15 @@ namespace node.Ledger
                     throw new LedgerNotValidException($"{Reader.CountBlocks()} != {Indexes.Count()}");
 
                 // TODO:  validate hash of some blocks.   maybe the root block and last blocks or something
+                PhysicalBlock rootBlock = Reader.GetLedgerPhysicalBlock(1, (data) => {
+                    return PhysicalBlock.FromString(data);
+                }) as PhysicalBlock;
+
+                LedgerIndex rootIndex = Indexes.GetIndex(1);
+
+                if (rootBlock.ComputeHash() != rootIndex.Hash)
+                    throw new LedgerNotValidException($"block ${rootBlock.Id}");
+
                 State = LedgerState.Available;
             }
             catch(Exception e)

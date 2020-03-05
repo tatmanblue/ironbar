@@ -87,5 +87,10 @@ namespace node.Ledger
             LedgerIndex mostrecent = data.OrderByDescending(u => u.BlockId).FirstOrDefault();
             return (mostrecent == null ? 0 : mostrecent.BlockId) + 1;
         }
+
+        public LedgerIndex GetIndex(int id)
+        {
+            return data.First(e => e.BlockId == id);
+        }
     }
 }

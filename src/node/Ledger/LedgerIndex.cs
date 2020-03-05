@@ -1,14 +1,11 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
 using core.Ledger;
 using core.Utility;
 
 namespace node.Ledger
 {
     [Serializable]
-    public class LedgerIndex
+    public class LedgerIndex : ILedgerIndex
     {
         /// <summary>
         /// Ledger.Id

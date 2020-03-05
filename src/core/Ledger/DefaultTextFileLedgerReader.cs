@@ -19,5 +19,11 @@ namespace core.Ledger
             // probably optimize this in some way
             return System.IO.Directory.GetFiles(ledgerPath, $"block.*.txt").Length;
         }
+
+        public ILedgerPhysicalBlock GetLedgerPhysicalBlock(int id, Func<string, ILedgerPhysicalBlock> blockAllocator)
+        {
+            string blockData = System.IO.File.ReadAllText(System.IO.Path.Combine(ledgerPath, $"block.{id}.txt"));
+            return blockAllocator(blockData);
+        }
     }
 }
