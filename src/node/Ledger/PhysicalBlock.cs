@@ -86,6 +86,7 @@ namespace node.Ledger
                 LedgerId = Convert.ToInt32(elements[4]),
                 TimeStamp = expectedDate,
                 Nonce = Nonce.FromString(elements[6]),
+                TransactionData = Encoding.UTF8.GetBytes(elements[7])
             };
 
             // TODO: gotta convert transactionData
