@@ -11,7 +11,7 @@ To be able to create, prove and revoke credentials.
 
 Steps:
 1. Nodes talk to each other and know when they are up/down
-2. Master ledger reads/writes
+2. Master ledger reads/writes (done)
 3. Node validate and approve  
 4. Load the credential plugin 
 5. Credential ledger reads/writes 

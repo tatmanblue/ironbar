@@ -73,8 +73,8 @@ namespace node.Ledger
         public static PhysicalBlock FromString(string data)
         {
             string[] elements = data.Split(":");
-            DateTime expectedDate;
-            if (false == DateTime.TryParseExact(elements[5], "dd MMMM yyyy HHmmss", System.Globalization.CultureInfo.InvariantCulture, System.Globalization.DateTimeStyles.None, out expectedDate))
+            DateTime timeStamp;
+            if (false == DateTime.TryParseExact(elements[5], "dd MMMM yyyy HHmmss", System.Globalization.CultureInfo.InvariantCulture, System.Globalization.DateTimeStyles.None, out timeStamp))
                 throw new LedgerNotValidException($"{elements[5]}");
 
             PhysicalBlock block = new PhysicalBlock()
@@ -84,7 +84,7 @@ namespace node.Ledger
                 ParentHash = elements[2],
                 ReferenceId = Convert.ToInt32(elements[3]),
                 LedgerId = Convert.ToInt32(elements[4]),
-                TimeStamp = expectedDate,
+                TimeStamp = timeStamp,
                 Nonce = Nonce.FromString(elements[6]),
                 TransactionData = Encoding.UTF8.GetBytes(elements[7])
             };
@@ -93,7 +93,7 @@ namespace node.Ledger
 
             // compare hash from string with computedHash. they should match
             if (elements[8] != block.ComputeHash())
-                throw new LedgerNotValidException($"{block.Id}");
+                throw new LedgerNotValidException($"block {block.Id}");
 
             return block;
         }

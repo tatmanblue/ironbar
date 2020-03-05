@@ -104,10 +104,13 @@ namespace node.Ledger
             {
                 Indexes.Load();
 
+                // Validation Rule #1:  the number of records in the index file should match
+                // the number of blocks saved on disk
                 if (Reader.CountBlocks() != Indexes.Count())
                     throw new LedgerNotValidException($"{Reader.CountBlocks()} != {Indexes.Count()}");
 
-                // TODO:  validate hash of some blocks.   maybe the root block and last blocks or something
+                // Validation Rule #2:  the boot record (which is the very first record) 
+                // should be valid
                 PhysicalBlock rootBlock = Reader.GetLedgerPhysicalBlock(1, (data) => {
                     return PhysicalBlock.FromString(data);
                 }) as PhysicalBlock;
@@ -115,7 +118,13 @@ namespace node.Ledger
                 LedgerIndex rootIndex = Indexes.GetIndex(1);
 
                 if (rootBlock.ComputeHash() != rootIndex.Hash)
-                    throw new LedgerNotValidException($"block ${rootBlock.Id}");
+                    throw new LedgerNotValidException($"block {rootBlock.Id}");
+
+                // Validation Rule #3: the last record should validate
+
+                // Validation Rule #4: verify a few other blocks
+                // TODO: validate some of the remaining blocks.
+                // TODO: have an option that requires all blocks to be validated
 
                 State = LedgerState.Available;
             }
