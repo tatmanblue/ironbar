@@ -26,6 +26,8 @@ namespace node.Controllers
         [HttpGet]
         public List<ConnectedNode> Get()
         {
+            // TODO:  this GET should return some health state information about the 
+            // nodes.  Not sure what.  maybe not much more than "yeah it looks good"
             List<ConnectedNode> nodes = new List<ConnectedNode>();
             nodes.Add(new ConnectedNode() { Name = "node1" });
             nodes.Add(new ConnectedNode() { Name = "node2" });

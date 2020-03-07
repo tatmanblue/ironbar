@@ -8,6 +8,5 @@
     <Folder Include="DTO\" />
     <Folder Include="node\" />
     <Folder Include="plugin\" />
-    <Folder Include="Security\" />
 </ItemGroup>
 </Project>
