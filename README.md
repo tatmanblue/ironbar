@@ -49,7 +49,7 @@ It also serves as an example to the community how to extend `Iron Bar` functiona
 # Status
 Prototype/irregular updates
 
-IronBar is functional but functionality is limited.  Updates are made and project is active.
+This project is being updated with new functionality.  IronBar is functional but functionality is limited.  However, there is no active update schedule in place.  
 
 ## Revision
 2020.01.26
