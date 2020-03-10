@@ -25,10 +25,9 @@ namespace node.Ledger
         public int Id { get; private set; } = 0;
         public string Name { get; private set; }
         /// <summary>
-        /// where the ledger is saved.  This is a subdirectory of Option.DataPath
-        /// TODO: WRONG!  this is root path. eval if this is what we really want
+        /// root directory/folder where the ledgers are saved.  
         /// </summary>
-        public string Path { get; private set; }
+        public string RootDataPath { get; private set; }
         public LedgerState State { get; private set; } = LedgerState.Nonfunctional;
 
         public ILedgerWriter Writer { get; private set; }
@@ -39,7 +38,7 @@ namespace node.Ledger
         {
             get
             {
-                return System.IO.Path.Combine(this.Path, this.Name);
+                return System.IO.Path.Combine(this.RootDataPath, this.Name);
             }
         }
 
@@ -57,7 +56,7 @@ namespace node.Ledger
         {
             Id = id;
             Name = name;
-            Path = path;
+            RootDataPath = path;
             Writer = new DefaultTextFileLedgerWriter(LedgerPath);
             Reader =  new DefaultTextFileLedgerReader(LedgerPath);
             Indexes = new LedgerIndexManager(Name, LedgerIndexFileName);

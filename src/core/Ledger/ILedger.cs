@@ -8,7 +8,7 @@ namespace core.Ledger
     {
         int Id { get; }
         string Name { get; }
-        string Path { get; }
+        string RootDataPath { get; }
         LedgerState State { get; }
 
         // TODO: NOT Entirely sure ledger should know this.  It might add an additional
