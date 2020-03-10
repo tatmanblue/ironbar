@@ -15,6 +15,8 @@ make sure the solution and projects files are correctly updated in your pull req
 > dotnet --version  
 > 3.0.100
 
+## build status
+[![CircleCI](https://circleci.com/gh/circleci/circleci-docs.svg?style=shield)](https://app.circleci.com/pipelines/github/tatmanblue/ironbar)
 
 # Design
 ### console project
