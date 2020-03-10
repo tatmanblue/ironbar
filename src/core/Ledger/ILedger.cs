@@ -8,6 +8,12 @@ namespace core.Ledger
     {
         int Id { get; }
         string Name { get; }
+        /// <summary>
+        /// root directory/folder where the ledgers are saved.
+        /// Ledgers will postfix their directory name to this path
+        /// and save their work there.  Only applicable when ledgers
+        /// are a file based system
+        /// </summary>
         string RootDataPath { get; }
         LedgerState State { get; }
 
