@@ -89,8 +89,6 @@ namespace node.Ledger
                 TransactionData = Encoding.UTF8.GetBytes(elements[7])
             };
 
-            // TODO: gotta convert transactionData
-
             // compare hash from string with computedHash. they should match
             if (elements[8] != block.ComputeHash())
                 throw new LedgerNotValidException($"block {block.Id}");
