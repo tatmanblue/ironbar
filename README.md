@@ -1,10 +1,15 @@
 # Iron Bar
 
 Iron is synonym for chain and bar is a synonym for block.  This project
-is to develop a block chain protocol that can be used in authentication scenerios
+is to develop an [SSI system](https://sovrin.org/faq/what-is-self-sovereign-identity/) using block chain protocol that can be used in authentication scenerios
 like games.
 
 It's not limited to games, just an example.
+
+### Project Goals
+1. Server components can run on any OS
+2. Client connectivity from any operating system
+3. New use cases can be added by plug-in pattern
 
 
 # Development
