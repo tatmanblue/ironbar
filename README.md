@@ -10,7 +10,7 @@ It's not limited to games, just an example.
 1. Server components can run on any OS
 2. Client connectivity from any operating system
 3. New use cases can be added by plug-in pattern
-
+4. Simple to understand both in nomenclature and implementation
 
 # Development
 You can use any editor.  Solution and project files are included for use with
