@@ -6,7 +6,7 @@ like games.
 
 It's not limited to games, just an example.
 
-### Project Goals
+### Architectural Goals
 1. Server components can run on any OS
 2. Secure using latest encryption standards
 3. Client connectivity from any operating system
