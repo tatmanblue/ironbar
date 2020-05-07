@@ -16,6 +16,15 @@ namespace node.Services
         RetryingConnectionToBootNode,
     }
 
+    public class ClientNodeServiceException : Exception
+    {
+        public ClientNodeServiceException(string message) : base(message) { }
+    }
+
+    /// <summary>
+    /// When a node is a client, this service starts up and runs as long as the service is functional
+    /// it is used to maintain and update state
+    /// </summary>
     public class ClientNodeService : IHostedService, IDisposable
     {
         private readonly ILogger<ClientNodeService> _logger;
@@ -67,8 +76,9 @@ namespace node.Services
                 case ClientNodeServiceState.RetryingConnectionToBootNode:
                     break;
                 case ClientNodeServiceState.Running:
-                default:
                     break;
+                default:
+                    throw new ClientNodeServiceException("an invalid state was encountered in ClientNodeService");
             }
         }
 
@@ -80,7 +90,7 @@ namespace node.Services
                 this.serviceState = ClientNodeServiceState.ConnectingToBootNode;
 
             NodeRPCClient client = new NodeRPCClient(_options);
-            if (true == client.ConnectToBootNode().Result)
+            if (true == await client.ConnectToBootNode())
                 this.serviceState = ClientNodeServiceState.Running;
             else
                 this.serviceState = ClientNodeServiceState.Halted;

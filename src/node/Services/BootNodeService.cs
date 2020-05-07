@@ -5,7 +5,8 @@ using Microsoft.Extensions.Logging;
 
 namespace node
 {
-    // keeps track of which nodes are part of the system.  this service only runs on the bootnood
+    // This is the bootnode listener for GRPC calls messages from child nodes.
+    // this service only runs on the bootnood
     public class BootNodeService : BootNode.BootNodeBase
     {
         private readonly ILogger<BootNodeService> _logger;

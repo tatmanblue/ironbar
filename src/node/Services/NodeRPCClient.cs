@@ -5,6 +5,11 @@ using node.General;
 
 namespace node
 {
+    /// <summary>
+    /// this is currently used to use GRPC generated code for a child node to talk
+    /// to the bootnode.  It is used by ClientNodeService
+    /// TODO: not sure but maybe this should be consolidated into ClientNodeService
+    /// </summary>
     public class NodeRPCClient
     {
         private readonly IOptions _options;
@@ -13,12 +18,12 @@ namespace node
             _options = options;
         }
 
-        public async Task<bool> ConnectToBootNode()
+        public async Task<bool> ConnectToBootNode(int delay = 2000)
         {
             {
                 try
                 {
-                    Task.Delay(2000).Wait();
+                    Task.Delay(delay).Wait();
                     AppContext.SetSwitch("System.Net.Http.SocketsHttpHandler.Http2UnencryptedSupport", true);
                     Console.WriteLine($"Attempting connect to channel is: http://localhost:{_options.ServerRPCPort}");
                     var channel = GrpcChannel.ForAddress($"http://localhost:{_options.ServerRPCPort}");
