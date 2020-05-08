@@ -9,6 +9,7 @@ namespace node
     /// this is currently used to use GRPC generated code for a child node to talk
     /// to the bootnode.  It is used by ClientNodeService
     /// TODO: not sure but maybe this should be consolidated into ClientNodeService
+    /// TODO: interface so it can be mocked/injected
     /// </summary>
     public class NodeRPCClient
     {
