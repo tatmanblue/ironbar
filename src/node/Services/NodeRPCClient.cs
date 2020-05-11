@@ -3,6 +3,7 @@ using System.Linq;
 using System.Net;
 using System.Net.Sockets;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Logging;
 using Grpc.Net.Client;
 using node.General;
 
@@ -16,10 +17,12 @@ namespace node
     /// </summary>
     public class NodeRPCClient
     {
+        private readonly ILogger<NodeRPCClient> _logger;
         private readonly IOptions _options;
-        public NodeRPCClient(IOptions options)
+        public NodeRPCClient(IOptions options, ILogger<NodeRPCClient> logger)
         {
             _options = options;
+            _logger = logger;
         }
 
         public async Task<bool> ConnectToBootNode(int delay = 2000)
@@ -32,21 +35,21 @@ namespace node
                     string localIP = $"{LocalIPAddress()}";
                     // TODO: bootNode may not be on the same host, and may be using https
                     string bootNodeIP = $"http://localhost:{_options.ServerRPCPort}";
-                    Console.WriteLine($"Attempting connect to channel is: {bootNodeIP} and my ip is {localIP}");
+                    _logger.LogInformation($"Attempting connect to channel is: {bootNodeIP} and my ip is {localIP}");
                     var channel = GrpcChannel.ForAddress(bootNodeIP);
                     var client = new BootNode.BootNodeClient(channel);
                     var reply = client.AddLink(new LinkRequest { ClientAddr = $"http://{localIP}:{_options.RPCPort}" });
-                    Console.WriteLine("BootNode says: " + reply.Message);
+                    _logger.LogInformation("BootNode says: " + reply.Message);
 
                     return true;
                 }
                 catch (Exception ex)
                 {
-                    Console.WriteLine($"ERROR: {ex.Message}");
+                    _logger.LogInformation($"ERROR: {ex.Message}");
                     if (ex.InnerException != null)
-                        Console.WriteLine($"INNER EXCEPTION: {ex.InnerException}");
+                        _logger.LogInformation($"INNER EXCEPTION: {ex.InnerException}");
                     else
-                        Console.WriteLine("no more details");
+                        _logger.LogInformation("no more details");
 
                     return false;
                 }
