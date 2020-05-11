@@ -7,7 +7,7 @@ using node.General;
 
 namespace node.Services
 {
-    public enum ClientNodeServiceState
+    public enum ChildNodeServiceState
     {
         NotStarted,
         ConnectingToBootNode,
@@ -16,25 +16,27 @@ namespace node.Services
         RetryingConnectionToBootNode,
     }
 
-    public class ClientNodeServiceException : Exception
+    public class ChildNodeServiceException : Exception
     {
-        public ClientNodeServiceException(string message) : base(message) { }
+        public ChildNodeServiceException(string message) : base(message) { }
     }
 
     /// <summary>
     /// When a node is a client, this service starts up and runs as long as the service is functional
     /// it is used to maintain and update state
     /// </summary>
-    public class ClientNodeService : IHostedService, IDisposable
+    public class ChildNodeService : IHostedService, IDisposable
     {
-        private readonly ILogger<ClientNodeService> _logger;
+        private const int INTERVAL = 5;
+
+        private readonly ILogger<ChildNodeService> _logger;
         private readonly IOptions _options;
         private readonly NodeRPCClient _rpcClient;
 
         private Timer doWorkDelay;
-        private ClientNodeServiceState serviceState = ClientNodeServiceState.NotStarted;
+        private ChildNodeServiceState serviceState = ChildNodeServiceState.NotStarted;
 
-        public ClientNodeService(ILogger<ClientNodeService> logger, IOptions options, NodeRPCClient rpcClient)
+        public ChildNodeService(ILogger<ChildNodeService> logger, IOptions options, NodeRPCClient rpcClient)
         {
             _logger = logger;
             _options = options;
@@ -50,7 +52,7 @@ namespace node.Services
         {
             _logger.LogInformation("ClientNodeService is initializing.");
 
-            doWorkDelay = new Timer(DoWork, null, TimeSpan.Zero, TimeSpan.FromSeconds(5));
+            doWorkDelay = new Timer(DoWork, null, TimeSpan.Zero, TimeSpan.FromSeconds(INTERVAL));
 
             return Task.CompletedTask;
         }
@@ -64,37 +66,41 @@ namespace node.Services
             return Task.CompletedTask;
         }
 
+        /// <summary>
+        ///
+        /// </summary>
+        /// <param name="state"></param>
         private void DoWork(object state)
         {
             _logger.LogInformation($"ClientNodeService is state {serviceState}");
 
             switch (serviceState)
             {
-                case ClientNodeServiceState.NotStarted:
-                case ClientNodeServiceState.Halted:
+                case ChildNodeServiceState.NotStarted:
+                case ChildNodeServiceState.Halted:
                     ConnectToBootNode();
                     break;
-                case ClientNodeServiceState.ConnectingToBootNode:
-                case ClientNodeServiceState.RetryingConnectionToBootNode:
+                case ChildNodeServiceState.ConnectingToBootNode:
+                case ChildNodeServiceState.RetryingConnectionToBootNode:
                     break;
-                case ClientNodeServiceState.Running:
+                case ChildNodeServiceState.Running:
                     break;
                 default:
-                    throw new ClientNodeServiceException("an invalid state was encountered in ClientNodeService");
+                    throw new ChildNodeServiceException("an invalid state was encountered in ClientNodeService");
             }
         }
 
         public async void ConnectToBootNode()
         {
-            if (ClientNodeServiceState.Halted == this.serviceState)
-                this.serviceState = ClientNodeServiceState.RetryingConnectionToBootNode;
+            if (ChildNodeServiceState.Halted == this.serviceState)
+                this.serviceState = ChildNodeServiceState.RetryingConnectionToBootNode;
             else
-                this.serviceState = ClientNodeServiceState.ConnectingToBootNode;
+                this.serviceState = ChildNodeServiceState.ConnectingToBootNode;
 
             if (true == await _rpcClient.ConnectToBootNode())
-                this.serviceState = ClientNodeServiceState.Running;
+                this.serviceState = ChildNodeServiceState.Running;
             else
-                this.serviceState = ClientNodeServiceState.Halted;
+                this.serviceState = ChildNodeServiceState.Halted;
         }
     }
 }

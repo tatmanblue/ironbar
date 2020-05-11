@@ -67,7 +67,7 @@ namespace node
                     {
                         // install types required by nodes other than boot node
                         services.AddTransient<NodeRPCClient>();
-                        services.AddHostedService<ClientNodeService>();
+                        services.AddHostedService<ChildNodeService>();
                     }
                 });
         }
