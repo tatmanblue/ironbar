@@ -35,17 +35,25 @@ namespace node.General
 
     public class Options : IOptions
     {
-        [Option('r', HelpText = "Port to listen for RPC calls")]
+        [Option('r', HelpText = "Child Node will listen on this port")]
         public int RPCPort { get; set; } = 5001;
-        [Option('s', HelpText = "Server RPC call port")]
+
+        [Option('s', HelpText = "Bootnode will listen on this port")]
         public int ServerRPCPort { get; set; } = 5001;
+
         [Option('a', HelpText = "WebAPI port")]
         public int APIPort { get; set; } = 8080;
+
         [Option('p', HelpText = "plug-ins path")]
         public string PluginPath { get; set; } = "plugins";
+
         [Option('d', HelpText = "where the ledger data lives")]
         public string DataPath { get; set; } = "data";
 
+        /// <summary>
+        /// when RPCPort and ServerRPCPort are the same, the node assumes its is the 
+        /// bootnode
+        /// </summary>
         public bool IsBootNode
         {
             get

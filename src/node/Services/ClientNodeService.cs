@@ -29,14 +29,16 @@ namespace node.Services
     {
         private readonly ILogger<ClientNodeService> _logger;
         private readonly IOptions _options;
+        private readonly NodeRPCClient _rpcClient;
 
         private Timer doWorkDelay;
         private ClientNodeServiceState serviceState = ClientNodeServiceState.NotStarted;
 
-        public ClientNodeService(ILogger<ClientNodeService> logger, IOptions options)
+        public ClientNodeService(ILogger<ClientNodeService> logger, IOptions options, NodeRPCClient rpcClient)
         {
             _logger = logger;
             _options = options;
+            _rpcClient = rpcClient;
         }
 
         public void Dispose()
@@ -89,8 +91,7 @@ namespace node.Services
             else
                 this.serviceState = ClientNodeServiceState.ConnectingToBootNode;
 
-            NodeRPCClient client = new NodeRPCClient(_options);
-            if (true == await client.ConnectToBootNode())
+            if (true == await _rpcClient.ConnectToBootNode())
                 this.serviceState = ClientNodeServiceState.Running;
             else
                 this.serviceState = ClientNodeServiceState.Halted;

@@ -60,10 +60,15 @@ namespace node
                 })
                 .ConfigureServices(services =>
                 {
+                    // install global types
                     services.AddSingleton<IOptions>(Program.SystemOptions);
 
                     if (false == cmdOptions.IsBootNode)
+                    {
+                        // install types required by nodes other than boot node
+                        services.AddTransient<NodeRPCClient>();
                         services.AddHostedService<ClientNodeService>();
+                    }
                 });
         }
 }
