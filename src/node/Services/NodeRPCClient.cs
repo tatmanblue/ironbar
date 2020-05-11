@@ -1,4 +1,7 @@
 ﻿using System;
+using System.Linq;
+using System.Net;
+using System.Net.Sockets;
 using System.Threading.Tasks;
 using Grpc.Net.Client;
 using node.General;
@@ -26,10 +29,13 @@ namespace node
                 {
                     Task.Delay(delay).Wait();
                     AppContext.SetSwitch("System.Net.Http.SocketsHttpHandler.Http2UnencryptedSupport", true);
-                    Console.WriteLine($"Attempting connect to channel is: http://localhost:{_options.ServerRPCPort}");
-                    var channel = GrpcChannel.ForAddress($"http://localhost:{_options.ServerRPCPort}");
+                    string localIP = $"{LocalIPAddress()}";
+                    // TODO: bootNode may not be on the same host, and may be using https
+                    string bootNodeIP = $"http://localhost:{_options.ServerRPCPort}";
+                    Console.WriteLine($"Attempting connect to channel is: {bootNodeIP} and my ip is {localIP}");
+                    var channel = GrpcChannel.ForAddress(bootNodeIP);
                     var client = new BootNode.BootNodeClient(channel);
-                    var reply = client.AddLink(new LinkRequest { ClientAddr = $"http://localhost:{_options.RPCPort}" });
+                    var reply = client.AddLink(new LinkRequest { ClientAddr = $"http://{localIP}:{_options.RPCPort}" });
                     Console.WriteLine("BootNode says: " + reply.Message);
 
                     return true;
@@ -45,6 +51,20 @@ namespace node
                     return false;
                 }
             }
+        }
+
+        private IPAddress LocalIPAddress()
+        {
+            if (!System.Net.NetworkInformation.NetworkInterface.GetIsNetworkAvailable())
+            {
+                return null;
+            }
+
+            IPHostEntry host = Dns.GetHostEntry(Dns.GetHostName());
+
+            return host
+                .AddressList
+                .FirstOrDefault(ip => ip.AddressFamily == AddressFamily.InterNetwork);
         }
     }
 }
