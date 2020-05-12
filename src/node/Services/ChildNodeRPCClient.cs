@@ -15,11 +15,11 @@ namespace node
     /// TODO: not sure but maybe this should be consolidated into ClientNodeService
     /// TODO: interface so it can be mocked/injected
     /// </summary>
-    public class NodeRPCClient
+    public class ChildNodeRPCClient
     {
-        private readonly ILogger<NodeRPCClient> _logger;
+        private readonly ILogger<ChildNodeRPCClient> _logger;
         private readonly IOptions _options;
-        public NodeRPCClient(IOptions options, ILogger<NodeRPCClient> logger)
+        public ChildNodeRPCClient(IOptions options, ILogger<ChildNodeRPCClient> logger)
         {
             _options = options;
             _logger = logger;
@@ -31,7 +31,8 @@ namespace node
             {
                 Task.Delay(delay).Wait();
                 AppContext.SetSwitch("System.Net.Http.SocketsHttpHandler.Http2UnencryptedSupport", true);
-                string localIP = $"{LocalIPAddress()}";
+                // string localIP = $"{LocalIPAddress()}";
+                string localIP = "localhost";
                 // TODO: bootNode may not be on the same host, and may be using https
                 string bootNodeIP = $"http://localhost:{_options.ServerRPCPort}";
                 _logger.LogInformation($"Attempting connect to channel is: {bootNodeIP} and my ip is {localIP}");

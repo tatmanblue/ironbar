@@ -24,6 +24,9 @@ namespace node
             services.AddGrpc();
             services.AddControllers();
 
+            // For now, all nodes have ledger manager,  there might be some differences in behavior
+            // between a bootnode ledger manager and a child nodes ledger manager that will
+            // make us want to split this out
             services.AddSingleton<ILedgerManager, LedgerManager>();
         }
 
@@ -48,7 +51,7 @@ namespace node
             {
                 // TODO: seems like this is bootnode configuration but not going to work
                 // for the other nodes
-                endpoints.MapGrpcService<BootNodeService>();
+                endpoints.MapGrpcService<BootNodeRPCService>();
                 endpoints.MapControllers();
             });
 

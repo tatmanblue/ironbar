@@ -66,8 +66,13 @@ namespace node
                     if (false == cmdOptions.IsBootNode)
                     {
                         // install types required by nodes other than boot node
-                        services.AddTransient<NodeRPCClient>();
+                        services.AddTransient<ChildNodeRPCClient>();
                         services.AddHostedService<ChildNodeService>();
+                    }
+                    else
+                    {
+                        services.AddSingleton<ConnectionManager>();
+                        services.AddTransient<BootNodeClient>();
                     }
                 });
         }

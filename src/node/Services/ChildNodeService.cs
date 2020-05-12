@@ -32,12 +32,12 @@ namespace node.Services
 
         private readonly ILogger<ChildNodeService> _logger;
         private readonly IOptions _options;
-        private readonly NodeRPCClient _rpcClient;
+        private readonly ChildNodeRPCClient _rpcClient;
 
         private Timer doWorkDelay;
         private ChildNodeServiceState serviceState = ChildNodeServiceState.NotStarted;
 
-        public ChildNodeService(NodeRPCClient rpcClient, IOptions options, ILogger<ChildNodeService> logger)
+        public ChildNodeService(ChildNodeRPCClient rpcClient, IOptions options, ILogger<ChildNodeService> logger)
         {
             _logger = logger;
             _options = options;
