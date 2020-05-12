@@ -25,5 +25,14 @@ namespace node
             });
         }
 
+        public override Task<SimpleMessageReply> SendSendSimpleMessage(SimpleMessage request, SerializationContext context)
+        {
+            // TODO:
+            _logger.LogInformation($"got a SimpleMessage from {request.ClientAddr}");
+            return Task.FromResult(new SimpleMessageReply
+            {
+                Message = "Goodbye " + request.ClientAddr
+            });
+        }
     }
 }

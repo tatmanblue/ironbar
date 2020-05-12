@@ -27,33 +27,60 @@ namespace node
 
         public async Task<bool> ConnectToBootNode(int delay = 2000)
         {
+            try
             {
-                try
-                {
-                    Task.Delay(delay).Wait();
-                    AppContext.SetSwitch("System.Net.Http.SocketsHttpHandler.Http2UnencryptedSupport", true);
-                    string localIP = $"{LocalIPAddress()}";
-                    // TODO: bootNode may not be on the same host, and may be using https
-                    string bootNodeIP = $"http://localhost:{_options.ServerRPCPort}";
-                    _logger.LogInformation($"Attempting connect to channel is: {bootNodeIP} and my ip is {localIP}");
-                    var channel = GrpcChannel.ForAddress(bootNodeIP);
-                    var client = new BootNode.BootNodeClient(channel);
-                    var reply = client.AddLink(new LinkRequest { ClientAddr = $"http://{localIP}:{_options.RPCPort}" });
-                    _logger.LogInformation("BootNode says: " + reply.Message);
+                Task.Delay(delay).Wait();
+                AppContext.SetSwitch("System.Net.Http.SocketsHttpHandler.Http2UnencryptedSupport", true);
+                string localIP = $"{LocalIPAddress()}";
+                // TODO: bootNode may not be on the same host, and may be using https
+                string bootNodeIP = $"http://localhost:{_options.ServerRPCPort}";
+                _logger.LogInformation($"Attempting connect to channel is: {bootNodeIP} and my ip is {localIP}");
+                var channel = GrpcChannel.ForAddress(bootNodeIP);
+                var client = new BootNode.BootNodeClient(channel);
+                var reply = client.AddLink(new LinkRequest { ClientAddr = $"http://{localIP}:{_options.RPCPort}" });
+                _logger.LogInformation("BootNode says: " + reply.Message);
 
-                    return true;
-                }
-                catch (Exception ex)
-                {
-                    _logger.LogInformation($"ERROR: {ex.Message}");
-                    if (ex.InnerException != null)
-                        _logger.LogInformation($"INNER EXCEPTION: {ex.InnerException}");
-                    else
-                        _logger.LogInformation("no more details");
-
-                    return false;
-                }
+                return true;
             }
+            catch (Exception ex)
+            {
+                _logger.LogInformation($"ERROR: {ex.Message}");
+                if (ex.InnerException != null)
+                    _logger.LogInformation($"INNER EXCEPTION: {ex.InnerException}");
+                else
+                    _logger.LogInformation("no more details");
+
+                return false;
+            }
+        }
+
+        public async Task<bool> SendShuttingDownMessage()
+        {
+            try
+            {
+                AppContext.SetSwitch("System.Net.Http.SocketsHttpHandler.Http2UnencryptedSupport", true);
+                string localIP = $"{LocalIPAddress()}";
+                // TODO: bootNode may not be on the same host, and may be using https
+                string bootNodeIP = $"http://localhost:{_options.ServerRPCPort}";
+                _logger.LogInformation($"Attempting connect to channel is: {bootNodeIP} and my ip is {localIP}");
+                var channel = GrpcChannel.ForAddress(bootNodeIP);
+                var client = new BootNode.BootNodeClient(channel);
+                var reply = client.SendSimpleMessage(new SimpleMessage { ClientAddr = $"http://{localIP}:{_options.RPCPort}" });
+                _logger.LogInformation("BootNode says: " + reply.Message);
+
+                return true;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogInformation($"ERROR: {ex.Message}");
+                if (ex.InnerException != null)
+                    _logger.LogInformation($"INNER EXCEPTION: {ex.InnerException}");
+                else
+                    _logger.LogInformation("no more details");
+
+                return false;
+            }
+
         }
 
         private IPAddress LocalIPAddress()

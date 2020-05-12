@@ -12,6 +12,7 @@ namespace node.Services
         NotStarted,
         ConnectingToBootNode,
         Running,
+        ShuttingDown,
         Halted,
         RetryingConnectionToBootNode,
     }
@@ -36,11 +37,12 @@ namespace node.Services
         private Timer doWorkDelay;
         private ChildNodeServiceState serviceState = ChildNodeServiceState.NotStarted;
 
-        public ChildNodeService(ILogger<ChildNodeService> logger, IOptions options, NodeRPCClient rpcClient)
+        public ChildNodeService(NodeRPCClient rpcClient, IOptions options, ILogger<ChildNodeService> logger)
         {
             _logger = logger;
             _options = options;
             _rpcClient = rpcClient;
+
         }
 
         public void Dispose()
@@ -60,8 +62,11 @@ namespace node.Services
         public Task StopAsync(CancellationToken cancellationToken)
         {
             _logger.LogInformation("ClientNodeService is stopping.");
-
+            serviceState = ChildNodeServiceState.ShuttingDown;
             doWorkDelay.Change(Timeout.Infinite, 0);
+
+            // send message to bootnode this node is going off line
+            _rpcClient.SendShuttingDownMessage();
 
             return Task.CompletedTask;
         }
@@ -84,6 +89,8 @@ namespace node.Services
                 case ChildNodeServiceState.RetryingConnectionToBootNode:
                     break;
                 case ChildNodeServiceState.Running:
+                    break;
+                case ChildNodeServiceState.ShuttingDown:
                     break;
                 default:
                     throw new ChildNodeServiceException("an invalid state was encountered in ClientNodeService");

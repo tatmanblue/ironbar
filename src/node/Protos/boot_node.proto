@@ -4,6 +4,7 @@ option csharp_namespace = "node";
 
 service BootNode {
   rpc AddLink (LinkRequest) returns (LinkReply);
+  rpc SendSimpleMessage (SimpleMessage) returns (SimpleMessageReply);
 }
 
 message LinkRequest {
@@ -14,3 +15,10 @@ message LinkReply {
   string message = 1;
 }
 
+message SimpleMessage {
+  string clientAddr = 1;
+}
+
+message SimpleMessageReply {
+  string message = 1;
+}
