@@ -60,7 +60,8 @@ namespace node
             try
             {
                 AppContext.SetSwitch("System.Net.Http.SocketsHttpHandler.Http2UnencryptedSupport", true);
-                string localIP = $"{LocalIPAddress()}";
+                // string localIP = $"{LocalIPAddress()}";
+                string localIP = "localhost";
                 // TODO: bootNode may not be on the same host, and may be using https
                 string bootNodeIP = $"http://localhost:{_options.ServerRPCPort}";
                 _logger.LogInformation($"Attempting connect to channel is: {bootNodeIP} and my ip is {localIP}");

@@ -28,9 +28,9 @@ namespace node.General
     {
         private List<ChildNodeConnection> _children = new List<ChildNodeConnection>();
         private ILogger<ConnectionManager> _logger;
-        private BootNodeClient _client;
+        private BootNodeRPCClient _client;
 
-        public ConnectionManager(BootNodeClient client, IHostApplicationLifetime lifeTime, ILogger<ConnectionManager> logger)
+        public ConnectionManager(BootNodeRPCClient client, IHostApplicationLifetime lifeTime, ILogger<ConnectionManager> logger)
         {
             _client = client;
             _logger = logger;
@@ -43,6 +43,12 @@ namespace node.General
         public void AddNewChildNode(ChildNodeConnection child)
         {
             _children.Add(child);
+        }
+
+        public void RemoveChildNode(string address)
+        {
+            ChildNodeConnection child = _children.Find(c => c.Address == address);
+            _children.Remove(child);
         }
 
         public void HandleServiceShutdown()

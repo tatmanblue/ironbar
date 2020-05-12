@@ -12,12 +12,12 @@ namespace node.Services
     /// <summary>
     /// This client handles messages to child nodes from the boot node
     /// </summary>
-    public class BootNodeClient
+    public class BootNodeRPCClient
     {
-        private readonly ILogger<BootNodeClient> _logger;
+        private readonly ILogger<BootNodeRPCClient> _logger;
         private readonly IOptions _options;
 
-        public BootNodeClient(IOptions options, ILogger<BootNodeClient> logger)
+        public BootNodeRPCClient(IOptions options, ILogger<BootNodeRPCClient> logger)
         {
             _options = options;
             _logger = logger;

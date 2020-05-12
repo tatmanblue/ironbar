@@ -45,6 +45,7 @@ namespace node
         {
             // TODO:
             _logger.LogInformation($"got a SimpleMessage from {request.ClientAddr}");
+            _connectionManager.RemoveChildNode(request.ClientAddr);
             return Task.FromResult(new SimpleMessageReply
             {
                 Message = "Goodbye " + request.ClientAddr

@@ -50,9 +50,10 @@ namespace node
                     Console.WriteLine($"RPCPort configured to use {cmdOptions.RPCPort}");
                     webBuilder.ConfigureKestrel(options =>
                     {
-                        // Setup a HTTP/2 endpoint without TLS.
+                        // Setup a HTTP/2 endpoint without TLS.  This is for listening for GRPC calls
                         options.ListenLocalhost(cmdOptions.RPCPort, o => o.Protocols = HttpProtocols.Http2);
 
+                        // set up webservices port
                         if (true == cmdOptions.IsBootNode)
                             options.ListenLocalhost(cmdOptions.APIPort, o => o.Protocols = HttpProtocols.Http1);
                     });
@@ -72,7 +73,7 @@ namespace node
                     else
                     {
                         services.AddSingleton<ConnectionManager>();
-                        services.AddTransient<BootNodeClient>();
+                        services.AddTransient<BootNodeRPCClient>();
                     }
                 });
         }
