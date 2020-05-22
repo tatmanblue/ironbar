@@ -57,7 +57,8 @@ It also serves as an example to the community how to extend `Iron Bar` functiona
 # Status
 Prototype/irregular updates
 
-This project is being updated with new functionality.  IronBar is functional but functionality is limited.  However, there is no active update schedule in place.  
+This project is being updated with new functionality.  Please review [work.md](https://github.com/tatmanblue/ironbar/blob/master/docs/WORK.md) 
+for details on goals and progress towards those goals.  IronBar is functional but functionality is limited.  However, there is no regular release schedule in place.  
 
 ## Revision
-2020.01.26
+2020.05.22
