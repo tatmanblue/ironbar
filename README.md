@@ -58,7 +58,7 @@ It also serves as an example to the community how to extend `Iron Bar` functiona
 Prototype/irregular updates
 
 This project is being updated with new functionality.  Please review [work.md](https://github.com/tatmanblue/ironbar/blob/master/docs/WORK.md) 
-for details on goals and progress towards those goals.  IronBar is functional but functionality is limited.  However, there is no regular release schedule in place.  
+for details on goals and progress towards those goals.  There is no regular release schedule in place.  Work is completed on an adhoc schedule.
 
 ## Revision
 2020.05.22
