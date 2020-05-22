@@ -61,17 +61,18 @@ namespace node
                 })
                 .ConfigureServices(services =>
                 {
-                    // install global types
+                    // initialization for all node types
                     services.AddSingleton<IOptions>(Program.SystemOptions);
 
                     if (false == cmdOptions.IsBootNode)
                     {
-                        // install types required by nodes other than boot node
+                        // initialization for child nodes
                         services.AddTransient<ChildNodeRPCClient>();
                         services.AddHostedService<ChildNodeService>();
                     }
                     else
                     {
+                        // initialization for boot node
                         services.AddSingleton<ConnectionManager>();
                         services.AddTransient<BootNodeRPCClient>();
                     }
