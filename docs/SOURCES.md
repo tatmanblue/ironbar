@@ -7,3 +7,7 @@ This page contains documentation sources used to drive the design of `Iron Bar`
 
 # Technologies
 [Google GRPC](https://developers.google.com/protocol-buffers/docs/reference/csharp-generated)
+
+# For thought
+NGROK - might be able to use this to host iron bar locally instead of on AWS or Azure
+[ngrok] https://ngrok.com/ 
