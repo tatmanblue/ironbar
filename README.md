@@ -13,6 +13,18 @@ It's not limited to games, just an example.
 4. New use cases can be added by plug-in pattern
 5. Simple to understand both in nomenclature and implementation
 
+# Status
+Prototype/irregular updates
+
+This project is being updated with new functionality.  Please review [work.md](https://github.com/tatmanblue/ironbar/blob/master/docs/WORK.md) 
+for details on goals and progress towards those goals.  There is no regular release schedule in place.  Work is completed on an adhoc schedule.
+
+## File Revision
+2020.05.22
+
+## build status
+[![CircleCI](https://circleci.com/gh/circleci/circleci-docs.svg?style=shield)](https://app.circleci.com/pipelines/github/tatmanblue/ironbar)
+
 # Development
 You can use any editor.  Solution and project files are included for use with
 Visual Studio (both PC and Mac).  If you chose to use a different IDE please
@@ -20,18 +32,6 @@ make sure the solution and projects files are correctly updated in your pull req
 
 > dotnet --version  
 > 3.0.100
-
-## build status
-[![CircleCI](https://circleci.com/gh/circleci/circleci-docs.svg?style=shield)](https://app.circleci.com/pipelines/github/tatmanblue/ironbar)
-
-# Status
-Prototype/irregular updates
-
-This project is being updated with new functionality.  Please review [work.md](https://github.com/tatmanblue/ironbar/blob/master/docs/WORK.md) 
-for details on goals and progress towards those goals.  There is no regular release schedule in place.  Work is completed on an adhoc schedule.
-
-## Revision
-2020.05.22
 
 # Design
 ### console project
