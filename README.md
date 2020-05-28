@@ -20,7 +20,7 @@ This project is being updated with new functionality.  Please review [work.md](h
 for details on goals and progress towards those goals.  There is no regular release schedule in place.  Work is completed on an adhoc schedule.
 
 ## File Revision
-2020.05.22
+2020.05.28
 
 ## build status
 [![CircleCI](https://circleci.com/gh/circleci/circleci-docs.svg?style=shield)](https://app.circleci.com/pipelines/github/tatmanblue/ironbar)
@@ -34,8 +34,6 @@ make sure the solution and projects files are correctly updated in your pull req
 > 3.0.100
 
 # Design
-### console project
-The console project is obsolete and will be deleted soon.
 
 ### Nodes
 Nodes are center piece of `Iron Bar`.  They handle all of the block chain transactions.
@@ -61,6 +59,8 @@ We would like to move the webapi into the bootnode if we can figure it out.
 
 ### Credentials
 The credentials project is an injectable service used by `nodes` to provide revokable credential services to `Iron Bar`.
-It also serves as an example to the community how to extend `Iron Bar` functionality.
+It also serves as a one example to the community how to extend `Iron Bar` functionality.
 
-
+### The plug-in architecture
+Iron bar is designed to be extensible through plug-ins.  See the [plug-in doc](https://github.com/tatmanblue/ironbar/blob/master/docs/PLUGINS.md) for
+more details.  
