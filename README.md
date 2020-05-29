@@ -33,7 +33,7 @@ make sure the solution and projects files are correctly updated in your pull req
 > dotnet --version  
 > 3.0.100
 
-# Design
+# Source Code Structure/Projects
 
 ### Nodes
 Nodes are center piece of `Iron Bar`.  They handle all of the block chain transactions.
