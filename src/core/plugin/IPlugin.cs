@@ -3,7 +3,10 @@ using System.Collections.Generic;
 
 namespace Core.Plugin
 {
-    // all plugins must implement this interface
+    /// <summary>
+    /// Plugins must implement this interface but should not implement this interface directly
+    /// as it is inherited from IApiPlugin or ILedgerPlugin
+    /// </summary>
     public interface IPlugin
     {
         void Init();
