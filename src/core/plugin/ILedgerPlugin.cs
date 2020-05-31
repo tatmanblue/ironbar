@@ -7,7 +7,7 @@ namespace core.Plugin
     /// <summary>
     /// Plugins that provide a block chain ledger must implement this plugin
     /// </summary>
-    interface ILedgerPlugin : IPlugin
+    public interface ILedgerPlugin : IPlugin
     {
     }
 }
