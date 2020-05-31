@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace Core.Plugin
+namespace core.Plugin
 {
     /// <summary>
     /// Plugins must implement this interface but should not implement this interface directly

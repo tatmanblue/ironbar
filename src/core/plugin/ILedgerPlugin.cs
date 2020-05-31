@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Core.Plugin
+namespace core.Plugin
 {
     /// <summary>
     /// Plugins that provide a block chain ledger must implement this plugin

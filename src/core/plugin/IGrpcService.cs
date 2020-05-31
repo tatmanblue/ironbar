@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace Core.Plugin
+namespace core.Plugin
 {
     // implementors of IPlugin will want to implement
     // this interface when they support GRPC style communications

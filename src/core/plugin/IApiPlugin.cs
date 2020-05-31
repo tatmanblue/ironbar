@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Core.Plugin
+namespace core.Plugin
 {
     /// <summary>
     /// plugins that provide a API to be consumed (aka RESTFul service etc)
