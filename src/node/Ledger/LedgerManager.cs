@@ -1,8 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using core.Ledger;
+﻿using System.Collections.Generic;
 using Microsoft.Extensions.Logging;
-using node.General;
+using core;
+using core.Ledger;
 
 namespace node.Ledger
 {
@@ -24,14 +23,14 @@ namespace node.Ledger
 
         // Dependency Injected
         private readonly ILogger<LedgerManager> _logger;
-        private IOptions _options;
+        private IConfiguration _options;
 
         // Instance allocated
         private List<ILedger> _ledger = new List<ILedger>();
         private bool _isOperational = false;
 
 
-        public LedgerManager(ILogger<LedgerManager> logger, IOptions options)
+        public LedgerManager(ILogger<LedgerManager> logger, IConfiguration options)
         {
             _logger = logger;
             _options = options;

@@ -5,7 +5,7 @@ using System.Net.Sockets;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using Grpc.Net.Client;
-using node.General;
+using core;
 
 namespace node
 {
@@ -18,8 +18,8 @@ namespace node
     public class ChildNodeRPCClient
     {
         private readonly ILogger<ChildNodeRPCClient> _logger;
-        private readonly IOptions _options;
-        public ChildNodeRPCClient(IOptions options, ILogger<ChildNodeRPCClient> logger)
+        private readonly IConfiguration _options;
+        public ChildNodeRPCClient(IConfiguration options, ILogger<ChildNodeRPCClient> logger)
         {
             _options = options;
             _logger = logger;

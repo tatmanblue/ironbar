@@ -3,7 +3,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
-using node.General;
+using core;
 
 namespace node.Services
 {
@@ -31,13 +31,13 @@ namespace node.Services
         private const int INTERVAL = 5;
 
         private readonly ILogger<ChildNodeService> _logger;
-        private readonly IOptions _options;
+        private readonly IConfiguration _options;
         private readonly ChildNodeRPCClient _rpcClient;
 
         private Timer doWorkDelay;
         private ChildNodeServiceState serviceState = ChildNodeServiceState.NotStarted;
 
-        public ChildNodeService(ChildNodeRPCClient rpcClient, IOptions options, ILogger<ChildNodeService> logger)
+        public ChildNodeService(ChildNodeRPCClient rpcClient, IConfiguration options, ILogger<ChildNodeService> logger)
         {
             _logger = logger;
             _options = options;

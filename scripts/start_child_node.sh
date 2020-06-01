@@ -6,4 +6,4 @@ shift
 PORT=5002
 mkdir -p data
 echo "${ROOT_PATH}data"
-dotnet run --project ../src/node/ -- -d "${ROOT_PATH}data" -r ${PORT}
+dotnet run --project ../src/node/ -- "${ROOT_PATH}child_node_1.config"

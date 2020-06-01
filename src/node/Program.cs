@@ -7,6 +7,8 @@ using Microsoft.Extensions.Logging;
 using CommandLine;
 using node.Services;
 using node.General;
+using core;
+using core.Utility;
 
 namespace node
 {
@@ -14,21 +16,19 @@ namespace node
 
     public class Program
     {
-        // TODO: would like to make this injectable vs static instance
-        public static Options SystemOptions { get; private set; } = null;
-
         public static void Main(string[] args)
         {
-            Parser.Default.ParseArguments<Options>(args)
-                   .WithParsed<Options>(o =>
-                   {
-                       Program.SystemOptions = o;
+            // only one command line argument is allowed and that is to the configuration file
+            // it can be relative or literal path 
+            if (1 != args.Length)
+                throw new GeneralException("command line must specific configuration file");
 
-                       IHostBuilder hostBuilder = CreateHostBuilder(args, o);
-                       IHost host = hostBuilder.Build();
+            Options options = JsonUtility.DeserializeFromFile<Options>(args[0]);
 
-                       host.Run();
-                   });
+            IHostBuilder hostBuilder = CreateHostBuilder(args, options);
+            IHost host = hostBuilder.Build();
+
+            host.Run();
         }
 
         // Additional configuration is required to successfully run gRPC on macOS.
@@ -62,7 +62,7 @@ namespace node
                 .ConfigureServices(services =>
                 {
                     // initialization for all node types
-                    services.AddSingleton<IOptions>(Program.SystemOptions);
+                    services.AddSingleton<IConfiguration>(cmdOptions);
 
                     if (false == cmdOptions.IsBootNode)
                     {

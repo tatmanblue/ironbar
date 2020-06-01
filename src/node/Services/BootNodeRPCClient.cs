@@ -5,7 +5,7 @@ using System.Net.Sockets;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using Grpc.Net.Client;
-using node.General;
+using core;
 
 namespace node.Services
 {
@@ -15,9 +15,9 @@ namespace node.Services
     public class BootNodeRPCClient
     {
         private readonly ILogger<BootNodeRPCClient> _logger;
-        private readonly IOptions _options;
+        private readonly IConfiguration _options;
 
-        public BootNodeRPCClient(IOptions options, ILogger<BootNodeRPCClient> logger)
+        public BootNodeRPCClient(IConfiguration options, ILogger<BootNodeRPCClient> logger)
         {
             _options = options;
             _logger = logger;
