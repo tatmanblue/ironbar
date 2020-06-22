@@ -74,7 +74,9 @@ namespace node.Ledger
 
                 // TODO: if bootnode, inform any other nodes that came online while
                 // initializing that bootnode is good to go
-                _logger.LogInformation($"Ledger {masterLedger.Id} is up and running");
+                _logger.LogInformation($"Ledger {masterLedger.Name} is up and running");
+
+                // 8 -- initialize ledger plugins
             }
             catch(LedgerException lex)
             {
