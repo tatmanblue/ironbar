@@ -1,8 +1,10 @@
 # Overview
+updated: 2020.06.27
 
-updated: 2020.05.22
+This document contains high level goals--think epic level.  
+See the [project board](https://github.com/users/tatmanblue/projects/2) for more detailed plans--think story level.
 
-There's lots of work to do. This document hightlights two parts:
+This document hightlights two parts:
 1. current goal
 2. longer term
 
