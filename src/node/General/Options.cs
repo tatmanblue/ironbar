@@ -5,6 +5,10 @@ namespace node.General
 {
     public class Options : IConfiguration
     {
+        /// <summary>
+        /// this is the friendly name that appears in logs etc....
+        /// </summary>
+        public string FriendlyName { get; set; }
         public int RPCPort { get; set; } = 5001;
         public int ServerRPCPort { get; set; } = 5001;
         public int APIPort { get; set; } = 8080;

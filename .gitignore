@@ -6,3 +6,8 @@ temp/
 .idea/
 scripts/data/
 index.txt
+
+# for azure
+*.PublishSettings
+*.user
+*.pubxml
