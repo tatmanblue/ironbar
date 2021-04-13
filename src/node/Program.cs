@@ -4,7 +4,6 @@ using Microsoft.AspNetCore.Server.Kestrel.Core;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
-using CommandLine;
 using node.Services;
 using node.General;
 using core;
@@ -12,8 +11,6 @@ using core.Utility;
 
 namespace node
 {
-
-
     public class Program
     {
         public static void Main(string[] args)

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using Microsoft.Extensions.Logging;
 using core.Ledger;
 
 namespace node.Ledger
@@ -18,6 +19,8 @@ namespace node.Ledger
     /// </summary>
     public class Ledger : ILedger
     {
+        private readonly ILogger<Ledger> _logger;
+        
         /// <summary>
         /// Ledger ID.  1 is master ledger.  It is controlled by the nodes
         /// with the master bootnode overall "overseer"
@@ -34,26 +37,15 @@ namespace node.Ledger
         
         public ILedgerReader Reader { get; private set; }
 
-        private string LedgerPath
-        {
-            get
-            {
-                return System.IO.Path.Combine(this.RootDataPath, this.Name);
-            }
-        }
+        private string LedgerPath => System.IO.Path.Combine(this.RootDataPath, this.Name);
 
-        private string LedgerIndexFileName
-        {
-            get
-            {
-                return System.IO.Path.Combine(LedgerPath, "index.txt");
-            }
-        }
+        private string LedgerIndexFileName => System.IO.Path.Combine(LedgerPath, "index.txt");
 
         private LedgerIndexManager Indexes { get; set; }
 
-        public Ledger(int id, string name, string path)
+        public Ledger(ILogger<Ledger> logger, int id, string name, string path)
         {
+            _logger = logger;
             Id = id;
             Name = name;
             RootDataPath = path;
@@ -84,11 +76,11 @@ namespace node.Ledger
 
             // TODO: these next two steps are technically a transaction, need to determine what happens when
             // one step fails.
-            System.Console.WriteLine($"saving indexes to {LedgerIndexFileName}");
+           _logger.LogInformation($"saving indexes to {LedgerIndexFileName}");
             // step 1 save the block
+            // TODO: need rollback if Indexes.Save() fails
             Writer.SaveBlock(block);
             // step 2 save the index
-            // TODO: move index save to Writer
             Indexes.Save();
         }
 

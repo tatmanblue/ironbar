@@ -23,6 +23,7 @@ namespace node.Ledger
 
         // Dependency Injected
         private readonly ILogger<LedgerManager> _logger;
+        private readonly ILogger<Ledger> _ledgerLogger;
         private IConfiguration _options;
 
         // Instance allocated
@@ -30,9 +31,10 @@ namespace node.Ledger
         private bool _isOperational = false;
 
 
-        public LedgerManager(ILogger<LedgerManager> logger, IConfiguration options)
+        public LedgerManager(ILogger<LedgerManager> logger, ILogger<Ledger> ledgerLogger, IConfiguration options)
         {
             _logger = logger;
+            _ledgerLogger = ledgerLogger;
             _options = options;
         }
 
@@ -45,8 +47,8 @@ namespace node.Ledger
 
             // 2 - open the master ledger secrets file and initalize the master ledger
             // TODO: get path from cmd + config and post fix master path
-            // TODO: make master path name something else
-            Ledger masterLedger = new Ledger(MASTER_LEDGER_ID, "master", _options.DataPath);
+            // TODO: make 'master' path name something else
+            Ledger masterLedger = new Ledger(_ledgerLogger, MASTER_LEDGER_ID, "master", _options.DataPath);
             _ledger.Add(masterLedger);
 
             try
@@ -83,7 +85,7 @@ namespace node.Ledger
                 _logger.LogError(lex, string.Empty, null);
 
                 // TODO:  this node isn't good, no matter what.  in the case
-                // when this is the bootnode...guess theres more to do 
+                //        when this is the bootnode...guess theres more to do 
             }
         }
 
