@@ -1,12 +1,7 @@
-﻿using Grpc.Core.Logging;
-using Microsoft.AspNetCore.Hosting;
+﻿using System.Collections.Generic;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using node.Services;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace node.General
 {
@@ -26,9 +21,9 @@ namespace node.General
     /// </summary>
     public class ConnectionManager
     {
-        private List<ChildNodeConnection> _children = new List<ChildNodeConnection>();
-        private ILogger<ConnectionManager> _logger;
-        private BootNodeRPCClient _client;
+        private readonly List<ChildNodeConnection> _children = new List<ChildNodeConnection>();
+        private readonly ILogger<ConnectionManager> _logger;
+        private readonly BootNodeRPCClient _client;
 
         public ConnectionManager(BootNodeRPCClient client, IHostApplicationLifetime lifeTime, ILogger<ConnectionManager> logger)
         {
@@ -56,7 +51,12 @@ namespace node.General
             _logger.LogInformation("ConnectionManager handling application shut down");
             foreach(ChildNodeConnection child in _children)
             {
+                // ok to not await this call as we want to shutdown messages sent as quickly as possible.  
+                // errors should not affect continuation.  we are in shutdown and its more important
+                // this completes as fast as possible
+#pragma warning disable 4014
                 _client.SendShuttingDownMessage(child.Address);
+#pragma warning restore 4014
             }
         }
     }
