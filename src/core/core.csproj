@@ -7,6 +7,5 @@
 
   <ItemGroup>
     <Folder Include="DTO\" />
-    <Folder Include="node\" />
 </ItemGroup>
 </Project>

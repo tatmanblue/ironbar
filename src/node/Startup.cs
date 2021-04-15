@@ -55,6 +55,8 @@ namespace node
                 endpoints.MapControllers();
             });
 
+            
+
             app.StartLedger();
             lifeTime.ApplicationStopping.Register(() => {
                 logger.LogInformation("Application is shutting down");
