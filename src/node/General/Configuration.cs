@@ -3,7 +3,7 @@ using core;
 
 namespace node.General
 {
-    public class Configuration : IConfiguration
+    public class Options : IConfiguration
     {
         /// <summary>
         /// this is the friendly name that appears in logs etc....
