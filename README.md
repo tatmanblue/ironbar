@@ -20,7 +20,13 @@ This project is being updated with new functionality.  Please review [work.md](h
 for details on goals and progress towards those goals.  There is no regular release schedule in place.  Work is completed on an adhoc schedule.
 
 ## File Revision
-2020.05.28
+2021.06.05
+
+## Legal
+If you have any questions about the content of the repository, please email [matt.raffel@gmail.com](mailto:matt.raffel@gmail.com). I can assure you all content has been purchased and licensed to me or is otherwise freely available. Proof will be made available on request. Repeated DCMA counterfit and harassment claims will result in counter suits per Section 512(f) of the DMCA penalties for _misrepresentation can include actual damages and attorney’s fees_.
+
+## License
+Please read [license](https://github.com/tatmanblue/ironbar/blob/master/LICENSE).
 
 ## build status
 [![CircleCI](https://circleci.com/gh/circleci/circleci-docs.svg?style=shield)](https://app.circleci.com/pipelines/github/tatmanblue/ironbar)
@@ -64,3 +70,4 @@ It also serves as a one example to the community how to extend `Iron Bar` functi
 ### The plug-in architecture
 Iron bar is designed to be extensible through plug-ins.  See the [plug-in doc](https://github.com/tatmanblue/ironbar/blob/master/docs/PLUGINS.md) for
 more details.  
+
