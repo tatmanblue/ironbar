@@ -20,7 +20,7 @@ This project is being updated with new functionality.  Please review [work.md](h
 for details on goals and progress towards those goals.  There is no regular release schedule in place.  Work is completed on an adhoc schedule.
 
 ## File Revision
-2021.06.05
+2022.02.22
 
 ## Legal
 If you have any questions about the content of the repository, please email [matt.raffel@gmail.com](mailto:matt.raffel@gmail.com). I can assure you all content has been purchased and licensed to me or is otherwise freely available. Proof will be made available on request. Repeated DCMA counterfit and harassment claims will result in counter suits per Section 512(f) of the DMCA penalties for _misrepresentation can include actual damages and attorney’s fees_.
@@ -37,7 +37,7 @@ Visual Studio (both PC and Mac).  If you chose to use a different IDE please
 make sure the solution and projects files are correctly updated in your pull request.
 
 > dotnet --version  
-> 3.0.100
+> 6.0.100
 
 # Source Code Structure/Projects
 
