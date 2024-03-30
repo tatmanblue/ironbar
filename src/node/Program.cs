@@ -1,78 +1,70 @@
-using System;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Server.Kestrel.Core;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
-using node.Services;
-using node.General;
-using core;
-using core.Utility;
 
-namespace node
+using core.Utility;
+using Node.General;
+using Node.Ledger;
+
+namespace nodev2
 {
+    using Node.grpc.service;
+
     public class Program
     {
         public static void Main(string[] args)
         {
+
+            ConfigurationOptions configurationOptions = new ConfigurationOptions();
             // only one command line argument is allowed and that is to the configuration file
             // it can be relative or literal path 
-            if (1 != args.Length)
-                throw new GeneralException("command line must specific configuration file");
+            if (1 == args.Length)
+                configurationOptions = JsonUtility.DeserializeFromFile<ConfigurationOptions>(args[0]);
+            
+            
+            var builder = WebApplication.CreateBuilder(args);
+            builder.Logging.AddConsole(); // Add Console logging provider
+            builder.Services.AddGrpc();
+            
+            builder.Services.AddSingleton<core.IConfiguration>(configurationOptions);
+            // For now, all nodes have ledger manager,  there might be some differences in behavior
+            // between a bootnode ledger manager and a child nodes ledger manager that will
+            // make us want to split this out
+            builder.Services.AddSingleton<ILedgerManager, LedgerManager>();
+            if (false == configurationOptions.IsBootNode)
+            {
+                // initialization for child nodes
+                builder.Services.AddTransient<ChildNodeRPCClient>();
+                builder.Services.AddHostedService<ChildNodeService>();
+            }
+            else
+            {
+                // initialization for boot node
+                builder.Services.AddSingleton<ConnectionManager>();
+                builder.Services.AddTransient<BootNodeRPCClient>();
+            }
+            
+            var app = builder.Build();
 
-            Options options = JsonUtility.DeserializeFromFile<Options>(args[0]);
+            app.UseRouting(); // Add this line to enable routing
 
-            IHostBuilder hostBuilder = CreateHostBuilder(args, options);
-            IHost host = hostBuilder.Build();
+            app.MapGet("/", () => "Hello World!");
+            app.UseEndpoints(endpoints =>
+            {
+                if (configurationOptions.IsBootNode)
+                    endpoints.MapGrpcService<BootNodeRPCService>();
+                else
+                    endpoints.MapGrpcService<ChildNodeService>();
+            });
 
-            host.Run();
+            
+            app.StartLedger();
+            var lifetime = app.Services.GetRequiredService<IHostApplicationLifetime>();
+            lifetime.ApplicationStopping.Register(() =>
+            {
+                ILogger<Program> logger = app.Services.GetRequiredService<ILogger<Program>>();
+                logger.LogCritical("Application is shutting down");
+            });
+            
+            
+            app.Run();
         }
-
-        // Additional configuration is required to successfully run gRPC on macOS.
-        // For instructions on how to configure Kestrel and gRPC clients on macOS, visit https://go.microsoft.com/fwlink/?linkid=2099682
-        public static IHostBuilder CreateHostBuilder(string[] args, Options cmdOptions) =>
-            Host.CreateDefaultBuilder(args)
-                .ConfigureLogging((context, logging) =>
-                {
-                    logging.AddConfiguration(context.Configuration.GetSection("Logging"));
-
-                    if (context.HostingEnvironment.IsDevelopment())
-                    {
-                        logging.AddConsole();
-                        logging.AddDebug();
-                    }
-                })
-                .ConfigureWebHostDefaults(webBuilder =>
-                {
-                    Console.WriteLine($"RPCPort configured to use {cmdOptions.RPCPort}");
-                    webBuilder.ConfigureKestrel(options =>
-                    {
-                        // Setup a HTTP/2 endpoint without TLS.  This is for listening for GRPC calls
-                        options.ListenLocalhost(cmdOptions.RPCPort, o => o.Protocols = HttpProtocols.Http2);
-
-                        // set up webservices port
-                        if (true == cmdOptions.IsBootNode)
-                            options.ListenLocalhost(cmdOptions.APIPort, o => o.Protocols = HttpProtocols.Http1);
-                    });
-                    webBuilder.UseStartup<Startup>();
-                })
-                .ConfigureServices(services =>
-                {
-                    // initialization for all node types
-                    services.AddSingleton<IConfiguration>(cmdOptions);
-
-                    if (false == cmdOptions.IsBootNode)
-                    {
-                        // initialization for child nodes
-                        services.AddTransient<ChildNodeRPCClient>();
-                        services.AddHostedService<ChildNodeService>();
-                    }
-                    else
-                    {
-                        // initialization for boot node
-                        services.AddSingleton<ConnectionManager>();
-                        services.AddTransient<BootNodeRPCClient>();
-                    }
-                });
-        }
+    }
 }

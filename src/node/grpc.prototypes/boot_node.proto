@@ -1,6 +1,6 @@
 ﻿syntax = "proto3";
 
-option csharp_namespace = "node";
+option csharp_namespace = "Node";
 
 service BootNode {
   rpc AddLink (LinkRequest) returns (LinkReply);

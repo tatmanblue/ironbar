@@ -2,16 +2,15 @@
 using core.Ledger;
 using core.Utility;
 
-namespace node.Ledger
+namespace Node.Ledger;
+
+public class SignBlock : ILedgerSignBlock
 {
-    public class SignBlock : ILedgerSignBlock
+    protected internal SignBlock()
     {
-        protected internal SignBlock()
-        {
-        }
-
-        public Nonce Nonce { get; private set; } = Nonce.New();
-
-        public DateTime DateStamp { get; private set; } = DateTime.Now;
     }
+
+    public Nonce Nonce { get; private set; } = Nonce.New();
+
+    public DateTime DateStamp { get; private set; } = DateTime.Now;
 }
