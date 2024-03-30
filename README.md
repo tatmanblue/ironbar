@@ -1,7 +1,7 @@
 # Iron Bar
 
 Iron is synonym for chain and bar is a synonym for block.  This project
-is to develop an [SSI system](https://sovrin.org/faq/what-is-self-sovereign-identity/) using block chain protocol that can be used in authentication scenerios
+is to develop an [SSI system](https://sovrin.org/faq/what-is-self-sovereign-identity/) using block chain that can be used in various scenerios
 like games.
 
 It's not limited to games, just an example.
@@ -16,11 +16,14 @@ It's not limited to games, just an example.
 # Status
 Prototype/irregular updates
 
-This project is being updated with new functionality.  Please review [work.md](https://github.com/tatmanblue/ironbar/blob/master/docs/WORK.md) 
+### 2024.03.30 Update
+Reopening this project to add CI/CD deployment to AWS or Azure.
+
+This project is being updated with new functionality on an irregular basis.  Please review [work.md](https://github.com/tatmanblue/ironbar/blob/master/docs/WORK.md) 
 for details on goals and progress towards those goals.  There is no regular release schedule in place.  Work is completed on an adhoc schedule.
 
 ## File Revision
-2022.02.22
+2024.03.30
 
 
 # License
@@ -56,7 +59,7 @@ Visual Studio (both PC and Mac).  If you chose to use a different IDE please
 make sure the solution and projects files are correctly updated in your pull request.
 
 > dotnet --version  
-> 6.0.100
+> 8.0.200
 
 # Source Code Structure/Projects
 

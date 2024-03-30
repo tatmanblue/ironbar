@@ -10,8 +10,12 @@ This document hightlights two parts:
 
 The main focus of this document is #1 above and notes for what will follow completing #1.
 
-## Current goal
-Version 0.0.1.0  
+## CI/CD Updates
+1. Update dotnet Version
+2. Using Tilt and Helm Charts for running in docker which will allow for deployment in cloud services like AWS
+
+## Version 0.0.3.0 Goal
+Version 0.0.3.0  
 To be able to create, prove and revoke credentials.  
 
 ### Immeditate Steps:
