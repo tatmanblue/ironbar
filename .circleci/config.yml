@@ -1,12 +1,10 @@
- version: 2.1
-
- orbs:
-  windows: circleci/windows@5.0
-
- jobs:
-   build:
+version: '2.1'
+orbs:
+  win: circleci/windows@5.0
+jobs:
+  build:
     executor:
-      name: win/default    
-     steps:
-       - checkout
-       - run: dotnet build src/ironbar.sln
+      name: win/default
+    steps:
+      - checkout
+      - run: dotnet build src/ironbar.sln
