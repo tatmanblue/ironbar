@@ -51,7 +51,7 @@ If you have any questions about the content of the repository, please email [mat
 
 
 ## build status
-[![CircleCI](https://circleci.com/gh/circleci/circleci-docs.svg?style=shield)](https://app.circleci.com/pipelines/github/tatmanblue/ironbar)
+[![CircleCI](https://circleci.com/gh/circleci/circleci-docs.svg?style=shield)](https://app.circleci.com/pipelines/github/tatmangames/ironbar)
 
 # Development
 You can use any editor.  Solution and project files are included for use with
@@ -66,11 +66,11 @@ make sure the solution and projects files are correctly updated in your pull req
 ### Nodes
 Nodes are center piece of `Iron Bar`.  They handle all of the block chain transactions.
 
-One running node will be sufficient to use `Iron Bar`, but that is not recommended.  At a minimum,
-4 nodes should be running.   
+One running node will be sufficient to use `Iron Bar`, but that is not recommended.  At this time, it has not 
+been determined which configuration is optimal.  The goal is several nodes working together with one node
+as the controller or boot node and the others functioning as creating block nodes and validation nodes.
 
-In a 4+ node setup, one node works as the bootnode.  The bootnode is responsible for delegating
-work to additional nodes as well as acting as the public endpoint to apps consuming `Iron Bar`.
+The bootnode is responsible for delegating work to additional nodes as well as acting as the public endpoint to apps consuming `Iron Bar`.
 
 The remaining nodes will be responsible for blockchain management:  creating new chains, validating 
 (ak proofs), and distributed storage of chains (distributed block chain ledger).
