@@ -1,3 +1,13 @@
+# Deploy Ironbar using Kubernetes
+
+## Step
+1. Install [Docker](https://www.docker.com/products/docker-desktop/)  
+2. Install [Tilt](https://docs.tilt.dev/install.html)  
+2.1 Create a kubernetes cluster called `IronBar`.  eg: `kubectl config set-context ironbar`
+
+
+
+
 # Deploying Ironbar to Azure
 
 ## Set up
@@ -11,3 +21,7 @@ Copy boot_node.config tp /home/site
  
 ## Additional Notes
 https://devblogs.microsoft.com/aspnet/grpc-web-for-net-now-available/
+
+
+# Docker Notes
+`docker-compose -f publish\boot_node.docker-compose.yaml up --build`

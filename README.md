@@ -72,8 +72,7 @@ as the controller or boot node and the others functioning as creating block node
 
 The bootnode is responsible for delegating work to additional nodes as well as acting as the public endpoint to apps consuming `Iron Bar`.
 
-The remaining nodes will be responsible for blockchain management:  creating new chains, validating 
-(ak proofs), and distributed storage of chains (distributed block chain ledger).
+The remaining nodes will be responsible for blockchain management:  creating new chains, validating , and distributed storage of chains (distributed block chain ledger).
 
 When a new block is created, the bootnode will randomly assign creation to 3+ nodes and randomly assign
 validation to one or more nodes.   
