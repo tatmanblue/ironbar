@@ -3,7 +3,7 @@ using core.Utility;
 using Node.General;
 using Node.Ledger;
 
-namespace nodev2
+namespace Node
 {
     using Node.grpc.service;
 
