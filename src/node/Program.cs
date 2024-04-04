@@ -1,4 +1,5 @@
 
+using System.Net;
 using core.Utility;
 using Microsoft.AspNetCore.Server.Kestrel.Core;
 using Node.General;
@@ -44,12 +45,14 @@ namespace Node
 
             builder.WebHost.ConfigureKestrel(kestrelOptions =>
             {
+                // TODO: should not use hardcoded Any.  There are more flexible options
+                
                 // Setup a HTTP/2 endpoint without TLS.  This is for listening for GRPC calls
-                kestrelOptions.ListenLocalhost(configurationOptions.RPCPort, o => o.Protocols = HttpProtocols.Http2);
+                kestrelOptions.Listen(IPAddress.Any, configurationOptions.RPCPort, o => o.Protocols = HttpProtocols.Http2);
 
                 // set up webservices port
                 if (true == configurationOptions.IsBootNode)
-                    kestrelOptions.ListenLocalhost(configurationOptions.APIPort, o => o.Protocols = HttpProtocols.Http1AndHttp2);
+                    kestrelOptions.Listen(IPAddress.Any, configurationOptions.APIPort, o => o.Protocols = HttpProtocols.Http1AndHttp2);
             });
             
             var app = builder.Build();
