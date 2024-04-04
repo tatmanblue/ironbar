@@ -1,11 +1,19 @@
 version: '3.8'
 name: boot_node
 services:
-  web:
+  boot-node:
+    container_name: boot-node
     build:
       context: .
       dockerfile: boot_node.dockerfile
     ports:
-      - "8080:80"
+      - "8080:8080"
+      - "50051:50051"
     volumes:
       - ./app:/app
+    networks:
+      - ironbar-network
+
+networks:
+  ironbar-network:
+    driver: bridge

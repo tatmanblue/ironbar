@@ -1,5 +1,6 @@
 
 using core.Utility;
+using Microsoft.AspNetCore.Server.Kestrel.Core;
 using Node.General;
 using Node.Ledger;
 
@@ -40,6 +41,16 @@ namespace Node
                 builder.Services.AddSingleton<ConnectionManager>();
                 builder.Services.AddTransient<BootNodeRPCClient>();
             }
+
+            builder.WebHost.ConfigureKestrel(kestrelOptions =>
+            {
+                // Setup a HTTP/2 endpoint without TLS.  This is for listening for GRPC calls
+                kestrelOptions.ListenLocalhost(configurationOptions.RPCPort, o => o.Protocols = HttpProtocols.Http2);
+
+                // set up webservices port
+                if (true == configurationOptions.IsBootNode)
+                    kestrelOptions.ListenLocalhost(configurationOptions.APIPort, o => o.Protocols = HttpProtocols.Http1AndHttp2);
+            });
             
             var app = builder.Build();
 
@@ -53,6 +64,8 @@ namespace Node
                 else
                     endpoints.MapGrpcService<ChildNodeService>();
             });
+            
+            
 
             
             app.StartLedger();
