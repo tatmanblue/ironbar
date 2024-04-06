@@ -1,14 +1,22 @@
 # Deploy Ironbar using Docker locally
 
+Make sure you have docker running. [Docker](https://www.docker.com/products/docker-desktop/)    
+
 ## Starting up boot_node  
 
-1. Install [Docker](https://www.docker.com/products/docker-desktop/)  
-2. start boot node by running `docker-compose -f boot_node.docker-compose.yaml up --build`  
-3. start a child node  by running `docker-compose -f child_node.docker-compose.yaml up --build`  
+Start boot node by running `docker-compose -f boot_node.docker-compose.yaml up --build`  
+
+## Starting up a child_node
+Start a child node  by running `docker-compose -f child_node.docker-compose.yaml up --build`    
+
+## If you want to run a two node system
+Run `docker-compose -f two_node.docker-compose.yaml up --build`    
+
+
 
 # Deploy Ironbar using Kubernetes
 
-## Step
+## Set up
 1. Install [Docker](https://www.docker.com/products/docker-desktop/)  
 2. Install [Tilt](https://docs.tilt.dev/install.html)  
 2.1 Create a kubernetes cluster called `IronBar`.  eg: `kubectl config set-context ironbar`
