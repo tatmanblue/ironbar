@@ -23,6 +23,30 @@ public class ChildNodeServiceException : Exception
 /// </summary>
 public class ChildNodeService : IHostedService, IDisposable
 {
+    
+    #region IHostedService
+    public Task StartAsync(CancellationToken cancellationToken)
+    {
+        logger.LogInformation("ClientNodeService is initializing.");
+
+        doWorkDelay = new Timer(DoWork, null, TimeSpan.Zero, TimeSpan.FromSeconds(INTERVAL));
+
+        return Task.CompletedTask;
+    }
+
+    public Task StopAsync(CancellationToken cancellationToken)
+    {
+        logger.LogInformation("ClientNodeService is stopping.");
+        serviceState = ChildNodeServiceState.ShuttingDown;
+        doWorkDelay.Change(Timeout.Infinite, 0);
+
+        // send message to bootnode this node is going off line
+        rpcClient.SendShuttingDownMessage();
+
+        return Task.CompletedTask;
+    }
+    #endregion
+    
     private const int INTERVAL = 5;
 
     private readonly ILogger<ChildNodeService> logger;
@@ -43,27 +67,6 @@ public class ChildNodeService : IHostedService, IDisposable
     public void Dispose()
     {
         doWorkDelay?.Dispose();
-    }
-
-    public Task StartAsync(CancellationToken cancellationToken)
-    {
-        logger.LogInformation("ClientNodeService is initializing.");
-
-        doWorkDelay = new Timer(DoWork, null, TimeSpan.Zero, TimeSpan.FromSeconds(INTERVAL));
-
-        return Task.CompletedTask;
-    }
-
-    public Task StopAsync(CancellationToken cancellationToken)
-    {
-        logger.LogInformation("ClientNodeService is stopping.");
-        serviceState = ChildNodeServiceState.ShuttingDown;
-        doWorkDelay.Change(Timeout.Infinite, 0);
-
-        // send message to bootnode this node is going off line
-        rpcClient.SendShuttingDownMessage();
-
-        return Task.CompletedTask;
     }
 
     /// <summary>

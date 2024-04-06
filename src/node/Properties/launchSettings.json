@@ -26,7 +26,9 @@
       "applicationUrl": "http://localhost:5295",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development",
-        "IRONBAR_TYPE": "child"
+        "IRONBAR_TYPE": "child",
+        "IRONBAR_RPC_PORT": "50052",
+        "IRONBAR_BOOT_SERVER": "http://localhost:50051"
       }
     },
     "http": {

@@ -3,7 +3,8 @@
 ## Starting up boot_node  
 
 1. Install [Docker](https://www.docker.com/products/docker-desktop/)  
-2. and finally run `docker-compose -f boot_node.docker-compose.yaml up --build`  
+2. start boot node by running `docker-compose -f boot_node.docker-compose.yaml up --build`  
+3. start a child node  by running `docker-compose -f child_node.docker-compose.yaml up --build`  
 
 # Deploy Ironbar using Kubernetes
 

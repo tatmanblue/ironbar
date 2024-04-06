@@ -1,16 +1,16 @@
 version: '3.8'
 
 services:
-  boot-node:
-    container_name: boot-node
+  child-node:
+    container_name: child-node
     environment:
-       IRONBAR_TYPE: boot
+       IRONBAR_TYPE: child
+       IRONBAR_BOOT_SERVER: http://boot-node:50051
     build:
       context: .
       dockerfile: boot_node.dockerfile
     ports:
-      - "8080:8080"
-      - "50051:50051"
+      - "50052:50051"
     volumes:
       - ./app:/app
     networks:

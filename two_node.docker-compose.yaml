@@ -16,6 +16,21 @@ services:
     networks:
       - ironbar-network
 
+  child-node:
+    container_name: child-node
+    environment:
+      IRONBAR_TYPE: child
+      IRONBAR_BOOT_SERVER: "http://boot-node:50051"
+    build:
+      context: .
+      dockerfile: boot_node.dockerfile
+    ports:
+      - "50052:50051"
+    volumes:
+      - ./app:/app
+    networks:
+      - ironbar-network
+
 networks:
   ironbar-network:
     driver: bridge
