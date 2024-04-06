@@ -14,7 +14,7 @@ namespace Node
         public static void Main(string[] args)
         {
 
-            ConfigurationOptions configurationOptions = new ConfigurationOptions();
+            ConfigurationOptions configurationOptions = ConfigurationOptions.FromEnvironment();
             // only one command line argument is allowed and that is to the configuration file
             // it can be relative or literal path 
             if (1 == args.Length)
@@ -22,6 +22,7 @@ namespace Node
             
             
             var builder = WebApplication.CreateBuilder(args);
+            
             builder.Logging.AddConsole(); // Add Console logging provider
             builder.Services.AddGrpc();
             
@@ -50,16 +51,20 @@ namespace Node
                 // Setup a HTTP/2 endpoint without TLS.  This is for listening for GRPC calls
                 kestrelOptions.Listen(IPAddress.Any, configurationOptions.RPCPort, o => o.Protocols = HttpProtocols.Http2);
 
+                /*
                 // set up webservices port
                 if (true == configurationOptions.IsBootNode)
                     kestrelOptions.Listen(IPAddress.Any, configurationOptions.APIPort, o => o.Protocols = HttpProtocols.Http1AndHttp2);
+                */                    
             });
             
             var app = builder.Build();
+            
+            ILogger<Program> l = app.Services.GetRequiredService<ILogger<Program>>();
+            l.LogInformation($"Running as configured: {configurationOptions.ToString()}");
+            l.LogInformation($"this is '{IPAddress.Any.ToString()}'");
 
             app.UseRouting(); // Add this line to enable routing
-
-            app.MapGet("/", () => "Hello World!");
             app.UseEndpoints(endpoints =>
             {
                 if (configurationOptions.IsBootNode)
@@ -67,9 +72,6 @@ namespace Node
                 else
                     endpoints.MapGrpcService<ChildNodeService>();
             });
-            
-            
-
             
             app.StartLedger();
             var lifetime = app.Services.GetRequiredService<IHostApplicationLifetime>();

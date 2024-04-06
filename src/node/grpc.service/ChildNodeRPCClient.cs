@@ -29,8 +29,7 @@ public class ChildNodeRPCClient
             AppContext.SetSwitch("System.Net.Http.SocketsHttpHandler.Http2UnencryptedSupport", true);
             // string localIP = $"{LocalIPAddress()}";
             string localIP = "localhost";
-            // TODO: bootNode may not be on the same host, and may be using https
-            string bootNodeIP = $"http://localhost:{options.ServerRPCPort}";
+            string bootNodeIP = $"{options.BootAddress}";
             logger.LogInformation($"Attempting connect to channel is: {bootNodeIP} and my ip is {localIP}");
             var channel = GrpcChannel.ForAddress(bootNodeIP);
             var client = new BootNode.BootNodeClient(channel);
@@ -58,8 +57,7 @@ public class ChildNodeRPCClient
             AppContext.SetSwitch("System.Net.Http.SocketsHttpHandler.Http2UnencryptedSupport", true);
             // string localIP = $"{LocalIPAddress()}";
             string localIP = "localhost";
-            // TODO: bootNode may not be on the same host, and may be using https
-            string bootNodeIP = $"http://localhost:{options.ServerRPCPort}";
+            string bootNodeIP = $"{options.BootAddress}";
             logger.LogInformation($"Attempting connect to channel is: {bootNodeIP} and my ip is {localIP}");
             var channel = GrpcChannel.ForAddress(bootNodeIP);
             var client = new BootNode.BootNodeClient(channel);

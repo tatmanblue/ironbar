@@ -3,6 +3,8 @@ name: boot_node
 services:
   boot-node:
     container_name: boot-node
+    environment:
+       IRONBAR_TYPE: boot
     build:
       context: .
       dockerfile: boot_node.dockerfile

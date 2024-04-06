@@ -16,19 +16,14 @@ namespace core
         /// </summary>
         bool IsBootNode { get; }
         /// <summary>
-        /// port for child nodes to listen for grpc calls from bootnode (when node is not bootnode)
-        /// unused when node is bootnode (it should be the same as ServerRPCPort)
+        /// The node, either as boot or child, will listen for RPC calls on this port
         /// </summary>
         int RPCPort { get; }
         /// <summary>
-        /// port for grpc calls to bootnode.  when node is bootnode, it listens
-        /// on this port
+        /// Only important when IsBootNode == false, indicates how to locate the
+        /// boot node
         /// </summary>
-        int ServerRPCPort { get; }
-        /// <summary>
-        /// port for restful calls
-        /// </summary>
-        int APIPort { get; }
+        string BootAddress { get; }
         /// <summary>
         /// path to plugins
         /// </summary>

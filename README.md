@@ -66,7 +66,7 @@ make sure the solution and projects files are correctly updated in your pull req
 ### Nodes
 Nodes are center piece of `Iron Bar`.  They handle all of the block chain transactions.
 
-One running node will be sufficient to use `Iron Bar`, but that is not recommended.  At this time, it has not 
+One running node will be sufficient to use `Iron Bar`, but that is not the intended design.  At this time, it has not 
 been determined which configuration is optimal.  The goal is several nodes working together with one node
 as the controller or boot node and the others functioning as creating block nodes and validation nodes.
 
@@ -74,15 +74,18 @@ The bootnode is responsible for delegating work to additional nodes as well as a
 
 The remaining nodes will be responsible for blockchain management:  creating new chains, validating , and distributed storage of chains (distributed block chain ledger).
 
-When a new block is created, the bootnode will randomly assign creation to 3+ nodes and randomly assign
-validation to one or more nodes.   
+When a new block is created, the bootnode will randomly assign creation to some nodes and randomly assign
+validation to some nodes.   
 
 When there is only 1 node, the bootnode handles it all and there is no distributed block chain ledger.
 
-### Gateway
-For now, Gateway app is the web interface (web pages and restful API) to consuming Iron Bar.  
+### Consuming Iron Bar services
 
-We would like to move the webapi into the bootnode if we can figure it out.  
+This is to be worked out, if the project is to cointue.  
+
+1. gRPC clients should be able to interact with iron bar directly.  
+2. A separate webapp with both UI and RESTful api that will also allow for consuming iron bar services.
+
 
 ### Credentials
 The credentials project is an injectable service used by `nodes` to provide revokable credential services to `Iron Bar`.
