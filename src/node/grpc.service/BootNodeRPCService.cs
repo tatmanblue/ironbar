@@ -17,38 +17,28 @@ public class BootNodeRPCService : BootNode.BootNodeBase
         this.connectionManager = connectionManager;
         this.logger = logger;
     }
-
-    /// <summary>
-    /// Handles a "hello" from a child node
-    /// </summary>
-    /// <param name="request"></param>
-    /// <param name="context"></param>
-    /// <returns></returns>
-    public override Task<LinkReply> AddLink(LinkRequest request, ServerCallContext context)
+    
+    #region connection APIS
+    public override Task<ConnectReply> Connect(ConnectRequest request, ServerCallContext context)
     {
-        // TODO:
-        logger.LogInformation($"got a SayHello from {request.ClientAddr} {context.Host} {context.Method} {context.Peer}");
+        logger.LogInformation($"Connection established from {request.ClientAddr} {context.Host} {context.Method} {context.Peer}");
         connectionManager.AddNewChildNode(new ChildNodeConnection { Address = request.ClientAddr });
-        return Task.FromResult(new LinkReply
+        return Task.FromResult(new ConnectReply
         {
-            Message = "Hello " + request.ClientAddr
+            Message = $"Hello {request.FriendlyName}"
         });
     }
-
-    /// <summary>
-    /// Handles SimpleMessage from child nodes
-    /// </summary>
-    /// <param name="request"></param>
-    /// <param name="context"></param>
-    /// <returns></returns>
-    public override Task<SimpleMessageReply> SendSimpleMessage(SimpleMessage request, ServerCallContext context)
+    
+    public override Task<DisconnectReply> Disconnect(DisconnectRequest request, ServerCallContext context)
     {
         // TODO:
-        logger.LogInformation($"got a SimpleMessage from {request.ClientAddr}");
+        logger.LogInformation($"Node disconnecting {request.ClientAddr}");
         connectionManager.RemoveChildNode(request.ClientAddr);
-        return Task.FromResult(new SimpleMessageReply
+        return Task.FromResult(new DisconnectReply
         {
-            Message = "Goodbye " + request.ClientAddr
+            Message = $"Goodbye {request.ClientAddr}"
         });
     }
+    #endregion
+    
 }

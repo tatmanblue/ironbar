@@ -19,7 +19,7 @@ public class ChildNodeServiceException : Exception
 
 /// <summary>
 /// When a node is a client, this service starts up and runs as long as the service is functional
-/// it is used to maintain and update state
+/// It is used to keep in touch with the boot node, adjusting state according to connectivity with bootnode
 /// </summary>
 public class ChildNodeService : IHostedService, IDisposable
 {
