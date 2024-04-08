@@ -5,13 +5,43 @@
 /// </summary>
 public class ApiKeyManager
 {
-    /// <summary>
-    /// TODO temporary implementation
-    /// </summary>
-    /// <param name="apiKey"></param>
-    /// <returns></returns>
-    public bool IsApiKeyAllowed(string apiKey)
+    private string writeApiKey = string.Empty;
+    private string readApiKey = string.Empty;
+
+    public ApiKeyManager()
     {
-        return true;
+        writeApiKey = FromEnvOrDefault("IRONBAR_WRITE_API_KEY", "");
+        readApiKey = FromEnvOrDefault("IRONBAR_READ_API_KEY", "");
+    }
+    
+    public bool IsWriteAllowed(string apiKey)
+    {
+        if (string.IsNullOrEmpty(writeApiKey))
+            return false;
+
+        if (0 == apiKey.CompareTo(writeApiKey))
+            return true;
+        
+        return false;
+    }
+
+    public bool IsReadAllowed(string apiKey)
+    {
+        if (string.IsNullOrEmpty(readApiKey))
+            return false;
+
+        if (0 == apiKey.CompareTo(readApiKey))
+            return true;
+        
+        return false;
+    }
+    
+    private static string FromEnvOrDefault(string name, string def)
+    {
+        string v = Environment.GetEnvironmentVariable(name);
+        if (string.IsNullOrEmpty(v))
+            return def;
+
+        return v;
     }
 }

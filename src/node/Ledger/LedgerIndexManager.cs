@@ -1,4 +1,5 @@
 ﻿using core.Ledger;
+using Node.Interfaces;
 
 namespace Node.Ledger;
 
@@ -7,7 +8,7 @@ namespace Node.Ledger;
 /// ledger blocks (currently physical blocks).  The manager
 /// provides the functionality for accessing the data
 /// </summary>
-public class LedgerIndexManager
+public class LedgerIndexManager : ILedgerIndexManager
 {
     private List<LedgerIndex> data = new List<LedgerIndex>();
     private bool isLoaded = false;
@@ -41,6 +42,9 @@ public class LedgerIndexManager
         return data.Count;
     }
 
+    /// <summary>
+    /// initialization resets the ledger data if existing data is called.
+    /// </summary>
     public void Initialize()
     {
         if (true == File.Exists(IndexFile))
@@ -86,5 +90,10 @@ public class LedgerIndexManager
     public LedgerIndex GetIndex(int id)
     {
         return data.First(e => e.BlockId == id);
+    }
+
+    public List<LedgerIndex> ListAllIndexes()
+    {
+        return data.OrderBy(x => x.BlockId).ToList();
     }
 }

@@ -12,6 +12,7 @@ service NodeToNodeConnection {
 message ConnectRequest {
   string clientAddr = 1;
   string friendlyName = 2;
+  string nodeVersion = 3;
 }
 
 message ConnectReply {

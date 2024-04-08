@@ -1,6 +1,7 @@
 ﻿syntax = "proto3";
 
 option csharp_namespace = "Node";
+import "google/protobuf/wrappers.proto";
 
 service BlockHandlingApi {
     rpc Create(CreateBlockRequest) returns (CreateBlockReply);
@@ -34,6 +35,7 @@ message ReadBlockReply {
 
 message ListBlocksRequest {
   string apiKey = 1;
+  bool includeBody = 2;
 }
 
 message ListBlocksReply {

@@ -7,6 +7,11 @@ namespace core.Ledger
     public interface ILedger
     {
         int Id { get; }
+        /// <summary>
+        /// To support having multiple ledgers run by the same typology, each ledger
+        /// is differentiated by a name (which also becomes the directory the ledger
+        /// is written)
+        /// </summary>
         string Name { get; }
         /// <summary>
         /// root directory/folder where the ledgers are saved.
@@ -22,7 +27,7 @@ namespace core.Ledger
         // means
         ILedgerWriter Writer { get; }
         ILedgerReader Reader { get; }
-
+        
         /// <summary>
         /// Very important:  a ledger instance has to be valid to be used
         /// each ledger knows what it means to be valid, but in general it

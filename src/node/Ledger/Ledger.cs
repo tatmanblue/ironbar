@@ -2,6 +2,7 @@
 using System.IO;
 using Microsoft.Extensions.Logging;
 using core.Ledger;
+using Node.Interfaces;
 
 namespace Node.Ledger;
 
@@ -26,6 +27,11 @@ public class Ledger : ILedger
     /// with the master bootnode overall "overseer"
     /// </summary>
     public int Id { get; private set; } = 0;
+    /// <summary>
+    /// To support having multiple ledgers run by the same typology, each ledger
+    /// is differentiated by a name (which also becomes the directory the ledger
+    /// is written)
+    /// </summary>
     public string Name { get; private set; }
     /// <summary>
     /// root directory/folder where the ledgers are saved.  
@@ -41,7 +47,10 @@ public class Ledger : ILedger
 
     private string LedgerIndexFileName => System.IO.Path.Combine(LedgerPath, "index.txt");
 
-    private LedgerIndexManager Indexes { get; set; }
+    /// <summary>
+    /// TODO eeeccck!  
+    /// </summary>
+    public LedgerIndexManager Indexes { get; private set; }
 
     public Ledger(ILogger<Ledger> logger, int id, string name, string path)
     {

@@ -3,6 +3,7 @@ using System.Net;
 using core.Utility;
 using Microsoft.AspNetCore.Server.Kestrel.Core;
 using Node.General;
+using Node.Interfaces;
 using Node.Ledger;
 
 namespace Node
@@ -83,6 +84,7 @@ namespace Node
             {
                 ILogger<Program> logger = app.Services.GetRequiredService<ILogger<Program>>();
                 logger.LogCritical("Application is shutting down");
+                app.StopLedger();
             });
             
             

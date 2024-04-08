@@ -16,18 +16,17 @@ The main focus of this document is #1 above and notes for what will follow compl
 
 ## Version 0.0.3.0 Goal
 Version 0.0.3.0  
-To be able to create, prove and revoke credentials.  
+To be able to deploy one or more interoperable nodes to Azure, AWS and locally 
 
 ### Immeditate Steps:
-1. Nodes talk to each other and know when they are up/down (1/2 done client informs boot)
-2. Boot ledger reads/writes (done)
-3. Load Aries compatible agent as a plugin to ironbar with either [ping](https://github.com/hyperledger/aries-rfcs/tree/master/features/0048-trust-ping) or didcomm protocol working
+1. Fix interface mess.  Some things have interfaces some do not and those same "somes" are injected or not
+2. Nodes talk to each other and know when they are up/down (1/2 done client informs boot)
+3. Boot ledger reads/writes (done)
+
 
 ### To completion Steps
-4. Node validate and approve
-5. Load the credential plugin 
-6. Credential ledger reads/writes 
+1. Node validate and approve
 
 
-## Longer Term Goal
-TBD
+## Possible Extensions
+1. Load Aries compatible agent as a plugin to ironbar with either [ping](https://github.com/hyperledger/aries-rfcs/tree/master/features/0048-trust-ping) or didcomm protocol working

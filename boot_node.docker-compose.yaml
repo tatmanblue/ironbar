@@ -5,6 +5,8 @@ services:
     container_name: boot-node
     environment:
        IRONBAR_TYPE: boot
+       IRONBAR_WRITE_API_KEY: 829ABECB472A49FAAE8436730E3716EE
+       IRONBAR_READ_API_KEY: D6C9EF21D256495985269548D5FF70AA
     build:
       context: .
       dockerfile: boot_node.dockerfile

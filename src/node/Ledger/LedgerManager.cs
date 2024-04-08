@@ -2,18 +2,10 @@
 using Microsoft.Extensions.Logging;
 using core;
 using core.Ledger;
+using Node.Interfaces;
 using IConfiguration = core.IConfiguration;
 
 namespace Node.Ledger;
-
-/// <summary>
-/// So that we can use DI
-/// </summary>
-public interface ILedgerManager
-{
-    void Start();
-    void Stop();
-}
 
 /// <summary>
 /// Controller/orchestrator for interacting with ledgers
@@ -28,7 +20,7 @@ public class LedgerManager : ILedgerManager
     private IConfiguration options;
 
     // Instance allocated
-    private List<ILedger> _ledger = new List<ILedger>();
+    private List<Ledger> ledgers = new List<Ledger>();
     private bool _isOperational = false;
 
 
@@ -49,7 +41,7 @@ public class LedgerManager : ILedgerManager
         // 2 - open the master ledger secrets file and initalize the master ledger
         // TODO: make 'master' path name something else
         Ledger masterLedger = new Ledger(ledgerLogger, MASTER_LEDGER_ID, "master", options.DataPath);
-        _ledger.Add(masterLedger);
+        ledgers.Add(masterLedger);
 
         try
         {
@@ -65,7 +57,7 @@ public class LedgerManager : ILedgerManager
             {
                 // TODO: what would happen if the ledger missing is an error
                 // instead of new case of the ledger running?
-                logger.LogInformation($"ledger {masterLedger.Name} not found....initializing");
+                logger.LogCritical($"ledger {masterLedger.Name} not found....initializing");
                 masterLedger.Initialize();
                 masterLedger.Validate();
             }
@@ -92,8 +84,26 @@ public class LedgerManager : ILedgerManager
     public void Stop()
     {
         logger.LogInformation("LedgerManager is stopped");
-        // inform bootnode if not bootnode
-        // if bootnode, gotta let the others know
+    }
+
+    public void Create(string blockData)
+    {
+        throw new NotImplementedException();
+    }
+
+    public ILedgerPhysicalBlock GetBlock(int id)
+    {
+        throw new NotImplementedException();
+    }
+
+    public List<ILedgerIndex> ListAllBlocks()
+    {
+        // couple of problems here:
+        // 1 we started designing a system to have several ledgers 
+        // 2 did not complete building out the interfaces for it
+
+        List<LedgerIndex> indexes = ledgers[0].Indexes.ListAllIndexes();
         
+        return indexes.Cast<ILedgerIndex>().ToList();
     }
 }
