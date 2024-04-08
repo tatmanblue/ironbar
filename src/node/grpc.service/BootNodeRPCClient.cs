@@ -28,7 +28,7 @@ public class BootNodeRPCClient
             string localIP = $"{LocalIPAddress()}";                
             _logger.LogInformation($"Attempting connect to channel is: {clientNodeAddress} and my ip is {localIP}");
             var channel = GrpcChannel.ForAddress(clientNodeAddress);
-            var client = new BootNode.BootNodeClient(channel);
+            var client = new NodeToNodeConnection.NodeToNodeConnectionClient(channel);
             var reply = client.Disconnect(new DisconnectRequest() { ClientAddr = $"http://{localIP}:{_options.RPCPort}" });
             _logger.LogInformation("ChildNode reply: " + reply.Message);
 

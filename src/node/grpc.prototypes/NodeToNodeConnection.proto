@@ -2,7 +2,7 @@
 
 option csharp_namespace = "Node";
 
-service BootNode { 
+service NodeToNodeConnection { 
   // These are the real API
   // Connection endpoints
   rpc Connect(ConnectRequest) returns (ConnectReply);

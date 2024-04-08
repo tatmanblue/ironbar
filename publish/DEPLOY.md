@@ -7,7 +7,8 @@ Make sure you have docker running. [Docker](https://www.docker.com/products/dock
 Start boot node by running `docker-compose -f boot_node.docker-compose.yaml up --build`  
 
 ## Starting up a child_node
-Start a child node  by running `docker-compose -f child_node.docker-compose.yaml up --build`    
+Start a child node  by running `docker-compose -f child_node.docker-compose.yaml up --build`.  At this time, the docker compose artifacts do not manually
+create more child nodes and it has to be done manually.    
 
 ## If you want to run a two node system
 Run `docker-compose -f two_node.docker-compose.yaml up --build`    

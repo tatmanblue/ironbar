@@ -2,13 +2,13 @@
 using Node.General; // Ensure you have the correct namespace here
 
 
-namespace Node.grpc.service; 
+namespace Node.grpc.service;
 
 /// <summary>
 /// This is the bootnode listener for GRPC calls messages from child nodes.
 /// this service only runs on the bootnode
 /// </summary>
-public class BootNodeRPCService : BootNode.BootNodeBase
+public class BootNodeRPCService : NodeToNodeConnection.NodeToNodeConnectionBase
 {
     private readonly ILogger<BootNodeRPCService> logger;
     private ConnectionManager connectionManager;

@@ -12,14 +12,8 @@
 
   <ItemGroup>
     <None Remove="grpc.prototypes\Greeter.proto" />
-    <Protobuf Include="grpc.prototypes\boot_node.proto">
-      <GrpcServices>Both</GrpcServices>
-      <Access>Public</Access>
-      <ProtoCompile>True</ProtoCompile>
-      <CompileOutputs>True</CompileOutputs>
-      <OutputDir>obj\Debug\netcoreapp3.1\</OutputDir>
-      <Generator>MSBuild:Compile</Generator>
-    </Protobuf>
+    <None Remove="grpc.prototypes\NodeToNodeConnection.proto" />
+    <Protobuf Include="grpc.prototypes\NodeToNodeConnection.proto" />
   </ItemGroup>
 
   <ItemGroup>
