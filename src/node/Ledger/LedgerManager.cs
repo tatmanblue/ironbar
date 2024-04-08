@@ -7,7 +7,7 @@ using IConfiguration = core.IConfiguration;
 namespace Node.Ledger;
 
 /// <summary>
-/// So that we can use dotnet DI
+/// So that we can use DI
 /// </summary>
 public interface ILedgerManager
 {
@@ -47,7 +47,6 @@ public class LedgerManager : ILedgerManager
         // that this node is starting up the ledger logic
 
         // 2 - open the master ledger secrets file and initalize the master ledger
-        // TODO: get path from cmd + config and post fix master path
         // TODO: make 'master' path name something else
         Ledger masterLedger = new Ledger(ledgerLogger, MASTER_LEDGER_ID, "master", options.DataPath);
         _ledger.Add(masterLedger);

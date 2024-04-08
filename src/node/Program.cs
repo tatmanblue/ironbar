@@ -40,6 +40,7 @@ namespace Node
             else
             {
                 // initialization for boot node
+                builder.Services.AddTransient<ApiKeyManager>();
                 builder.Services.AddSingleton<ConnectionManager>();
                 builder.Services.AddTransient<BootNodeRPCClient>();
             }
@@ -68,7 +69,10 @@ namespace Node
             app.UseEndpoints(endpoints =>
             {
                 if (configurationOptions.IsBootNode)
+                {
                     endpoints.MapGrpcService<BootNodeRPCService>();
+                    endpoints.MapGrpcService<BootNodeBlockApiService>();
+                }
                 else
                     endpoints.MapGrpcService<ChildNodeService>();
             });
