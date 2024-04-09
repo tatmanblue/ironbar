@@ -40,5 +40,8 @@ namespace core.Ledger
         /// it gets over written
         /// </summary>
         void Initialize();
+
+        ILedgerPhysicalBlock AddBlock(ILedgerPhysicalBlock block);
+        ILedgerPhysicalBlock AddBlock(byte[] data);
     }
 }

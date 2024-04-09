@@ -76,21 +76,8 @@ public class Ledger : ILedger
             TransactionData = System.Text.Encoding.ASCII.GetBytes("ledger initialized"),
             SignBlock = new SignBlock()
         };
-        block.ComputeHash();
-
-        LedgerIndex index = Indexes.Add(block.Hash, block.TimeStamp);
-
-        if (block.Id != index.BlockId)
-            throw new LedgerException(Name, $"ID mismatch {block.Id}/{index.BlockId}");
-
-        // TODO: these next two steps are technically a transaction, need to determine what happens when
-        // one step fails.
-       _logger.LogInformation($"saving indexes to {LedgerIndexFileName}");
-        // step 1 save the block
-        // TODO: need rollback if Indexes.Save() fails
-        Writer.SaveBlock(block);
-        // step 2 save the index
-        Indexes.Save();
+        
+        AddBlock(block);
     }
 
     public void Validate()
@@ -133,6 +120,37 @@ public class Ledger : ILedger
             State = LedgerState.Nonfunctional;
             throw new LedgerException(Name, e);
         }
-        
+    }
+
+    public ILedgerPhysicalBlock AddBlock(ILedgerPhysicalBlock block)
+    {
+        block.ComputeHash();
+        LedgerIndex index = Indexes.Add(block.Hash, block.TimeStamp);
+
+        if (block.Id != index.BlockId)
+            throw new LedgerException(Name, $"ID mismatch {block.Id}/{index.BlockId} on AddBlock");
+
+        // TODO: these next two steps are technically a transaction, need to determine what happens when
+        // one step fails.
+        _logger.LogDebug($"saving indexes");
+        // step 1 save the block
+        // TODO: need rollback if Indexes.Save() fails
+        Writer.SaveBlock(block);
+        // step 2 save the index
+        Indexes.Save();
+
+        return block;
+    }
+
+    public ILedgerPhysicalBlock AddBlock(byte[] data)
+    {
+        PhysicalBlock block = new PhysicalBlock
+        {
+            Id = Indexes.GetNextBlockId(),
+            LedgerId = Id,
+            TransactionData = data,
+            SignBlock = new SignBlock()
+        };
+        return AddBlock(block);
     }
 }

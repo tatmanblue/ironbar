@@ -26,13 +26,21 @@ public class BootNodeBlockApiService : BlockHandlingApi.BlockHandlingApiBase
     {
         if (false == apiKeyManager.IsWriteAllowed(request.ApiKey))
             throw new ApiKeyManagerException();
-        throw new NotImplementedException();
+        
+        ILedgerPhysicalBlock block = ledgerManager.Create(request.BlockData);
+
+        return Task.FromResult(new CreateBlockReply
+        {
+            BlockId = block.Id.ToString(),
+            BlockHash = block.Hash
+        });
     }
     
     public override Task<ReadBlockReply> Read(ReadBlockRequest request, ServerCallContext context)
     {
         if (false == apiKeyManager.IsReadAllowed(request.ApiKey))
             throw new ApiKeyManagerException();        
+        
         throw new NotImplementedException();
     }
     

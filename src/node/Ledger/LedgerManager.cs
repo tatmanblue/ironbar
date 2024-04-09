@@ -86,9 +86,12 @@ public class LedgerManager : ILedgerManager
         logger.LogInformation("LedgerManager is stopped");
     }
 
-    public void Create(string blockData)
+    public ILedgerPhysicalBlock Create(string blockData)
     {
-        throw new NotImplementedException();
+        // couple of problems here:
+        // 1 we started designing a system to have several ledgers 
+        // 2 did not complete building out the interfaces for it
+        return ledgers[0].AddBlock(System.Text.Encoding.ASCII.GetBytes(blockData));
     }
 
     public ILedgerPhysicalBlock GetBlock(int id)

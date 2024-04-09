@@ -11,7 +11,7 @@ public interface ILedgerManager
     void Start();
     void Stop();
 
-    void Create(string blockData);
+    ILedgerPhysicalBlock Create(string blockData);
     ILedgerPhysicalBlock GetBlock(int id);
     List<ILedgerIndex> ListAllBlocks();
 }
