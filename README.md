@@ -1,10 +1,9 @@
 # Iron Bar
 
 Iron is synonym for chain and bar is a synonym for block.  This project
-is to develop an [SSI system](https://sovrin.org/faq/what-is-self-sovereign-identity/) using block chain that can be used in various scenerios
-like games.
-
-It's not limited to games, just an example.
+is to develop a [distributed ledger technologies](https://www.investopedia.com/terms/d/distributed-ledger-technology-dlt.asp) that can be used in various scenerios
+like games, or [SSI system](https://sovrin.org/faq/what-is-self-sovereign-identity/) and so on.  Given there will be a plug-in model for extending core behaviors, 
+the use cases are more varied.
 
 ### Architectural Goals
 1. Server components can run on any OS
@@ -86,10 +85,6 @@ This is to be worked out, if the project is to cointue.
 1. gRPC clients should be able to interact with iron bar directly.  
 2. A separate webapp with both UI and RESTful api that will also allow for consuming iron bar services.
 
-
-### Credentials
-The credentials project is an injectable service used by `nodes` to provide revokable credential services to `Iron Bar`.
-It also serves as a one example to the community how to extend `Iron Bar` functionality.
 
 ### The plug-in architecture
 Iron bar is designed to be extensible through plug-ins.  See the [plug-in doc](https://github.com/tatmanblue/ironbar/blob/master/docs/PLUGINS.md) for

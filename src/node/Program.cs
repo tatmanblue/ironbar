@@ -24,8 +24,12 @@ namespace Node
             
             var builder = WebApplication.CreateBuilder(args);
             
-            builder.Logging.AddConsole(); // Add Console logging provider
-            builder.Services.AddGrpc();
+            builder.Logging.AddConsole();
+            builder.Services.AddGrpc().AddServiceOptions<BootNodeBlockApiService>(options =>
+            {
+                // just a hard restriction on input specifically for creating blocks
+                options.MaxReceiveMessageSize = configurationOptions.GrpcMessageSizeLimit * 1024;
+            });
             
             builder.Services.AddSingleton<core.IConfiguration>(configurationOptions);
             // For now, all nodes have ledger manager,  there might be some differences in behavior
@@ -64,7 +68,6 @@ namespace Node
             
             ILogger<Program> l = app.Services.GetRequiredService<ILogger<Program>>();
             l.LogInformation($"Running as configured: {configurationOptions.ToString()}");
-            l.LogInformation($"this is '{IPAddress.Any.ToString()}'");
 
             app.UseRouting(); // Add this line to enable routing
             app.UseEndpoints(endpoints =>

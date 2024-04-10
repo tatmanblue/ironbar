@@ -30,6 +30,11 @@ public class ConfigurationOptions : IConfiguration
     public string PluginPath { get; set; } = "plugins";
     public string DataPath { get; set; } = "data";
     public bool IsBootNode { get; set; } = false;
+    /// <summary>
+    /// in KB. thus 1 is approximately 1K
+    /// this limit is put in place because deployment might be expensive 
+    /// </summary>
+    public int GrpcMessageSizeLimit { get; set; } = 1;
     
     [JsonConstructor]
     public ConfigurationOptions() {}
@@ -54,6 +59,7 @@ public class ConfigurationOptions : IConfiguration
         options.BootAddress = FromEnvOrDefault("IRONBAR_BOOT_SERVER", "http://localhost:50051");
         options.DataPath = FromEnvOrDefault("IRONBAR_DATA_PATH", "data");
         options.PluginPath = FromEnvOrDefault("IRONBAR_PLUGIN_PATH", "plugins");
+        options.GrpcMessageSizeLimit = FromEnvOrDefaultAsInt("IRONBAR_GRPC_LIMIT", "1");
         
         return options;
     }

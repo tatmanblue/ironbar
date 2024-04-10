@@ -4,6 +4,8 @@ updated: 2020.05.26
 
 ## Overview
 
+__Please note:__ the plugin support should be considered still very early design  
+
 ## Security
 
 Security will be permission based.  Plug-ins will request permissions and boot noode will grant permissions.
