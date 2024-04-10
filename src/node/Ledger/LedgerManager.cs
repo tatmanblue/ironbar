@@ -96,7 +96,10 @@ public class LedgerManager : ILedgerManager
 
     public ILedgerPhysicalBlock GetBlock(int id)
     {
-        throw new NotImplementedException();
+        // couple of problems here:
+        // 1 we started designing a system to have several ledgers 
+        // 2 did not complete building out the interfaces for it
+        return ledgers[0].ReadBlock(id);
     }
 
     public List<ILedgerIndex> ListAllBlocks()

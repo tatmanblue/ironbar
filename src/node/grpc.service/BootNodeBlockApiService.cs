@@ -29,6 +29,8 @@ public class BootNodeBlockApiService : BlockHandlingApi.BlockHandlingApiBase
         
         ILedgerPhysicalBlock block = ledgerManager.Create(request.BlockData);
 
+        logger.LogInformation($"Block created {block.Id}");
+        
         return Task.FromResult(new CreateBlockReply
         {
             BlockId = block.Id.ToString(),
@@ -41,22 +43,47 @@ public class BootNodeBlockApiService : BlockHandlingApi.BlockHandlingApiBase
         if (false == apiKeyManager.IsReadAllowed(request.ApiKey))
             throw new ApiKeyManagerException();        
         
-        throw new NotImplementedException();
+        bool readMessage = apiKeyManager.IsReadDetailsAllowed(request.ApiKey);
+        ILedgerPhysicalBlock pb = ledgerManager.GetBlock(Convert.ToInt32(request.BlockId));
+        string blockData = string.Empty;
+        if (readMessage)
+        {
+            blockData =  System.Text.Encoding.Default.GetString(pb.TransactionData);
+        }
+
+        ReadBlockReply result = new ReadBlockReply()
+        {
+            BlockId = pb.Id.ToString(),
+            BlockData = blockData,
+            BlockHash = pb.Hash
+        };
+
+        return Task.FromResult(result);
     }
     
     public override Task<ListBlocksReply> List(ListBlocksRequest request, ServerCallContext context)
     {
         if (false == apiKeyManager.IsReadAllowed(request.ApiKey))
             throw new ApiKeyManagerException();
-
+        
+        bool readMessage = apiKeyManager.IsReadDetailsAllowed(request.ApiKey) && request.IncludeBody;
+        
         ListBlocksReply reply = new ListBlocksReply();
         List<ILedgerIndex> indexes = ledgerManager.ListAllBlocks();
         foreach (ILedgerIndex entry in indexes)
         {
+            string blockData = string.Empty;
+            if (readMessage)
+            {
+                ILedgerPhysicalBlock pb = ledgerManager.GetBlock(entry.BlockId);
+                blockData =  System.Text.Encoding.Default.GetString(pb.TransactionData);
+            }
+            
             reply.Blocks.Add(new Block()
             {
                 BlockId = entry.BlockId.ToString(),
-                BlockHash = entry.Hash
+                BlockHash = entry.Hash,
+                BlockData = blockData
             });
         }
         

@@ -98,9 +98,7 @@ public class Ledger : ILedger
 
             // Validation Rule #2:  the boot record (which is the very first record) 
             // should be valid
-            PhysicalBlock rootBlock = Reader.GetLedgerPhysicalBlock(1, (data) => {
-                return PhysicalBlock.FromString(data);
-            }) as PhysicalBlock;
+            PhysicalBlock rootBlock = ReadBlock(1) as PhysicalBlock;
 
             LedgerIndex rootIndex = Indexes.GetIndex(1);
 
@@ -152,5 +150,13 @@ public class Ledger : ILedger
             SignBlock = new SignBlock()
         };
         return AddBlock(block);
+    }
+
+    public ILedgerPhysicalBlock ReadBlock(int blockId)
+    {
+        PhysicalBlock readBlock = Reader.GetLedgerPhysicalBlock(blockId, (data) => {
+            return PhysicalBlock.FromString(data);
+        }) as PhysicalBlock;
+        return readBlock;
     }
 }

@@ -65,10 +65,15 @@ public class LedgerIndexManager : ILedgerIndexManager
         isLoaded = true;
     }
 
+    /// <summary>
+    /// TODO: this implementation is very inefficient
+    /// </summary>
     public void Save()
     {
-        // TODO:  we are writing all longs so AppendText is not a good call
-        // eval and fix
+        // because we write all lines, have to delete the existing file first
+        if (true == File.Exists(IndexFile))
+            File.Delete(IndexFile);
+        
         using (StreamWriter sw = File.AppendText(IndexFile))
         {
             foreach (LedgerIndex idx in data)
