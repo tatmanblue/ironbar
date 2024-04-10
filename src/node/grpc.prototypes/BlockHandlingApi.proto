@@ -31,6 +31,8 @@ message ReadBlockReply {
   string status = 2;
   string blockHash = 3;
   string blockData = 4;
+  string nonce = 5;
+  string createdOn = 6;
 }
 
 message ListBlocksRequest {

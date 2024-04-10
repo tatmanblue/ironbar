@@ -21,7 +21,7 @@ public class PhysicalBlock : ILedgerPhysicalBlock
 
     public int LedgerId { get; internal set; }
 
-    public DateTime TimeStamp { get; private set; } = DateTime.Now;
+    public DateTime TimeStamp { get; private set; } = DateTime.Now.ToUniversalTime();
 
     public Nonce Nonce { get; private set; } = Nonce.New();
 

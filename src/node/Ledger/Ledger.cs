@@ -157,6 +157,7 @@ public class Ledger : ILedger
         PhysicalBlock readBlock = Reader.GetLedgerPhysicalBlock(blockId, (data) => {
             return PhysicalBlock.FromString(data);
         }) as PhysicalBlock;
+        
         return readBlock;
     }
 }

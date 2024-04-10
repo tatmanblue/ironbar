@@ -43,50 +43,66 @@ public class BootNodeBlockApiService : BlockHandlingApi.BlockHandlingApiBase
         if (false == apiKeyManager.IsReadAllowed(request.ApiKey))
             throw new ApiKeyManagerException();        
         
-        bool readMessage = apiKeyManager.IsReadDetailsAllowed(request.ApiKey);
-        ILedgerPhysicalBlock pb = ledgerManager.GetBlock(Convert.ToInt32(request.BlockId));
-        string blockData = string.Empty;
-        if (readMessage)
+        try 
         {
-            blockData =  System.Text.Encoding.Default.GetString(pb.TransactionData);
+            bool readMessage = apiKeyManager.IsReadDetailsAllowed(request.ApiKey);
+            ILedgerPhysicalBlock pb = ledgerManager.GetBlock(Convert.ToInt32(request.BlockId));
+            string blockData = string.Empty;
+            if (readMessage)
+            {
+                blockData =  System.Text.Encoding.Default.GetString(pb.TransactionData);
+            }
+
+            ReadBlockReply result = new ReadBlockReply()
+            {
+                BlockId = pb.Id.ToString(),
+                BlockData = blockData,
+                BlockHash = pb.Hash,
+                Nonce = pb.Nonce.ToString(),
+                CreatedOn = pb.TimeStamp.ToString("yyyy-MM-dd HH:mm:ss \"UTC\"zzz")
+            };
+
+            return Task.FromResult(result);
         }
-
-        ReadBlockReply result = new ReadBlockReply()
+        catch (FileNotFoundException)
         {
-            BlockId = pb.Id.ToString(),
-            BlockData = blockData,
-            BlockHash = pb.Hash
-        };
-
-        return Task.FromResult(result);
+            throw new BlockChainException();
+        }
     }
     
     public override Task<ListBlocksReply> List(ListBlocksRequest request, ServerCallContext context)
     {
         if (false == apiKeyManager.IsReadAllowed(request.ApiKey))
             throw new ApiKeyManagerException();
-        
-        bool readMessage = apiKeyManager.IsReadDetailsAllowed(request.ApiKey) && request.IncludeBody;
-        
-        ListBlocksReply reply = new ListBlocksReply();
-        List<ILedgerIndex> indexes = ledgerManager.ListAllBlocks();
-        foreach (ILedgerIndex entry in indexes)
+
+        try
         {
-            string blockData = string.Empty;
-            if (readMessage)
+            bool readMessage = apiKeyManager.IsReadDetailsAllowed(request.ApiKey) && request.IncludeBody;
+
+            ListBlocksReply reply = new ListBlocksReply();
+            List<ILedgerIndex> indexes = ledgerManager.ListAllBlocks();
+            foreach (ILedgerIndex entry in indexes)
             {
-                ILedgerPhysicalBlock pb = ledgerManager.GetBlock(entry.BlockId);
-                blockData =  System.Text.Encoding.Default.GetString(pb.TransactionData);
+                string blockData = string.Empty;
+                if (readMessage)
+                {
+                    ILedgerPhysicalBlock pb = ledgerManager.GetBlock(entry.BlockId);
+                    blockData = System.Text.Encoding.Default.GetString(pb.TransactionData);
+                }
+
+                reply.Blocks.Add(new Block()
+                {
+                    BlockId = entry.BlockId.ToString(),
+                    BlockHash = entry.Hash,
+                    BlockData = blockData
+                });
             }
-            
-            reply.Blocks.Add(new Block()
-            {
-                BlockId = entry.BlockId.ToString(),
-                BlockHash = entry.Hash,
-                BlockData = blockData
-            });
+
+            return Task.FromResult(reply);
         }
-        
-        return Task.FromResult(reply);
+        catch 
+        {
+            throw new BlockChainSystemException("List Blocks failed");
+        }
     }
 }

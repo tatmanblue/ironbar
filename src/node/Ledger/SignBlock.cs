@@ -12,5 +12,5 @@ public class SignBlock : ILedgerSignBlock
 
     public Nonce Nonce { get; private set; } = Nonce.New();
 
-    public DateTime DateStamp { get; private set; } = DateTime.Now;
+    public DateTime DateStamp { get; private set; } = DateTime.Now.ToUniversalTime();
 }
