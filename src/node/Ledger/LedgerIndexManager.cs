@@ -22,7 +22,7 @@ public class LedgerIndexManager : ILedgerIndexManager
         LedgerName = name;
     }
 
-    public LedgerIndex Add(string hash, DateTime created)
+    public LedgerIndex Add(string hash, DateTime created, BlockStatus status)
     {
         if (false == isLoaded)
             throw new LedgerException(LedgerName, "Attempted to add index before loading");
@@ -31,6 +31,7 @@ public class LedgerIndexManager : ILedgerIndexManager
         index.BlockId = GetNextBlockId();
         index.Created = created;
         index.Hash = hash;
+        index.Status = status;
 
         data.Add(index);
 

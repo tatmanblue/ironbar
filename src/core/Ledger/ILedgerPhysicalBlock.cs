@@ -19,7 +19,7 @@ namespace core.Ledger
         int ParentId { get; }
         /// <summary>
         /// ID of block that this block has a reference to.  Reference
-        /// being a change in the block data. Does not have to be sequential
+        /// implying a change in (or version of) the block data. Does not have to be sequential
         /// </summary>
         int ReferenceId { get; }
         string ParentHash { get; }

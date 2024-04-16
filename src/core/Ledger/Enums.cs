@@ -11,9 +11,11 @@ namespace core.Ledger
     /// </summary>
     public enum BlockStatus
     {
+        Error,                  
         Unconfirmed,
         Confirmed,
         Approved,
+        System,                                     // mainly for the index block
         Rejected
     }
 

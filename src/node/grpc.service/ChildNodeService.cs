@@ -75,20 +75,21 @@ public class ChildNodeService : IHostedService, IDisposable
     /// <param name="state"></param>
     private void DoWork(object state)
     {
-        logger.LogInformation($"ClientNodeService is state {serviceState}");
-
         switch (serviceState)
         {
             case ChildNodeServiceState.NotStarted:
             case ChildNodeServiceState.Halted:
+                logger.LogInformation($"ClientNodeService is state {serviceState}");
                 ConnectToBootNode();
                 break;
             case ChildNodeServiceState.ConnectingToBootNode:
             case ChildNodeServiceState.RetryingConnectionToBootNode:
+                logger.LogInformation($"ClientNodeService is state {serviceState}");
                 break;
             case ChildNodeServiceState.Running:
                 break;
             case ChildNodeServiceState.ShuttingDown:
+                logger.LogInformation($"ClientNodeService is state {serviceState}");
                 break;
             default:
                 throw new ChildNodeServiceException("an invalid state was encountered in ClientNodeService");

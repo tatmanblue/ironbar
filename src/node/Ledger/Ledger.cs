@@ -63,13 +63,16 @@ public class Ledger : ILedger
         Indexes = new LedgerIndexManager(Name, LedgerIndexFileName);
     }
 
+    /// <summary>
+    /// Bootnode is starting up for the first time so it needs to create the initial block
+    /// </summary>
     public void Initialize()
     {
         if (false == Directory.Exists(LedgerPath))
             Directory.CreateDirectory(LedgerPath);
 
         Indexes.Initialize();
-        PhysicalBlock block = new PhysicalBlock
+        PhysicalBlock block = new PhysicalBlock(BlockStatus.System)
         {
             Id = Indexes.GetNextBlockId(),
             LedgerId = Id,
@@ -104,6 +107,9 @@ public class Ledger : ILedger
 
             if (rootBlock.ComputeHash() != rootIndex.Hash)
                 throw new LedgerNotValidException($"block {rootBlock.Id}");
+            
+            if (rootBlock.Status != BlockStatus.System)
+                throw new LedgerNotValidException($"block {rootBlock.Id}");
 
             // Validation Rule #3: the last record should validate
 
@@ -123,7 +129,7 @@ public class Ledger : ILedger
     public ILedgerPhysicalBlock AddBlock(ILedgerPhysicalBlock block)
     {
         block.ComputeHash();
-        LedgerIndex index = Indexes.Add(block.Hash, block.TimeStamp);
+        LedgerIndex index = Indexes.Add(block.Hash, block.TimeStamp, block.Status);
 
         if (block.Id != index.BlockId)
             throw new LedgerException(Name, $"ID mismatch {block.Id}/{index.BlockId} on AddBlock");
@@ -140,9 +146,9 @@ public class Ledger : ILedger
         return block;
     }
 
-    public ILedgerPhysicalBlock AddBlock(byte[] data)
+    public ILedgerPhysicalBlock AddBlock(byte[] data, BlockStatus status = BlockStatus.Unconfirmed)
     {
-        PhysicalBlock block = new PhysicalBlock
+        PhysicalBlock block = new PhysicalBlock(status)
         {
             Id = Indexes.GetNextBlockId(),
             LedgerId = Id,

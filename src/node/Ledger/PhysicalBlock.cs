@@ -8,10 +8,6 @@ namespace Node.Ledger;
 
 public class PhysicalBlock : ILedgerPhysicalBlock
 {
-    protected internal PhysicalBlock()
-    {
-    }
-
     public int Id { get; internal set; } = -1;
 
     public int ParentId { get; internal set; } = -1;
@@ -33,6 +29,11 @@ public class PhysicalBlock : ILedgerPhysicalBlock
 
     public ILedgerSignBlock SignBlock { get; internal set; }
 
+    protected internal PhysicalBlock(BlockStatus status)
+    {
+        Status = status;
+    }
+    
     public string ComputeHash()
     {
         //
@@ -54,9 +55,9 @@ public class PhysicalBlock : ILedgerPhysicalBlock
     /// <returns></returns>
     private string HashString()
     {
-        // TODO: what about the sign block
+        // TODO: what about the sign block and Status
         string transactionDataString = Encoding.UTF8.GetString(TransactionData, 0, TransactionData.Length);
-        string objectString = $"{ParentId}:{Id}:{ParentHash}:{ReferenceId}:{LedgerId}:{TimeStamp}:{Nonce}:{transactionDataString}";
+        string objectString = $"{ParentId}:{Id}:{ParentHash}:{ReferenceId}:{LedgerId}:{TimeStamp}:{Nonce}{transactionDataString}";
 
         return objectString;
     }
@@ -65,7 +66,7 @@ public class PhysicalBlock : ILedgerPhysicalBlock
     {
         // TODO: what about the sign block
         string transactionDataString = Encoding.UTF8.GetString(TransactionData, 0, TransactionData.Length); 
-        string objectString = $"{ParentId}:{Id}:{ParentHash}:{ReferenceId}:{LedgerId}:{TimeStamp.ToFileDateTime()}:{Nonce}:{transactionDataString}:{Hash}";
+        string objectString = $"{ParentId}:{Id}:{ParentHash}:{ReferenceId}:{LedgerId}:{TimeStamp.ToFileDateTime()}:{Nonce}:{Status}:{transactionDataString}:{Hash}";
 
         return objectString;
     }
@@ -77,7 +78,9 @@ public class PhysicalBlock : ILedgerPhysicalBlock
         if (false == DateTime.TryParseExact(elements[5], Constants.DateTimeFormat, System.Globalization.CultureInfo.InvariantCulture, System.Globalization.DateTimeStyles.None, out timeStamp))
             throw new LedgerNotValidException($"{elements[5]}");
 
-        PhysicalBlock block = new PhysicalBlock()
+        BlockStatus status = Enum.Parse<BlockStatus>(elements[7]);
+
+        PhysicalBlock block = new PhysicalBlock(status)
         {
             ParentId = Convert.ToInt32(elements[0]),
             Id = Convert.ToInt32(elements[1]),
@@ -86,11 +89,11 @@ public class PhysicalBlock : ILedgerPhysicalBlock
             LedgerId = Convert.ToInt32(elements[4]),
             TimeStamp = timeStamp,
             Nonce = Nonce.FromString(elements[6]),
-            TransactionData = Encoding.UTF8.GetBytes(elements[7])
+            TransactionData = Encoding.UTF8.GetBytes(elements[8])
         };
 
         // compare hash from string with computedHash. they should match
-        if (elements[8] != block.ComputeHash())
+        if (elements[9] != block.ComputeHash())
             throw new LedgerNotValidException($"block {block.Id}");
 
         return block;

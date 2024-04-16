@@ -13,20 +13,29 @@ public class LedgerIndex : ILedgerIndex
     public int BlockId { get; internal set; }
     public string Hash { get; internal set; }
     public DateTime Created { get; internal set; }
+    
+    public BlockStatus Status { get; internal set; }
 
     public override string ToString()
     {
-        return $"{BlockId}:{Hash}:{Created.ToFileDateTime()}";
+        return $"{BlockId}:{Status}:{Hash}:{Created.ToFileDateTime()}";
     }
 
     public static LedgerIndex FromString(string data)
     {
-        string[] elements = data.Split(":");
+        const string SEPARATOR = ":";
+        const int BLOCK_ID = 0;
+        const int STATUS = 1;
+        const int HASH = 2;
+        const int DATE = 3;
+        
+        string[] elements = data.Split(SEPARATOR);
         LedgerIndex index = new LedgerIndex();
-        index.BlockId = Convert.ToInt32(elements[0]);
-        index.Hash = elements[1];
+        index.BlockId = Convert.ToInt32(elements[BLOCK_ID]);
+        index.Status = Enum.Parse<BlockStatus>(elements[STATUS]);
+        index.Hash = elements[HASH];
         DateTime expectedDate;
-        if (false == DateTime.TryParseExact(elements[2], Constants.DateTimeFormat, System.Globalization.CultureInfo.InvariantCulture, System.Globalization.DateTimeStyles.None, out expectedDate))
+        if (false == DateTime.TryParseExact(elements[DATE], Constants.DateTimeFormat, System.Globalization.CultureInfo.InvariantCulture, System.Globalization.DateTimeStyles.None, out expectedDate))
             throw new LedgerNotValidException($"index is not valid");
 
         index.Created = expectedDate;

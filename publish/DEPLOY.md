@@ -38,4 +38,7 @@ Copy boot_node.config tp /home/site
 ## Additional Notes
 https://devblogs.microsoft.com/aspnet/grpc-web-for-net-now-available/
 
-
+### aws notes
+aws configure
+aws ecr get-login-password --region us-west-2 | docker login --username {} --password-stdin {instance}
+docker push {instance}/{registry}:latest

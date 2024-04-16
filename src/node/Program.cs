@@ -16,6 +16,7 @@ namespace Node
         {
 
             ConfigurationOptions configurationOptions = ConfigurationOptions.FromEnvironment();
+            // TODO: perhaps this command line argument is now obsolete
             // only one command line argument is allowed and that is to the configuration file
             // it can be relative or literal path 
             if (1 == args.Length)
@@ -52,7 +53,7 @@ namespace Node
 
             builder.WebHost.ConfigureKestrel(kestrelOptions =>
             {
-                // TODO: should not use hardcoded Any.  There are more flexible options
+                // TODO: should not use hardcoded Any.  Find more flexible options
                 
                 // Setup a HTTP/2 endpoint without TLS.  This is for listening for GRPC calls
                 kestrelOptions.Listen(IPAddress.Any, configurationOptions.RPCPort, o => o.Protocols = HttpProtocols.Http2);

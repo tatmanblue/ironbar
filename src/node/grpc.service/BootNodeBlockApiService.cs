@@ -34,7 +34,8 @@ public class BootNodeBlockApiService : BlockHandlingApi.BlockHandlingApiBase
         return Task.FromResult(new CreateBlockReply
         {
             BlockId = block.Id.ToString(),
-            BlockHash = block.Hash
+            BlockHash = block.Hash,
+            Status = block.Status.ToString()
         });
     }
     
@@ -58,6 +59,7 @@ public class BootNodeBlockApiService : BlockHandlingApi.BlockHandlingApiBase
                 BlockId = pb.Id.ToString(),
                 BlockData = blockData,
                 BlockHash = pb.Hash,
+                Status = pb.Status.ToString(),
                 Nonce = pb.Nonce.ToString(),
                 CreatedOn = pb.TimeStamp.ToString("yyyy-MM-dd HH:mm:ss \"UTC\"zzz")
             };
@@ -94,7 +96,8 @@ public class BootNodeBlockApiService : BlockHandlingApi.BlockHandlingApiBase
                 {
                     BlockId = entry.BlockId.ToString(),
                     BlockHash = entry.Hash,
-                    BlockData = blockData
+                    Status = entry.Status.ToString(),
+                    BlockData = blockData,
                 });
             }
 
