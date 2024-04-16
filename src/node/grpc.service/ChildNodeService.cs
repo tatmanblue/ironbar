@@ -2,20 +2,6 @@
 
 namespace Node.grpc.service; 
 
-public enum ChildNodeServiceState
-{
-    NotStarted,
-    ConnectingToBootNode,
-    Running,
-    ShuttingDown,
-    Halted,
-    RetryingConnectionToBootNode,
-}
-
-public class ChildNodeServiceException : Exception
-{
-    public ChildNodeServiceException(string message) : base(message) { }
-}
 
 /// <summary>
 /// When a node is a client, this service starts up and runs as long as the service is functional

@@ -1,5 +1,6 @@
 ﻿using System.Net;
 using System.Net.Sockets;
+using core.Utility;
 using Grpc.Net.Client;
 using IConfiguration = core.IConfiguration;
 
@@ -19,13 +20,12 @@ public class BootNodeRPCClient
         _logger = logger;
     }
 
-
     public async Task<bool> SendShuttingDownMessage(string clientNodeAddress)
     {
         try
         {
             AppContext.SetSwitch("System.Net.Http.SocketsHttpHandler.Http2UnencryptedSupport", true);
-            string localIP = $"{LocalIPAddress()}";                
+            string localIP = $"{IpAddressUtility.LocalIP()}";                
             _logger.LogInformation($"Attempting connect to channel is: {clientNodeAddress} and my ip is {localIP}");
             var channel = GrpcChannel.ForAddress(clientNodeAddress);
             var client = new NodeToNodeConnection.NodeToNodeConnectionClient(channel);
@@ -47,17 +47,5 @@ public class BootNodeRPCClient
 
     }
 
-    private IPAddress LocalIPAddress()
-    {
-        if (!System.Net.NetworkInformation.NetworkInterface.GetIsNetworkAvailable())
-        {
-            return null;
-        }
 
-        IPHostEntry host = Dns.GetHostEntry(Dns.GetHostName());
-
-        return host
-            .AddressList
-            .FirstOrDefault(ip => ip.AddressFamily == AddressFamily.InterNetwork);
-    }
 }

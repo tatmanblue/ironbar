@@ -1,5 +1,6 @@
 ﻿using System.Net;
 using System.Net.Sockets;
+using core.Utility;
 using Grpc.Net.Client;
 using IConfiguration = core.IConfiguration;
 
@@ -30,7 +31,7 @@ public class ChildNodeRPCClient
             // TODO need to fix this and get actual address
             string localIP = "localhost";
             string bootNodeIP = $"{options.BootAddress}";
-            logger.LogInformation($"Attempting connect to channel is: {bootNodeIP} and my ip is {LocalIPAddress().ToString()}");
+            logger.LogInformation($"Attempting connect to channel is: {bootNodeIP} and my ip is {IpAddressUtility.LocalIP().ToString()}");
             var channel = GrpcChannel.ForAddress(bootNodeIP);
             var client = new NodeToNodeConnection.NodeToNodeConnectionClient(channel);
             var reply = client.Connect(new ConnectRequest() { ClientAddr = $"http://{localIP}:{options.RPCPort}" });
@@ -55,7 +56,7 @@ public class ChildNodeRPCClient
         try
         {
             AppContext.SetSwitch("System.Net.Http.SocketsHttpHandler.Http2UnencryptedSupport", true);
-            string localIP = $"{LocalIPAddress()}";
+            string localIP = $"{IpAddressUtility.LocalIP()}";
             string bootNodeIP = $"{options.BootAddress}";
             logger.LogInformation($"Attempting connect to channel is: {bootNodeIP} and my ip is {localIP}");
             var channel = GrpcChannel.ForAddress(bootNodeIP);
@@ -76,19 +77,5 @@ public class ChildNodeRPCClient
             return false;
         }
 
-    }
-
-    private IPAddress LocalIPAddress()
-    {
-        if (!System.Net.NetworkInformation.NetworkInterface.GetIsNetworkAvailable())
-        {
-            return null;
-        }
-
-        IPHostEntry host = Dns.GetHostEntry(Dns.GetHostName());
-
-        return host
-            .AddressList
-            .FirstOrDefault(ip => ip.AddressFamily == AddressFamily.InterNetwork);
     }
 }
