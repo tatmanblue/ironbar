@@ -53,7 +53,14 @@ public class ConfigurationOptions : IConfiguration
         ConfigurationOptions options = new ConfigurationOptions();
 
         if ("boot" == FromEnvOrDefault("IRONBAR_TYPE", "client"))
+        {
             options.IsBootNode = true;
+            options.FriendlyName = "boot";
+        }
+        else
+        {
+            options.FriendlyName = FromEnvOrDefault("IRONBAR_NODE_NAME", "node");
+        }
 
         options.RPCPort = FromEnvOrDefaultAsInt("IRONBAR_RPC_PORT", "50051");
         options.BootAddress = FromEnvOrDefault("IRONBAR_BOOT_SERVER", "http://localhost:50051");

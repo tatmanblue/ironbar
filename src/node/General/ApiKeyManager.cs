@@ -1,7 +1,13 @@
 ﻿namespace Node.General;
 
 /// <summary>
-/// Limit access to the block chain by some value
+/// Limit access to the block chain by some value.  There are
+/// 1 - write permissions
+/// 2 - general read permissions
+/// 3 - detailed read permissions
+///
+/// TODO prob should extract an interface and make consumers work against an interface so that
+/// TODO this can be extended at some point
 /// </summary>
 public class ApiKeyManager
 {

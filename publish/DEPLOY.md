@@ -38,7 +38,16 @@ Copy boot_node.config tp /home/site
 ## Additional Notes
 https://devblogs.microsoft.com/aspnet/grpc-web-for-net-now-available/
 
-### aws notes
-aws configure
-aws ecr get-login-password --region us-west-2 | docker login --username {} --password-stdin {instance}
-docker push {instance}/{registry}:latest
+# Running locally with no docker or Kubernetes
+
+1. Setup your environment.  Remember to changes these settings depending on if your running boot or child node. 
+```
+IRONBAR_BOOT_SERVER=http://localhost:50051
+IRONBAR_DATA_PATH=f:\temp\ironbar
+IRONBAR_RPC_PORT=50055
+IRONBAR_TYPE=child
+```
+2. run `node.exe`
+
+
+

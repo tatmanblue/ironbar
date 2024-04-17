@@ -7,7 +7,8 @@ using Node.Ledger; // Ensure you have the correct namespace here
 namespace Node.grpc.service;
 
 /// <summary>
-/// 
+/// IronBar consumers will create and retrieve blocks through BlockHandlingApi.proto definition
+/// which is handled here.
 /// </summary>
 public class BootNodeBlockApiService : BlockHandlingApi.BlockHandlingApiBase
 {

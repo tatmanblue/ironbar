@@ -15,13 +15,8 @@ namespace Node
         public static void Main(string[] args)
         {
 
+            BootNodeServicesEvents bootNodeServicesEvents;
             ConfigurationOptions configurationOptions = ConfigurationOptions.FromEnvironment();
-            // TODO: perhaps this command line argument is now obsolete
-            // only one command line argument is allowed and that is to the configuration file
-            // it can be relative or literal path 
-            if (1 == args.Length)
-                configurationOptions = JsonUtility.DeserializeFromFile<ConfigurationOptions>(args[0]);
-            
             
             var builder = WebApplication.CreateBuilder(args);
             
@@ -33,23 +28,17 @@ namespace Node
             });
             
             builder.Services.AddSingleton<core.IConfiguration>(configurationOptions);
+            
             // For now, all nodes have ledger manager,  there might be some differences in behavior
             // between a bootnode ledger manager and a child nodes ledger manager that will
             // make us want to split this out
             builder.Services.AddSingleton<ILedgerManager, LedgerManager>();
+            
             if (false == configurationOptions.IsBootNode)
-            {
-                // initialization for child nodes
-                builder.Services.AddTransient<ChildNodeRPCClient>();
-                builder.Services.AddHostedService<ChildNodeService>();
-            }
+                builder.ConfigureClientNodeServices(configurationOptions);                
             else
-            {
-                // initialization for boot node
-                builder.Services.AddTransient<ApiKeyManager>();
-                builder.Services.AddSingleton<ConnectionManager>();
-                builder.Services.AddTransient<BootNodeRPCClient>();
-            }
+                builder.ConfigureBootNodeServices(configurationOptions);
+            
 
             builder.WebHost.ConfigureKestrel(kestrelOptions =>
             {

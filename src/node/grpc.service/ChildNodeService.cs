@@ -4,8 +4,11 @@ namespace Node.grpc.service;
 
 
 /// <summary>
-/// When a node is a client, this service starts up and runs as long as the service is functional
-/// It is used to keep in touch with the boot node, adjusting state according to connectivity with bootnode
+/// TODO this service is not part of the GRPC implementation but it does consume GRPC implementations
+///
+/// It is effectively a state manager for a client node.  When a node is a client, this service starts up
+/// and runs as long as the service is functional and adjusts state based on its ability to communicate with
+/// the bootnode. 
 /// </summary>
 public class ChildNodeService : IHostedService, IDisposable
 {

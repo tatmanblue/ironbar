@@ -1,5 +1,6 @@
 ﻿using Grpc.Core;
-using Node.General; // Ensure you have the correct namespace here
+using Node.General;
+using Node.Interfaces; // Ensure you have the correct namespace here
 
 
 namespace Node.grpc.service;
@@ -11,18 +12,26 @@ namespace Node.grpc.service;
 public class BootNodeRPCService : NodeToNodeConnection.NodeToNodeConnectionBase
 {
     private readonly ILogger<BootNodeRPCService> logger;
+    private readonly IServicesEventPub eventPub;
     private ConnectionManager connectionManager;
-    public BootNodeRPCService(ConnectionManager connectionManager, ILogger<BootNodeRPCService> logger)
+    
+    public BootNodeRPCService(ConnectionManager connectionManager, ILogger<BootNodeRPCService> logger, IServicesEventPub eventPub)
     {
         this.connectionManager = connectionManager;
         this.logger = logger;
+        this.eventPub = eventPub;
     }
-    
+
     #region connection APIS
     public override Task<ConnectReply> Connect(ConnectRequest request, ServerCallContext context)
     {
         logger.LogInformation($"Connection established from {request.ClientAddr} {context.Host} {context.Method} {context.Peer}");
-        connectionManager.AddNewChildNode(new ChildNodeConnection { Address = request.ClientAddr });
+
+        ChildNodeConnection connection = new ChildNodeConnection { Address = request.ClientAddr };
+        connectionManager.AddNewChildNode(connection);
+        
+        eventPub.FireClientConnected(connection);
+        
         return Task.FromResult(new ConnectReply
         {
             Message = $"Hello {request.FriendlyName}"

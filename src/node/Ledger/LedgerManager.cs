@@ -22,25 +22,25 @@ public class LedgerManager : ILedgerManager
     // Instance allocated
     private List<Ledger> ledgers = new List<Ledger>();
     private bool _isOperational = false;
+    private IServicesEventPub eventPub;
 
 
-    public LedgerManager(ILogger<LedgerManager> logger, ILogger<Ledger> ledgerLogger, IConfiguration options)
+    public LedgerManager(ILogger<LedgerManager> logger, ILogger<Ledger> ledgerLogger, IConfiguration options, IServicesEventPub eventPub)
     {
         this.logger = logger;
         this.ledgerLogger = ledgerLogger;
         this.options = options;
+        this.eventPub = eventPub;
+        logger.LogInformation("Ledger Manager is now active");
     }
 
     public void Start()
     {
         logger.LogInformation($"LedgerManager is started, using '{System.IO.Path.GetFullPath(options.DataPath)}' for data path");
 
-        // 1 - inform bootnode, if this instance is not the bootnode,
-        // that this node is starting up the ledger logic
 
-        // 2 - open the master ledger secrets file and initalize the master ledger
-        // TODO: make 'master' path name something else
-        Ledger masterLedger = new Ledger(ledgerLogger, MASTER_LEDGER_ID, "master", options.DataPath);
+        // 2 - open the master ledger secrets file and initialize the master ledger
+        Ledger masterLedger = new Ledger(ledgerLogger, MASTER_LEDGER_ID, options.FriendlyName, options.DataPath);
         ledgers.Add(masterLedger);
 
         try
@@ -91,7 +91,12 @@ public class LedgerManager : ILedgerManager
         // couple of problems here:
         // 1 we started designing a system to have several ledgers 
         // 2 did not complete building out the interfaces for it
-        return ledgers[0].AddBlock(System.Text.Encoding.ASCII.GetBytes(blockData));
+        
+        ILedgerPhysicalBlock pb = ledgers[0].AddBlock(System.Text.Encoding.ASCII.GetBytes(blockData));
+        
+        eventPub?.FireBlockCreated(pb);
+
+        return pb;
     }
 
     public ILedgerPhysicalBlock GetBlock(int id)

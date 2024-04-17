@@ -7,8 +7,8 @@ using IConfiguration = core.IConfiguration;
 namespace Node.grpc.service; 
 
 /// <summary>
-/// this is currently used to use GRPC generated code for a child node to talk
-/// to the bootnode.  It is used by ClientNodeService
+/// ChildNodeRPCClient is used by child nodes to communicate with a bootnode
+/// through the NodeToNodeConnection.proto definition  
 /// TODO: not sure but maybe this should be consolidated into ClientNodeService
 /// TODO: interface so it can be mocked/injected
 /// </summary>

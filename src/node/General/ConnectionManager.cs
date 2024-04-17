@@ -6,15 +6,6 @@ using Node.grpc.service;
 namespace Node.General;
 
 /// <summary>
-/// Data about a child node.  It will be expanded as there is more data needed
-/// </summary>
-public class ChildNodeConnection
-{
-    public string Name { get; set; }
-    public string Address { get; set; }
-}
-
-/// <summary>
 /// Used by boot node, its responsible for maintaining data on child nodes connected in
 /// to boot node (aka the network).  Maintains:
 /// 1) child node states

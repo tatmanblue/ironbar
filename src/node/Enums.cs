@@ -1,6 +1,3 @@
 ﻿namespace Node;
 
-public class Enums
-{
-    
-}
+// project wide enums go here
