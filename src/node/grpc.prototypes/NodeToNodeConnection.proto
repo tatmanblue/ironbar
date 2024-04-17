@@ -1,12 +1,21 @@
 ﻿syntax = "proto3";
 
 option csharp_namespace = "Node";
+import "google/protobuf/empty.proto";
+import "google/protobuf/wrappers.proto";
 
 service NodeToNodeConnection { 
-  // These are the real API
+  // These are the real API.  Some endpoints are client node to boot node
+  // and some endpoints are the opposite.  
+  // TODO: should we name these by use or even separate them into new a proto
+  
   // Connection endpoints
   rpc Connect(ConnectRequest) returns (ConnectReply);
   rpc Disconnect(DisconnectRequest) returns (DisconnectReply);
+  
+  // block messages
+  rpc SyncIndex(IndexRequest) returns (google.protobuf.Empty);
+  rpc BlockCreated(BlockCreatedRequest) returns (google.protobuf.Empty);
 }
 
 message ConnectRequest {
@@ -26,4 +35,14 @@ message DisconnectRequest {
 
 message DisconnectReply {
   string message = 1;
+}
+
+message IndexRequest {
+  repeated string indexes = 1;
+  string verification = 2;
+}
+
+message BlockCreatedRequest {
+  string block = 1;
+  string verification = 2;
 }

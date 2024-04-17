@@ -1,5 +1,6 @@
 
 using System.Net;
+using core.Ledger;
 using core.Utility;
 using Microsoft.AspNetCore.Server.Kestrel.Core;
 using Node.General;
@@ -33,6 +34,7 @@ namespace Node
             // between a bootnode ledger manager and a child nodes ledger manager that will
             // make us want to split this out
             builder.Services.AddSingleton<ILedgerManager, LedgerManager>();
+            builder.Services.AddSingleton<ILedgerIndexFactory, TypeFactory>();
             
             if (false == configurationOptions.IsBootNode)
                 builder.ConfigureClientNodeServices(configurationOptions);                
@@ -68,7 +70,10 @@ namespace Node
                     endpoints.MapGrpcService<BootNodeBlockApiService>();
                 }
                 else
+                {
                     endpoints.MapGrpcService<ChildNodeService>();
+                    endpoints.MapGrpcService<ChildNodeRPCService>();
+                }
             });
             
             app.StartLedger();

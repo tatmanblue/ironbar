@@ -50,7 +50,7 @@ public class Ledger : ILedger
     /// <summary>
     /// TODO eeeccck!  
     /// </summary>
-    public LedgerIndexManager Indexes { get; private set; }
+    public ILedgerIndexManager Indexes { get; private set; }
 
     public Ledger(ILogger<Ledger> logger, int id, string name, string path)
     {
@@ -63,26 +63,40 @@ public class Ledger : ILedger
         Indexes = new LedgerIndexManager(Name, LedgerIndexFileName);
     }
 
+    public void InitializeStorage()
+    {
+        if (false == Directory.Exists(LedgerPath))
+            Directory.CreateDirectory(LedgerPath);
+    }
+    
     /// <summary>
     /// Bootnode is starting up for the first time so it needs to create the initial block
     /// </summary>
     public void Initialize()
     {
-        if (false == Directory.Exists(LedgerPath))
-            Directory.CreateDirectory(LedgerPath);
+        InitializeStorage();
 
         Indexes.Initialize();
         PhysicalBlock block = new PhysicalBlock(BlockStatus.System)
         {
             Id = Indexes.GetNextBlockId(),
             LedgerId = Id,
-            TransactionData = System.Text.Encoding.ASCII.GetBytes("ledger initialized"),
+            TransactionData = System.Text.Encoding.ASCII.GetBytes("boot ledger initialized"),
             SignBlock = new SignBlock()
         };
         
         AddBlock(block);
     }
 
+    /// <summary>
+    /// Theres 2 levels of validation
+    /// BootNode needs to run a more thorough validation
+    ///
+    /// For now child nodes do not
+    /// </summary>
+    /// <exception cref="LedgerNotFoundException"></exception>
+    /// <exception cref="LedgerNotValidException"></exception>
+    /// <exception cref="LedgerException"></exception>
     public void Validate()
     {
         State = LedgerState.StartingUp;
@@ -98,12 +112,12 @@ public class Ledger : ILedger
             // the number of blocks saved on disk
             if (Reader.CountBlocks() != Indexes.Count())
                 throw new LedgerNotValidException($"{Reader.CountBlocks()} != {Indexes.Count()}");
-
+            
             // Validation Rule #2:  the boot record (which is the very first record) 
             // should be valid
             PhysicalBlock rootBlock = ReadBlock(1) as PhysicalBlock;
 
-            LedgerIndex rootIndex = Indexes.GetIndex(1);
+            ILedgerIndex rootIndex = Indexes.GetIndex(1);
 
             if (rootBlock.ComputeHash() != rootIndex.Hash)
                 throw new LedgerNotValidException($"block {rootBlock.Id}");
@@ -129,7 +143,7 @@ public class Ledger : ILedger
     public ILedgerPhysicalBlock AddBlock(ILedgerPhysicalBlock block)
     {
         block.ComputeHash();
-        LedgerIndex index = Indexes.Add(block.Hash, block.TimeStamp, block.Status);
+        ILedgerIndex index = Indexes.Add(block.Hash, block.TimeStamp, block.Status);
 
         if (block.Id != index.BlockId)
             throw new LedgerException(Name, $"ID mismatch {block.Id}/{index.BlockId} on AddBlock");

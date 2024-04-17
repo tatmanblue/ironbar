@@ -10,7 +10,7 @@ namespace Node.Ledger;
 /// </summary>
 public class LedgerIndexManager : ILedgerIndexManager
 {
-    private List<LedgerIndex> data = new List<LedgerIndex>();
+    private List<ILedgerIndex> data = new List<ILedgerIndex>();
     private bool isLoaded = false;
 
     public string IndexFile { get; private set; }
@@ -22,7 +22,7 @@ public class LedgerIndexManager : ILedgerIndexManager
         LedgerName = name;
     }
 
-    public LedgerIndex Add(string hash, DateTime created, BlockStatus status)
+    public ILedgerIndex Add(string hash, DateTime created, BlockStatus status)
     {
         if (false == isLoaded)
             throw new LedgerException(LedgerName, "Attempted to add index before loading");
@@ -52,6 +52,21 @@ public class LedgerIndexManager : ILedgerIndexManager
             File.Delete(IndexFile);
 
         isLoaded = true;
+    }
+
+    public void InitializeFromSync(List<ILedgerIndex> rows)
+    {
+        if (true == isLoaded)
+            throw new LedgerNotValidException("Ledger Index is already initialized");
+        
+        data.Clear();
+        foreach(ILedgerIndex line in rows)
+        {
+            data.Add(line);
+        }
+        isLoaded = true;
+        
+        Save();
     }
 
     public void Load()
@@ -89,16 +104,16 @@ public class LedgerIndexManager : ILedgerIndexManager
 
     public int GetNextBlockId()
     {
-        LedgerIndex mostrecent = data.OrderByDescending(u => u.BlockId).FirstOrDefault();
+        ILedgerIndex mostrecent = data.OrderByDescending(u => u.BlockId).FirstOrDefault();
         return (mostrecent == null ? 0 : mostrecent.BlockId) + 1;
     }
 
-    public LedgerIndex GetIndex(int id)
+    public ILedgerIndex GetIndex(int id)
     {
         return data.First(e => e.BlockId == id);
     }
 
-    public List<LedgerIndex> ListAllIndexes()
+    public List<ILedgerIndex> ListAllIndexes()
     {
         return data.OrderBy(x => x.BlockId).ToList();
     }

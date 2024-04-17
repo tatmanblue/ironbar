@@ -1,10 +1,21 @@
-﻿using Node.Ledger;
+﻿using core.Ledger;
+using Node.Ledger;
 
 namespace Node.Interfaces;
 
+/// <summary>
+/// 
+/// </summary>
 public interface ILedgerIndexManager
 {
-    LedgerIndex GetIndex(int id);
-    List<LedgerIndex> ListAllIndexes();
+    void Initialize();
+    void InitializeFromSync(List<ILedgerIndex> rows);
+    void Load();
+    void Save();
+    int Count();
+    int GetNextBlockId();
+    ILedgerIndex Add(string hash, DateTime TimeStamp, BlockStatus status);
+    ILedgerIndex GetIndex(int id);
+    List<ILedgerIndex> ListAllIndexes();
 
 }

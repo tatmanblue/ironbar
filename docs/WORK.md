@@ -20,7 +20,7 @@ To be able to deploy one or more interoperable nodes to Azure, AWS and locally
 
 ### Immeditate Steps:
 1. Fix interface mess.  Some things have interfaces some do not and those same "somes" are injected or not
-2. Nodes talk to each other and know when they are up/down (1/2 done client informs boot)
+2. Nodes talk to each other and know when they are up/down (done)
 3. Boot ledger reads/writes (done)
 
 

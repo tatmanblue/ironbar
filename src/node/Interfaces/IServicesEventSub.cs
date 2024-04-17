@@ -17,4 +17,10 @@ public interface IServicesEventSub
     /// be processed
     /// </summary>
     event BlockCreated OnBlockCreated;
+    /// <summary>
+    /// 
+    /// </summary>
+    event IndexInitialized OnIndexInitialized;
+
+    event NotifyChildOfShutdown OnShutdown;
 }

@@ -24,9 +24,25 @@ public class BootNodeServicesEvents : IServicesEventPub, IServicesEventSub
         nc(connection);
     }
 
+    public virtual void FireServiceShutdown(ChildNodeConnection cn)
+    {
+        NotifyChildOfShutdown shutdown = OnShutdown;
+        if (null == shutdown) return;
+        shutdown(cn);
+    }
+
+    public virtual void FireIndexInitialized()
+    {
+        IndexInitialized indexInitialized = OnIndexInitialized;
+        if (null == indexInitialized) return;
+        indexInitialized();
+    }
+
     #region ILedgerEventSub
     public event BlockCreated OnBlockCreated;
     public event ChildNodeConnected OnChildNodeConnected;
+    public event IndexInitialized OnIndexInitialized;
+    public event NotifyChildOfShutdown OnShutdown;
     #endregion
 }
 #endregion
@@ -43,6 +59,10 @@ public class ClientNodeServicesEvents : BootNodeServicesEvents
     }
     
     public override void FireClientConnected(ChildNodeConnection connection)
+    {
+    }
+    
+    public override void FireServiceShutdown(ChildNodeConnection cn)
     {
     }
 }

@@ -8,6 +8,9 @@ namespace Node.grpc.service;
 /// <summary>
 /// This is the bootnode listener for GRPC calls messages from child nodes.
 /// this service only runs on the bootnode
+///
+/// The counter part for this, aka a listener for GRPC calls from bootnode, is
+/// the ChildNodeRPCService implementation
 /// </summary>
 public class BootNodeRPCService : NodeToNodeConnection.NodeToNodeConnectionBase
 {

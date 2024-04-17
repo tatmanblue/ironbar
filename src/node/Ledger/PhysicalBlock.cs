@@ -2,6 +2,7 @@
 using System.Security.Cryptography;
 using System.Text;
 using core.Ledger;
+using core.Security;
 using core.Utility;
 
 namespace Node.Ledger;
@@ -21,7 +22,10 @@ public class PhysicalBlock : ILedgerPhysicalBlock
 
     public Nonce Nonce { get; private set; } = Nonce.New();
 
-    public string Hash { get; private set; }
+    public string Hash
+    {
+        get { return ComputeHash(); }
+    }
 
     public byte[] TransactionData { get; internal set; }
 
@@ -36,17 +40,7 @@ public class PhysicalBlock : ILedgerPhysicalBlock
     
     public string ComputeHash()
     {
-        //
-        // https://docs.microsoft.com/en-us/dotnet/api/system.security.cryptography.hashalgorithm.computehash?view=netframework-4.8
-        //
-        using (SHA256 sha256Hash = SHA256.Create())
-        {
-            // Convert the input string to a byte array and compute the hash.
-            byte[] data = sha256Hash.ComputeHash(Encoding.UTF8.GetBytes(this.HashString()));
-
-            this.Hash = data.ToHexString();
-            return this.Hash;
-        }
+        return HashUtility.ComputeHash(HashString());
     }
 
     /// <summary>
@@ -57,15 +51,15 @@ public class PhysicalBlock : ILedgerPhysicalBlock
     {
         // TODO: what about the sign block and Status
         string transactionDataString = Encoding.UTF8.GetString(TransactionData, 0, TransactionData.Length);
-        string objectString = $"{ParentId}:{Id}:{ParentHash}:{ReferenceId}:{LedgerId}:{TimeStamp}:{Nonce}{transactionDataString}";
+        string objectString = $"{ParentId}:{Id}:{ParentHash}:{ReferenceId}:{LedgerId}:{TimeStamp}:{Nonce}:{transactionDataString}";
 
         return objectString;
     }
 
     public override string ToString()
     {
-        // TODO: what about the sign block
         string transactionDataString = Encoding.UTF8.GetString(TransactionData, 0, TransactionData.Length); 
+        // TODO: what about the sign block
         string objectString = $"{ParentId}:{Id}:{ParentHash}:{ReferenceId}:{LedgerId}:{TimeStamp.ToFileDateTime()}:{Nonce}:{Status}:{transactionDataString}:{Hash}";
 
         return objectString;

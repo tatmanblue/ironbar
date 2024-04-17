@@ -2,6 +2,7 @@
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Node.grpc.service;
+using Node.Interfaces;
 
 namespace Node.General;
 
@@ -13,14 +14,25 @@ namespace Node.General;
 /// </summary>
 public class ConnectionManager
 {
-    private readonly List<ChildNodeConnection> _children = new List<ChildNodeConnection>();
-    private readonly ILogger<ConnectionManager> _logger;
-    private readonly BootNodeRPCClient _client;
+    private readonly List<ChildNodeConnection> children = new List<ChildNodeConnection>();
+    private readonly ILogger<ConnectionManager> logger;
+    private readonly BootNodeRPCClient client;
+    private readonly IServicesEventPub servicesEventPub;
 
-    public ConnectionManager(BootNodeRPCClient client, IHostApplicationLifetime lifeTime, ILogger<ConnectionManager> logger)
+    /// <summary>
+    /// TODO There is an ugly circular dependency with BootNodeRPCClient
+    /// </summary>
+    /// <param name="client"></param>
+    /// <param name="lifeTime"></param>
+    /// <param name="logger"></param>
+    public ConnectionManager(BootNodeRPCClient client, 
+        IHostApplicationLifetime lifeTime, 
+        ILogger<ConnectionManager> logger,
+        IServicesEventPub servicesEventPub)
     {
-        _client = client;
-        _logger = logger;
+        this.client = client;
+        this.logger = logger;
+        this.servicesEventPub = servicesEventPub;
 
         lifeTime.ApplicationStopping.Register(() => {
             HandleServiceShutdown();
@@ -29,26 +41,21 @@ public class ConnectionManager
 
     public void AddNewChildNode(ChildNodeConnection child)
     {
-        _children.Add(child);
+        children.Add(child);
     }
 
     public void RemoveChildNode(string address)
     {
-        ChildNodeConnection child = _children.Find(c => c.Address == address);
-        _children.Remove(child);
+        ChildNodeConnection child = children.Find(c => c.Address == address);
+        children.Remove(child);
     }
 
     public void HandleServiceShutdown()
     {
-        _logger.LogInformation("ConnectionManager handling application shut down");
-        foreach(ChildNodeConnection child in _children)
+        logger.LogInformation("ConnectionManager handling application shut down");
+        foreach(ChildNodeConnection child in children)
         {
-            // ok to not await this call as we want to shutdown messages sent as quickly as possible.  
-            // errors should not affect continuation.  we are in shutdown and its more important
-            // this completes as fast as possible
-#pragma warning disable 4014
-            _client.SendShuttingDownMessage(child.Address);
-#pragma warning restore 4014
+            servicesEventPub.FireServiceShutdown(child);
         }
     }
 }

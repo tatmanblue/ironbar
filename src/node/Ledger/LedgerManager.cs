@@ -2,6 +2,7 @@
 using Microsoft.Extensions.Logging;
 using core;
 using core.Ledger;
+using core.Security;
 using Node.Interfaces;
 using IConfiguration = core.IConfiguration;
 
@@ -16,8 +17,7 @@ public class LedgerManager : ILedgerManager
 
     // Dependency Injected
     private readonly ILogger<LedgerManager> logger;
-    private readonly ILogger<Ledger> ledgerLogger;
-    private IConfiguration options;
+    private readonly ILedgerIndexFactory ledgerIndexFactory;
 
     // Instance allocated
     private List<Ledger> ledgers = new List<Ledger>();
@@ -25,21 +25,29 @@ public class LedgerManager : ILedgerManager
     private IServicesEventPub eventPub;
 
 
-    public LedgerManager(ILogger<LedgerManager> logger, ILogger<Ledger> ledgerLogger, IConfiguration options, IServicesEventPub eventPub)
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="logger"></param>
+    /// <param name="options"></param>
+    /// <param name="eventPub"></param>
+    public LedgerManager(ILogger<LedgerManager> logger, ILedgerIndexFactory ledgerIndexFactory, IServicesEventPub eventPub)
     {
         this.logger = logger;
-        this.ledgerLogger = ledgerLogger;
-        this.options = options;
         this.eventPub = eventPub;
+        this.ledgerIndexFactory = ledgerIndexFactory;
         logger.LogInformation("Ledger Manager is now active");
     }
 
-    public void Start()
+    public void Start(IServiceProvider serviceProvider)
     {
+        IConfiguration options = serviceProvider.GetRequiredService<IConfiguration>();
+        
         logger.LogInformation($"LedgerManager is started, using '{System.IO.Path.GetFullPath(options.DataPath)}' for data path");
 
+        ILogger<Ledger> ledgerLogger = serviceProvider.GetRequiredService<ILogger<Ledger>>();
 
-        // 2 - open the master ledger secrets file and initialize the master ledger
+        // 2 - open the master ledger index file and initialize the master ledger
         Ledger masterLedger = new Ledger(ledgerLogger, MASTER_LEDGER_ID, options.FriendlyName, options.DataPath);
         ledgers.Add(masterLedger);
 
@@ -47,19 +55,23 @@ public class LedgerManager : ILedgerManager
         {
             try
             {
-                // 3 - validate it
-                // 4 - add new checkpoint record
-                // 5 - save it
-                // 6 - set status to OK
                 masterLedger.Validate();
             }
             catch (LedgerNotFoundException)
             {
-                // TODO: what would happen if the ledger missing is an error
-                // instead of new case of the ledger running?
-                logger.LogCritical($"ledger {masterLedger.Name} not found....initializing");
-                masterLedger.Initialize();
-                masterLedger.Validate();
+                if (true == options.IsBootNode)
+                {
+                    // TODO: what would happen if the ledger missing is an error
+                    // instead of new case of the ledger running?
+                    logger.LogCritical($"ledger {masterLedger.Name} not found....initializing");
+                    masterLedger.Initialize();
+                    masterLedger.Validate();
+                }
+                else
+                {
+                    logger.LogCritical($"ledger {masterLedger.Name} not found....syncing with boot node");
+                    masterLedger.InitializeStorage();
+                }
             }
 
             _isOperational = true;
@@ -113,8 +125,32 @@ public class LedgerManager : ILedgerManager
         // 1 we started designing a system to have several ledgers 
         // 2 did not complete building out the interfaces for it
 
-        List<LedgerIndex> indexes = ledgers[0].Indexes.ListAllIndexes();
+        List<ILedgerIndex> indexes = ledgers[0].Indexes.ListAllIndexes();
         
-        return indexes.Cast<ILedgerIndex>().ToList();
+        return indexes;
+    }
+
+    public void SyncIndex(IList<string> rows, string verification)
+    {
+        string runningProof = string.Empty;
+        int count = 1;
+        List<ILedgerIndex> indexes = new List<ILedgerIndex>();
+        foreach (string idx in rows)
+        {
+            logger.LogInformation($"{count}: {idx}");
+            ILedgerIndex ledgerIndex = ledgerIndexFactory.CreateLedgerIndex(idx);
+            indexes.Add(ledgerIndex);
+            runningProof = HashUtility.ComputeHash($"{runningProof}{ledgerIndex.Hash}");
+            
+            count++;
+        }
+
+        logger.LogDebug($"Proof hash: {runningProof}");
+        if (0 != runningProof.CompareTo(verification))
+            throw new BlockChainException("Index sync failed");
+
+        ledgers[0].Indexes.InitializeFromSync(indexes);
+        
+        eventPub.FireIndexInitialized();
     }
 }

@@ -36,10 +36,16 @@ namespace core.Ledger
         void Validate();
 
         /// <summary>
-        /// This creates a whole new ledger.  Danger! if the ledger already exists
+        /// This creates a whole new ledger.  Danger! assume if the ledger already exists
         /// it gets over written
         /// </summary>
         void Initialize();
+
+        /// <summary>
+        /// part of initialization, breaking out initialize into parts.  Create the blank
+        /// storage structure (eg for a file system implementation, the directories)
+        /// </summary>
+        void InitializeStorage();
 
         ILedgerPhysicalBlock AddBlock(ILedgerPhysicalBlock block);
         ILedgerPhysicalBlock AddBlock(byte[] data, BlockStatus status = BlockStatus.Unconfirmed);
