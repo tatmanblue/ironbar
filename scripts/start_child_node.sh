@@ -1,9 +1,6 @@
-#!/usr/bin/env bash
-# start_child_node datapath port
-
-ROOT_PATH="$(cd "$(dirname "$1")"; pwd)/$(basename "$1")"
-shift
-PORT=5002
-mkdir -p data
-echo "${ROOT_PATH}data"
-dotnet run --project ../src/node/ -- "${ROOT_PATH}child_node_1.config"
+IRONBAR_BOOT_SERVER=http://localhost:50051
+IRONBAR_DATA_PATH=f:\temp\ironbar
+IRONBAR_RPC_PORT=50055
+IRONBAR_TYPE=child
+ECHO Starting child node....see output for configuration 
+dotnet run --project ../src/node/

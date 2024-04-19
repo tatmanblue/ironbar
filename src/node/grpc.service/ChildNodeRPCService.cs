@@ -29,8 +29,31 @@ public class ChildNodeRPCService : NodeToNodeConnection.NodeToNodeConnectionBase
 
     public override Task<Empty> SyncIndex(IndexRequest request, ServerCallContext context)
     {
-        logger.LogInformation($"Received index from boot node.  Verification hash: {request.Verification}");
-        ledgerManager.SyncIndex(request.Indexes, request.Verification);
-        return Task.FromResult(new Empty());
+        try 
+        {
+            logger.LogInformation($"Received index from boot node.  Verification hash: {request.Verification}");
+            ledgerManager.SyncIndex(request.Indexes, request.Verification);
+            return Task.FromResult(new Empty());
+        }
+        catch (Exception ex)
+        {
+            logger.LogCritical(ex.Message);
+            throw new BlockChainException($"unable to process Index");
+        }
+    }
+
+    public override Task<Empty> BlockCreated(BlockCreatedRequest request, ServerCallContext context)
+    {
+        try
+        {
+            logger.LogInformation($"Blocked received {request.Block}");
+            ledgerManager.SyncBlock(request.Block, request.Verification);
+            return Task.FromResult(new Empty());
+        }
+        catch (Exception ex)
+        {
+            logger.LogCritical(ex.Message);
+            throw new BlockChainException($"unable to process block");
+        }
     }
 }

@@ -110,7 +110,7 @@ public class LedgerIndexManager : ILedgerIndexManager
 
     public ILedgerIndex GetIndex(int id)
     {
-        return data.First(e => e.BlockId == id);
+        return data.FirstOrDefault(e => e.BlockId == id);
     }
 
     public List<ILedgerIndex> ListAllIndexes()

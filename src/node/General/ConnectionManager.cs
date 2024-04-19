@@ -16,21 +16,25 @@ public class ConnectionManager
 {
     private readonly List<ChildNodeConnection> children = new List<ChildNodeConnection>();
     private readonly ILogger<ConnectionManager> logger;
-    private readonly BootNodeRPCClient client;
     private readonly IServicesEventPub servicesEventPub;
 
+    public List<ChildNodeConnection> ActiveConnections
+    {
+        get
+        {
+            return children.ToList();
+        }
+    }
+    
     /// <summary>
-    /// TODO There is an ugly circular dependency with BootNodeRPCClient
+    /// 
     /// </summary>
-    /// <param name="client"></param>
     /// <param name="lifeTime"></param>
     /// <param name="logger"></param>
-    public ConnectionManager(BootNodeRPCClient client, 
-        IHostApplicationLifetime lifeTime, 
+    public ConnectionManager(IHostApplicationLifetime lifeTime, 
         ILogger<ConnectionManager> logger,
         IServicesEventPub servicesEventPub)
     {
-        this.client = client;
         this.logger = logger;
         this.servicesEventPub = servicesEventPub;
 

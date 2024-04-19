@@ -16,8 +16,15 @@ public interface ILedgerManager
     List<ILedgerIndex> ListAllBlocks();
 
     /// <summary>
-    /// used by client nodes to get in sync with bootnoode
+    /// used by child nodes to get in sync with bootnoode
     /// </summary>
     /// <param name="rows"></param>
     void SyncIndex(IList<string> rows, string verification);
+
+    /// <summary>
+    /// a child node only function for adding a block to local ledger
+    /// </summary>
+    /// <param name="block"></param>
+    /// <param name="verification"></param>
+    void SyncBlock(string block, string verification);
 }

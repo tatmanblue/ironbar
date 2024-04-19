@@ -33,7 +33,7 @@ namespace Node
             // For now, all nodes have ledger manager,  there might be some differences in behavior
             // between a bootnode ledger manager and a child nodes ledger manager that will
             // make us want to split this out
-            builder.Services.AddSingleton<ILedgerManager, LedgerManager>();
+            // builder.Services.AddSingleton<ILedgerManager, LedgerManager>();
             builder.Services.AddSingleton<ILedgerIndexFactory, TypeFactory>();
             
             if (false == configurationOptions.IsBootNode)

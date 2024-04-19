@@ -10,20 +10,27 @@ namespace Node.Ledger;
 
 /// <summary>
 /// Controller/orchestrator for interacting with ledgers
+/// TODO could this be a IHostedService
 /// </summary>
 public class LedgerManager : ILedgerManager
 {
-    private const int MASTER_LEDGER_ID = 1;
+    protected const int MASTER_LEDGER_ID = 1;
 
     // Dependency Injected
     private readonly ILogger<LedgerManager> logger;
-    private readonly ILedgerIndexFactory ledgerIndexFactory;
+    protected readonly ILedgerIndexFactory ledgerIndexFactory;
 
     // Instance allocated
-    private List<Ledger> ledgers = new List<Ledger>();
-    private bool _isOperational = false;
-    private IServicesEventPub eventPub;
+    protected List<Ledger> ledgers = new List<Ledger>();
+    protected bool isOperational = false;
+    protected IServicesEventPub eventPub;
 
+    protected LedgerManager(IServiceProvider serviceProvider)
+    {
+        this.logger = serviceProvider.GetRequiredService<ILogger<LedgerManager>>();
+        this.ledgerIndexFactory = serviceProvider.GetRequiredService<ILedgerIndexFactory>();
+        this.eventPub = serviceProvider.GetRequiredService<IServicesEventPub>();
+    }
 
     /// <summary>
     /// 
@@ -36,10 +43,10 @@ public class LedgerManager : ILedgerManager
         this.logger = logger;
         this.eventPub = eventPub;
         this.ledgerIndexFactory = ledgerIndexFactory;
-        logger.LogInformation("Ledger Manager is now active");
+        logger.LogInformation("Ledger Manager is now available");
     }
 
-    public void Start(IServiceProvider serviceProvider)
+    public virtual void Start(IServiceProvider serviceProvider)
     {
         IConfiguration options = serviceProvider.GetRequiredService<IConfiguration>();
         
@@ -74,7 +81,7 @@ public class LedgerManager : ILedgerManager
                 }
             }
 
-            _isOperational = true;
+            isOperational = true;
             // 7 - inform bootnode, if appropriate, that this nodes master ledger is functional
 
 
@@ -93,13 +100,17 @@ public class LedgerManager : ILedgerManager
         }
     }
 
-    public void Stop()
+    public virtual void Stop()
     {
+        isOperational = false;
         logger.LogInformation("LedgerManager is stopped");
     }
 
     public ILedgerPhysicalBlock Create(string blockData)
     {
+        if (false == isOperational)
+            throw new LedgerException("LedgerManager", $"LedgerManager is not operational");
+        
         // couple of problems here:
         // 1 we started designing a system to have several ledgers 
         // 2 did not complete building out the interfaces for it
@@ -130,6 +141,12 @@ public class LedgerManager : ILedgerManager
         return indexes;
     }
 
+    /// <summary>
+    /// this is a child node only function
+    /// </summary>
+    /// <param name="rows"></param>
+    /// <param name="verification"></param>
+    /// <exception cref="BlockChainException"></exception>
     public void SyncIndex(IList<string> rows, string verification)
     {
         string runningProof = string.Empty;
@@ -150,7 +167,23 @@ public class LedgerManager : ILedgerManager
             throw new BlockChainException("Index sync failed");
 
         ledgers[0].Indexes.InitializeFromSync(indexes);
+        isOperational = true;
         
         eventPub.FireIndexInitialized();
+    }
+
+    /// <summary>
+    /// This is a child node only function
+    /// </summary>
+    /// <param name="block"></param>
+    /// <param name="verification"></param>
+    public void SyncBlock(string block, string verification)
+    {
+        ILedgerPhysicalBlock pb = PhysicalBlock.FromString(block);
+        if (pb.Hash != verification)
+            throw new BlockChainException($"Hash mismatch {pb.Id}");
+        
+        ledgers[0].SyncBlock(pb);
+        logger.LogInformation($"Block {pb.Id} received");
     }
 }

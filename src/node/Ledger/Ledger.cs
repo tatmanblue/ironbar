@@ -20,7 +20,7 @@ namespace Node.Ledger;
 /// </summary>
 public class Ledger : ILedger
 {
-    private readonly ILogger<Ledger> _logger;
+    private readonly ILogger<Ledger> logger;
     
     /// <summary>
     /// Ledger ID.  1 is master ledger.  It is controlled by the nodes
@@ -48,13 +48,13 @@ public class Ledger : ILedger
     private string LedgerIndexFileName => System.IO.Path.Combine(LedgerPath, "index.txt");
 
     /// <summary>
-    /// TODO eeeccck!  
+    ///  
     /// </summary>
     public ILedgerIndexManager Indexes { get; private set; }
 
     public Ledger(ILogger<Ledger> logger, int id, string name, string path)
     {
-        _logger = logger;
+        this.logger = logger;
         Id = id;
         Name = name;
         RootDataPath = path;
@@ -150,7 +150,7 @@ public class Ledger : ILedger
 
         // TODO: these next two steps are technically a transaction, need to determine what happens when
         // one step fails.
-        _logger.LogDebug($"saving indexes");
+        logger.LogDebug($"saving indexes");
         // step 1 save the block
         // TODO: need rollback if Indexes.Save() fails
         Writer.SaveBlock(block);
@@ -174,10 +174,32 @@ public class Ledger : ILedger
 
     public ILedgerPhysicalBlock ReadBlock(int blockId)
     {
+        // TODO replace with a Block Factory function like we did with indexes
         PhysicalBlock readBlock = Reader.GetLedgerPhysicalBlock(blockId, (data) => {
             return PhysicalBlock.FromString(data);
         }) as PhysicalBlock;
         
         return readBlock;
+    }
+
+    public ILedgerPhysicalBlock SyncBlock(ILedgerPhysicalBlock block)
+    {
+        // if a block entry exists in the index, it means this is block already
+        // in the system before child node started up, otherwise it was added during
+        // run time.
+        ILedgerIndex li = Indexes.GetIndex(block.Id);
+        if (null == li)
+            li = Indexes.Add(block.Hash, block.TimeStamp, block.Status);
+
+        if (li.BlockId != block.Id)
+            throw new LedgerException(Name, $"Index {block.Id}");
+        
+        if (li.Hash != block.Hash)
+            throw new LedgerException(Name, $"Hash mismatch {block.Id}");
+        
+        Writer.SaveBlock(block);
+        Indexes.Save();
+        
+        return block;
     }
 }

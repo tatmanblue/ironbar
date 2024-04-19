@@ -49,5 +49,6 @@ namespace core.Ledger
 
         ILedgerPhysicalBlock AddBlock(ILedgerPhysicalBlock block);
         ILedgerPhysicalBlock AddBlock(byte[] data, BlockStatus status = BlockStatus.Unconfirmed);
+        ILedgerPhysicalBlock SyncBlock(ILedgerPhysicalBlock block);
     }
 }
