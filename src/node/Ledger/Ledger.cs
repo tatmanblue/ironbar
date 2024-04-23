@@ -138,7 +138,7 @@ public class Ledger : ILedger
             {
                 // Validation Rule #3: the last record should validate
                 ILedgerPhysicalBlock lastBlock = ReadBlock(Indexes.GetNextBlockId() - 1);
-                ValidateBlockInternal(lastBlock);
+                ValidateBlock(lastBlock);
                 
                 // Validation Rule #4: verify a few other blocks
                 // TODO: validate some of the remaining blocks.
@@ -212,18 +212,9 @@ public class Ledger : ILedger
         return block;
     }
 
-    public bool ValidateBlock(ILedgerPhysicalBlock block)
+    public void ValidateBlock(ILedgerPhysicalBlock block)
     {
-        try
-        {
-            ValidateBlockInternal(block);
-            return true;
-        }
-        catch
-        {
-            
-        }
-        return false;
+        blockValidator.Validate(Indexes, block);
     }
     #endregion
 
@@ -245,9 +236,5 @@ public class Ledger : ILedger
 
         return block;
     }
-    
-    private void ValidateBlockInternal(ILedgerPhysicalBlock block)
-    {
-        blockValidator.Validate(Indexes, block);
-    }
+
 }

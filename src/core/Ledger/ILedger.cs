@@ -65,10 +65,9 @@ namespace core.Ledger
         ILedgerPhysicalBlock AddBlock(byte[] data, BlockStatus status = BlockStatus.Unconfirmed);
         ILedgerPhysicalBlock SyncBlock(ILedgerPhysicalBlock block);
         /// <summary>
-        /// 
+        /// Throws LedgerBlockException if block fails to validate
         /// </summary>
         /// <param name="block"></param>
-        /// <returns>true, block is good. false, block could not be validated</returns>
-        bool ValidateBlock(ILedgerPhysicalBlock block);
+        void ValidateBlock(ILedgerPhysicalBlock block);
     }
 }

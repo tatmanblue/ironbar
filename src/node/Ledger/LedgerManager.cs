@@ -25,7 +25,7 @@ public class LedgerManager : ILedgerManager
     protected bool isOperational = false;
     protected IServicesEventPub eventPub;
 
-    protected LedgerManager(IServiceProvider serviceProvider)
+    public LedgerManager(IServiceProvider serviceProvider)
     {
         this.logger = serviceProvider.GetRequiredService<ILogger<LedgerManager>>();
         this.ledgerIndexFactory = serviceProvider.GetRequiredService<ILedgerIndexFactory>();
@@ -170,8 +170,7 @@ public class LedgerManager : ILedgerManager
         if (pb.Hash != verification)
             throw new LedgerBlockException($"Hash mismatch {pb.Id}");
 
-        if (false == ledgers[0].ValidateBlock(pb))
-            throw new LedgerBlockException($"Block {pb.Id} failed to validate");
+        ledgers[0].ValidateBlock(pb);
         
         ledgers[0].SyncBlock(pb);
         logger.LogInformation($"Block {pb.Id} received");
