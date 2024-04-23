@@ -1,8 +1,8 @@
 # Overview
 updated: 2020.06.27
 
-This document contains high level goals--think epic level.  
-See the [project board](https://github.com/users/tatmanblue/projects/2) for more detailed plans--think story level.
+This document contains high level goals--think epic level.  Currently, you can run 1 boot node and several child nodes.  Blocks are copied and validated
+between boot and child nodes.  There is a public grpc based API for creating and retrieving blocks (this is not documented at this time however).
 
 This document hightlights two parts:
 1. current goal
@@ -21,11 +21,13 @@ To be able to deploy one or more interoperable nodes to Azure, AWS and locally
 ### Immeditate Steps:
 1. Fix interface mess.  Some things have interfaces some do not and those same "somes" are injected or not
 2. Nodes talk to each other and know when they are up/down (done)
-3. Boot ledger reads/writes (done)
+3. Boot ledger reads/writes (done)  
+4. Child nodes copy ledger and validate blocks on create (done)
 
 
 ### To completion Steps
-1. Node validate and approve
+1. Nodes validate and approve ledger
+
 
 
 ## Possible Extensions
