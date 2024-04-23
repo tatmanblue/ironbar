@@ -41,11 +41,13 @@ https://devblogs.microsoft.com/aspnet/grpc-web-for-net-now-available/
 # Running locally with no docker or Kubernetes
 
 1. Setup your environment.  Remember to changes these settings depending on if your running boot or child node. 
+
+On Windows:  
 ```
-IRONBAR_BOOT_SERVER=http://localhost:50051
-IRONBAR_DATA_PATH=f:\temp\ironbar
-IRONBAR_RPC_PORT=50055
-IRONBAR_TYPE=child
+SET IRONBAR_BOOT_SERVER=http://localhost:50051
+SET IRONBAR_DATA_PATH=f:\temp\ironbar
+SET IRONBAR_RPC_PORT=50055
+SET IRONBAR_TYPE=child
 ```
 2. run `node.exe`
 

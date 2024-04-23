@@ -31,21 +31,7 @@ public class LedgerManager : ILedgerManager
         this.ledgerIndexFactory = serviceProvider.GetRequiredService<ILedgerIndexFactory>();
         this.eventPub = serviceProvider.GetRequiredService<IServicesEventPub>();
     }
-
-    /// <summary>
-    /// 
-    /// </summary>
-    /// <param name="logger"></param>
-    /// <param name="options"></param>
-    /// <param name="eventPub"></param>
-    public LedgerManager(ILogger<LedgerManager> logger, ILedgerIndexFactory ledgerIndexFactory, IServicesEventPub eventPub)
-    {
-        this.logger = logger;
-        this.eventPub = eventPub;
-        this.ledgerIndexFactory = ledgerIndexFactory;
-        logger.LogInformation("Ledger Manager is now available");
-    }
-
+    
     public virtual void Start(IServiceProvider serviceProvider)
     {
         IConfiguration options = serviceProvider.GetRequiredService<IConfiguration>();
@@ -53,9 +39,10 @@ public class LedgerManager : ILedgerManager
         logger.LogInformation($"LedgerManager is started, using '{System.IO.Path.GetFullPath(options.DataPath)}' for data path");
 
         ILogger<Ledger> ledgerLogger = serviceProvider.GetRequiredService<ILogger<Ledger>>();
+        IPhysicalBlockValidator blockValidator = serviceProvider.GetRequiredService<IPhysicalBlockValidator>();
 
         // 2 - open the master ledger index file and initialize the master ledger
-        Ledger masterLedger = new Ledger(ledgerLogger, MASTER_LEDGER_ID, options.FriendlyName, options.DataPath);
+        Ledger masterLedger = new Ledger(ledgerLogger, blockValidator, MASTER_LEDGER_ID, options.FriendlyName, options.DataPath);
         ledgers.Add(masterLedger);
 
         try
@@ -181,7 +168,10 @@ public class LedgerManager : ILedgerManager
     {
         ILedgerPhysicalBlock pb = PhysicalBlock.FromString(block);
         if (pb.Hash != verification)
-            throw new BlockChainException($"Hash mismatch {pb.Id}");
+            throw new LedgerBlockException($"Hash mismatch {pb.Id}");
+
+        if (false == ledgers[0].ValidateBlock(pb))
+            throw new LedgerBlockException($"Block {pb.Id} failed to validate");
         
         ledgers[0].SyncBlock(pb);
         logger.LogInformation($"Block {pb.Id} received");

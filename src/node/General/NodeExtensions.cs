@@ -1,4 +1,5 @@
-﻿using Node.grpc.service;
+﻿using core.Ledger;
+using Node.grpc.service;
 using Node.Interfaces;
 using Node.Ledger;
 
@@ -19,7 +20,10 @@ public static class NodeExtensions
         builder.Services.AddSingleton<BootNodeServicesEvents>();
         builder.Services.AddSingleton<IServicesEventPub>(x => x.GetRequiredService<BootNodeServicesEvents>());
         builder.Services.AddSingleton<IServicesEventSub>(x => x.GetRequiredService<BootNodeServicesEvents>());
+        
+        builder.Services.AddSingleton<IPhysicalBlockValidator>(x => new BootNodePhysicalBlockValidator());                
 
+        
         // initialization for boot node
         builder.Services.AddTransient<ApiKeyManager>();
         builder.Services.AddSingleton<ConnectionManager>();
@@ -32,12 +36,14 @@ public static class NodeExtensions
             throw new ApplicationException($"Wrong node configuration called bootNode={options.IsBootNode}");
         
         // For the moment, to "fix" differences between bootnode ledger start up and client node
-        builder.Services.AddSingleton<ILedgerManager, ClientLedgerManager>();
+        builder.Services.AddSingleton<ILedgerManager, ChildLedgerManager>();
         
-        builder.Services.AddSingleton<ClientNodeServicesEvents>();
-        builder.Services.AddSingleton<IServicesEventPub>(x => x.GetRequiredService<ClientNodeServicesEvents>());
-        builder.Services.AddSingleton<IServicesEventSub>(x => x.GetRequiredService<ClientNodeServicesEvents>());
-                
+        builder.Services.AddSingleton<ChildNodeServicesEvents>();
+        builder.Services.AddSingleton<IServicesEventPub>(x => x.GetRequiredService<ChildNodeServicesEvents>());
+        builder.Services.AddSingleton<IServicesEventSub>(x => x.GetRequiredService<ChildNodeServicesEvents>());
+
+        builder.Services.AddSingleton<ChildPhysicalBlockValidator>();
+        builder.Services.AddSingleton<IPhysicalBlockValidator>(x => new ChildPhysicalBlockValidator());                
                 
         // initialization for child nodes
         builder.Services.AddTransient<ChildNodeRPCClient>();

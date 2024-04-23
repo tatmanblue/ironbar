@@ -1,16 +1,17 @@
-﻿using IConfiguration = core.IConfiguration;
+﻿using core.Ledger;
+using IConfiguration = core.IConfiguration;
 namespace Node.Ledger;
 
 /// <summary>
 /// 
 /// </summary>
-public class ClientLedgerManager : LedgerManager
+public class ChildLedgerManager : LedgerManager
 {
-    private readonly ILogger<ClientLedgerManager> logger;
+    private readonly ILogger<ChildLedgerManager> logger;
     
-    public ClientLedgerManager(IServiceProvider serviceProvider) : base(serviceProvider)
+    public ChildLedgerManager(IServiceProvider serviceProvider) : base(serviceProvider)
     {
-        this.logger = serviceProvider.GetRequiredService<ILogger<ClientLedgerManager>>();
+        this.logger = serviceProvider.GetRequiredService<ILogger<ChildLedgerManager>>();
         logger.LogInformation("Client Ledger Manager is now available");
     }
 
@@ -23,12 +24,13 @@ public class ClientLedgerManager : LedgerManager
     public override void Start(IServiceProvider serviceProvider)
     {
         IConfiguration options = serviceProvider.GetRequiredService<IConfiguration>();
+        ILogger<Ledger> ledgerLogger = serviceProvider.GetRequiredService<ILogger<Ledger>>();
+        IPhysicalBlockValidator blockValidator = serviceProvider.GetRequiredService<IPhysicalBlockValidator>();
         
         logger.LogInformation($"LedgerManager is started, using '{System.IO.Path.GetFullPath(options.DataPath)}' for data path");
 
-        ILogger<Ledger> ledgerLogger = serviceProvider.GetRequiredService<ILogger<Ledger>>();
         
-        Ledger masterLedger = new Ledger(ledgerLogger, MASTER_LEDGER_ID, options.FriendlyName, options.DataPath);
+        Ledger masterLedger = new Ledger(ledgerLogger, blockValidator, MASTER_LEDGER_ID, options.FriendlyName, options.DataPath);
         ledgers.Add(masterLedger);
         masterLedger.InitializeStorage();
     }

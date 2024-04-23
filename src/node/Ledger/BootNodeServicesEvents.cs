@@ -52,7 +52,7 @@ public class BootNodeServicesEvents : IServicesEventPub, IServicesEventSub
 /// TODO this is really ugly.  Need to find better way than having two implementations
 /// TODO one for boot and one for child nodes
 /// </summary>
-public class ClientNodeServicesEvents : BootNodeServicesEvents
+public class ChildNodeServicesEvents : BootNodeServicesEvents
 {
     public override void FireBlockCreated(ILedgerPhysicalBlock pb)
     {

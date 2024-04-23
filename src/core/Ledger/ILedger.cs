@@ -47,8 +47,28 @@ namespace core.Ledger
         /// </summary>
         void InitializeStorage();
 
+        /// <summary>
+        /// Expectation is this block is being added in which it already exists such
+        /// as from an existing block on another node (aka boot node -> child node) 
+        /// </summary>
+        /// <param name="block"></param>
+        /// <returns></returns>
         ILedgerPhysicalBlock AddBlock(ILedgerPhysicalBlock block);
+        /// <summary>
+        /// Expectation is this block is being sourced from an external client
+        /// such as a webpage or mobile app and so the block will be treated as new.  This
+        /// implementation is expected to complete the block data before saving it
+        /// </summary>
+        /// <param name="data"></param>
+        /// <param name="status"></param>
+        /// <returns></returns>
         ILedgerPhysicalBlock AddBlock(byte[] data, BlockStatus status = BlockStatus.Unconfirmed);
         ILedgerPhysicalBlock SyncBlock(ILedgerPhysicalBlock block);
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="block"></param>
+        /// <returns>true, block is good. false, block could not be validated</returns>
+        bool ValidateBlock(ILedgerPhysicalBlock block);
     }
 }

@@ -62,7 +62,10 @@ public class BootNodeBlockApiService : BlockHandlingApi.BlockHandlingApiBase
                 BlockHash = pb.Hash,
                 Status = pb.Status.ToString(),
                 Nonce = pb.Nonce.ToString(),
-                CreatedOn = pb.TimeStamp.ToString("yyyy-MM-dd HH:mm:ss \"UTC\"zzz")
+                CreatedOn = pb.TimeStamp.ToString("yyyy-MM-dd HH:mm:ss \"UTC\"zzz"),
+                ParentHash = pb.ParentHash,
+                ParentId = pb.ParentId.ToString(),
+                ReferenceId = pb.ReferenceId.ToString()
             };
 
             return Task.FromResult(result);

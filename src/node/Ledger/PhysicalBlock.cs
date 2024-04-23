@@ -87,7 +87,7 @@ public class PhysicalBlock : ILedgerPhysicalBlock
         };
 
         // compare hash from string with computedHash. they should match
-        if (elements[9] != block.ComputeHash())
+        if (elements[9] != block.Hash)
             throw new LedgerNotValidException($"block {block.Id}");
 
         return block;

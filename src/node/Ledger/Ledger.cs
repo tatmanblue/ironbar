@@ -2,6 +2,8 @@
 using System.IO;
 using Microsoft.Extensions.Logging;
 using core.Ledger;
+using core.Security;
+using core.Utility;
 using Node.Interfaces;
 
 namespace Node.Ledger;
@@ -42,27 +44,31 @@ public class Ledger : ILedger
     public ILedgerWriter Writer { get; private set; }
     
     public ILedgerReader Reader { get; private set; }
-
-    private string LedgerPath => System.IO.Path.Combine(this.RootDataPath, this.Name);
-
-    private string LedgerIndexFileName => System.IO.Path.Combine(LedgerPath, "index.txt");
-
+    
     /// <summary>
     ///  
     /// </summary>
     public ILedgerIndexManager Indexes { get; private set; }
+    
+    private string LedgerPath => System.IO.Path.Combine(this.RootDataPath, this.Name);
 
-    public Ledger(ILogger<Ledger> logger, int id, string name, string path)
+    private string LedgerIndexFileName => System.IO.Path.Combine(LedgerPath, "index.txt");
+
+    private IPhysicalBlockValidator blockValidator;
+
+    public Ledger(ILogger<Ledger> logger, IPhysicalBlockValidator blockValidator, int id, string name, string path)
     {
         this.logger = logger;
         Id = id;
         Name = name;
         RootDataPath = path;
+        this.blockValidator = blockValidator;
         Writer = new DefaultTextFileLedgerWriter(LedgerPath);
         Reader =  new DefaultTextFileLedgerReader(LedgerPath);
         Indexes = new LedgerIndexManager(Name, LedgerIndexFileName);
     }
 
+    #region Public methods, ILedger methods
     public void InitializeStorage()
     {
         if (false == Directory.Exists(LedgerPath))
@@ -81,11 +87,12 @@ public class Ledger : ILedger
         {
             Id = Indexes.GetNextBlockId(),
             LedgerId = Id,
+            ParentHash = HashUtility.ComputeHash(Nonce.New().ToString()),
             TransactionData = System.Text.Encoding.ASCII.GetBytes("boot ledger initialized"),
             SignBlock = new SignBlock()
         };
         
-        AddBlock(block);
+        AddBlockInternal(block);
     }
 
     /// <summary>
@@ -107,34 +114,43 @@ public class Ledger : ILedger
         try
         {
             Indexes.Load();
+            int totalBlocks = Reader.CountBlocks();
 
             // Validation Rule #1:  the number of records in the index file should match
             // the number of blocks saved on disk
-            if (Reader.CountBlocks() != Indexes.Count())
+            if (totalBlocks != Indexes.Count())
                 throw new LedgerNotValidException($"{Reader.CountBlocks()} != {Indexes.Count()}");
             
             // Validation Rule #2:  the boot record (which is the very first record) 
             // should be valid
-            PhysicalBlock rootBlock = ReadBlock(1) as PhysicalBlock;
+            ILedgerPhysicalBlock rootBlock = ReadBlock(1);
 
             ILedgerIndex rootIndex = Indexes.GetIndex(1);
 
-            if (rootBlock.ComputeHash() != rootIndex.Hash)
+            if (rootBlock.Hash != rootIndex.Hash)
                 throw new LedgerNotValidException($"block {rootBlock.Id}");
             
             if (rootBlock.Status != BlockStatus.System)
                 throw new LedgerNotValidException($"block {rootBlock.Id}");
 
-            // Validation Rule #3: the last record should validate
+            // if there are blocks other than initial starting block, do some validation on those
+            if (1 < totalBlocks)
+            {
+                // Validation Rule #3: the last record should validate
+                ILedgerPhysicalBlock lastBlock = ReadBlock(Indexes.GetNextBlockId() - 1);
+                ValidateBlockInternal(lastBlock);
+                
+                // Validation Rule #4: verify a few other blocks
+                // TODO: validate some of the remaining blocks.
+                // TODO: have an option that requires all blocks to be validated
 
-            // Validation Rule #4: verify a few other blocks
-            // TODO: validate some of the remaining blocks.
-            // TODO: have an option that requires all blocks to be validated
-
+            }
+            
             State = LedgerState.Available;
         }
         catch(Exception e)
         {
+            logger.LogError($"{e.Message}");
             State = LedgerState.Nonfunctional;
             throw new LedgerException(Name, e);
         }
@@ -142,29 +158,22 @@ public class Ledger : ILedger
 
     public ILedgerPhysicalBlock AddBlock(ILedgerPhysicalBlock block)
     {
-        block.ComputeHash();
-        ILedgerIndex index = Indexes.Add(block.Hash, block.TimeStamp, block.Status);
-
-        if (block.Id != index.BlockId)
-            throw new LedgerException(Name, $"ID mismatch {block.Id}/{index.BlockId} on AddBlock");
-
-        // TODO: these next two steps are technically a transaction, need to determine what happens when
-        // one step fails.
-        logger.LogDebug($"saving indexes");
-        // step 1 save the block
-        // TODO: need rollback if Indexes.Save() fails
-        Writer.SaveBlock(block);
-        // step 2 save the index
-        Indexes.Save();
-
-        return block;
+        if (LedgerState.Available != State)
+            throw new LedgerException(Name, $"Ledger state does not allow adding blocks");
+        
+        return AddBlockInternal(block);
     }
 
     public ILedgerPhysicalBlock AddBlock(byte[] data, BlockStatus status = BlockStatus.Unconfirmed)
     {
+        int blockId = Indexes.GetNextBlockId();
+        ILedgerIndex parent = Indexes.GetIndex(blockId - 1);
+        
         PhysicalBlock block = new PhysicalBlock(status)
         {
-            Id = Indexes.GetNextBlockId(),
+            Id = blockId,
+            ParentHash = parent.Hash,
+            ParentId = parent.BlockId,
             LedgerId = Id,
             TransactionData = data,
             SignBlock = new SignBlock()
@@ -201,5 +210,44 @@ public class Ledger : ILedger
         Indexes.Save();
         
         return block;
+    }
+
+    public bool ValidateBlock(ILedgerPhysicalBlock block)
+    {
+        try
+        {
+            ValidateBlockInternal(block);
+            return true;
+        }
+        catch
+        {
+            
+        }
+        return false;
+    }
+    #endregion
+
+    private ILedgerPhysicalBlock AddBlockInternal(ILedgerPhysicalBlock block)
+    {
+        ILedgerIndex index = Indexes.Add(block.Hash, block.TimeStamp, block.Status);
+
+        if (block.Id != index.BlockId)
+            throw new LedgerException(Name, $"ID mismatch {block.Id}/{index.BlockId} on AddBlock");
+
+        // TODO: these next two steps are technically a transaction, need to determine what happens when
+        // one step fails.
+        logger.LogDebug($"saving indexes");
+        // step 1 save the block
+        // TODO: need rollback if Indexes.Save() fails
+        Writer.SaveBlock(block);
+        // step 2 save the index
+        Indexes.Save();
+
+        return block;
+    }
+    
+    private void ValidateBlockInternal(ILedgerPhysicalBlock block)
+    {
+        blockValidator.Validate(Indexes, block);
     }
 }
