@@ -22,11 +22,6 @@ public class ConfigurationOptions : IConfiguration
     /// </summary>
     public string BootAddress { get; set; } = "http://localhost:50051";
     
-    /*
-    public string RPCAddress { get; set; } = "0.0.0.0";
-    public int ServerRPCPort { get; set; } = 50051;
-    public int APIPort { get; set; } = 8080;
-    */
     public string PluginPath { get; set; } = "plugins";
     public string DataPath { get; set; } = "data";
     public bool IsBootNode { get; set; } = false;

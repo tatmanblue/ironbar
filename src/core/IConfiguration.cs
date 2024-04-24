@@ -31,6 +31,6 @@ namespace core
         /// <summary>
         /// where all of the blockchain stuff goes
         /// </summary>
-        string DataPath { get; }       
+        string DataPath { get; }      
     }
 }

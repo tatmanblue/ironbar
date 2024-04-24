@@ -30,7 +30,7 @@ public static class NodeExtensions
         builder.Services.AddHostedService<BootNodeRPCClient>();
     }
     
-    public static void ConfigureClientNodeServices(this WebApplicationBuilder builder, core.IConfiguration options)
+    public static void ConfigureChildNodeServices(this WebApplicationBuilder builder, core.IConfiguration options)
     {
         if (options.IsBootNode == true)
             throw new ApplicationException($"Wrong node configuration called bootNode={options.IsBootNode}");
@@ -48,5 +48,41 @@ public static class NodeExtensions
         // initialization for child nodes
         builder.Services.AddTransient<ChildNodeRPCClient>();
         builder.Services.AddHostedService<ChildNodeService>();
+    }
+
+    public static void MapBootNodeGrpc(this WebApplication app)
+    {
+        ILogger<Program> logger = app.Services.GetRequiredService< ILogger<Program>>();
+        core.IConfiguration options = app.Services.GetRequiredService<core.IConfiguration>();
+        if (false == options.IsBootNode)
+        {
+            logger.LogDebug("Not setting up bootnode GRPC end points");
+            return;
+        }
+
+        logger.LogInformation("Setting up boot node GRPC endpoints");
+        app.UseEndpoints(endpoints =>
+        {
+              endpoints.MapGrpcService<BootNodeRPCService>();
+              endpoints.MapGrpcService<BootNodeBlockApiService>();
+        });
+    }
+    
+    public static void MapChildNodeGrpc(this WebApplication app)
+    {
+        ILogger<Program> logger = app.Services.GetRequiredService< ILogger<Program>>();
+        core.IConfiguration options = app.Services.GetRequiredService<core.IConfiguration>();
+        if (true == options.IsBootNode)
+        {
+            logger.LogDebug("Not setting up child node GRPC end points");
+            return;
+        }
+
+        logger.LogInformation("Setting up child node GRPC endpoints");
+        app.UseEndpoints(endpoints =>
+        {
+            endpoints.MapGrpcService<ChildNodeService>();
+            endpoints.MapGrpcService<ChildNodeRPCService>();
+        });
     }
 }
