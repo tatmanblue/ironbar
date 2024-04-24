@@ -10,32 +10,34 @@ namespace Node.Ledger;
 /// </summary>
 public class BootNodeServicesEvents : IServicesEventPub, IServicesEventSub
 {
-    public virtual void FireBlockCreated(ILedgerPhysicalBlock pb)
+    public async virtual void FireBlockCreated(ILedgerPhysicalBlock pb)
     {
         BlockCreated bc = OnBlockCreated;
         if (null == bc) return;
-        bc(pb);
+        await Task.Run(() => {
+            bc.Invoke(pb);
+        });
     }
 
     public virtual void FireClientConnected(ChildNodeConnection connection)
     {
         ChildNodeConnected nc = OnChildNodeConnected;
         if (null == nc) return;
-        nc(connection);
+        nc.Invoke(connection);
     }
 
     public virtual void FireServiceShutdown(ChildNodeConnection cn)
     {
         NotifyChildOfShutdown shutdown = OnShutdown;
         if (null == shutdown) return;
-        shutdown(cn);
+        shutdown.Invoke(cn);
     }
 
     public virtual void FireIndexInitialized()
     {
         IndexInitialized indexInitialized = OnIndexInitialized;
         if (null == indexInitialized) return;
-        indexInitialized();
+        indexInitialized.Invoke();
     }
 
     #region ILedgerEventSub

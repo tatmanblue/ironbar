@@ -15,7 +15,7 @@ service NodeToNodeConnection {
   
   // block messages
   rpc SyncIndex(IndexRequest) returns (google.protobuf.Empty);
-  rpc BlockCreated(BlockCreatedRequest) returns (google.protobuf.Empty);
+  rpc BlockCreated(BlockCreatedRequest) returns (BlockCreatedReply);
 }
 
 message ConnectRequest {
@@ -45,4 +45,10 @@ message IndexRequest {
 message BlockCreatedRequest {
   string block = 1;
   string verification = 2;
+}
+
+message BlockCreatedReply {
+  string block = 1;
+  string verification = 2;
+  string result = 3;
 }

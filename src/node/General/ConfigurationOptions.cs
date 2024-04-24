@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Text.Json.Serialization;
 using core;
+using core.Utility;
 using IConfiguration = core.IConfiguration;
 
 namespace Node.General;
@@ -66,18 +67,20 @@ public class ConfigurationOptions : IConfiguration
         return options;
     }
 
+    /// <summary>
+    /// I left these here to make FromEnvironment() a weeeee bit less wordy
+    /// </summary>
     private static string FromEnvOrDefault(string name, string def)
     {
-        string v = Environment.GetEnvironmentVariable(name);
-        if (string.IsNullOrEmpty(v))
-            return def;
-
-        return v;
+        return EnvironmentUtility.FromEnvOrDefault(name, def);
     }
     
+    /// <summary>
+    /// I left these here to make FromEnvironment() a weeeee bit less wordy
+    /// </summary>
     private static int FromEnvOrDefaultAsInt(string name, string def)
     {
-        return Convert.ToInt32(FromEnvOrDefault(name, def));
+        return EnvironmentUtility.FromEnvOrDefaultAsInt(name, def);
     }
 }
 

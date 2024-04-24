@@ -203,7 +203,7 @@ public class Ledger : ILedger
             ParentHash = parent.Hash,
             ParentId = parent.BlockId,
             ReferenceId = pb.Id,
-            ReferenceHash = pb.ReferenceHash,
+            ReferenceHash = pb.Hash,
             LedgerId = Id,
             TransactionData = pb.TransactionData,
             SignBlock = new SignBlock()

@@ -1,4 +1,6 @@
-﻿namespace Node.General;
+﻿using core.Utility;
+
+namespace Node.General;
 
 /// <summary>
 /// Limit access to the block chain by some value.  There are
@@ -18,10 +20,10 @@ public class ApiKeyManager
 
     public ApiKeyManager()
     {
-        writeApiKey = FromEnvOrDefault("IRONBAR_WRITE_API_KEY", "");
-        readApiKey = FromEnvOrDefault("IRONBAR_READ_API_KEY", "");
-        readDetailsApiKey = FromEnvOrDefault("IRONBAR_READ_DETAILS_API_KEY", "");
-        adminApiKey = FromEnvOrDefault("IRONBAR_ADMIN_API_KEY", "");
+        writeApiKey = EnvironmentUtility.FromEnvOrDefault("IRONBAR_WRITE_API_KEY", "");
+        readApiKey = EnvironmentUtility.FromEnvOrDefault("IRONBAR_READ_API_KEY", "");
+        readDetailsApiKey = EnvironmentUtility.FromEnvOrDefault("IRONBAR_READ_DETAILS_API_KEY", "");
+        adminApiKey = EnvironmentUtility.FromEnvOrDefault("IRONBAR_ADMIN_API_KEY", "");
     }
 
     public bool IsAdmin(string apiKey)
@@ -68,12 +70,4 @@ public class ApiKeyManager
         return false;
     }
     
-    private static string FromEnvOrDefault(string name, string def)
-    {
-        string v = Environment.GetEnvironmentVariable(name);
-        if (string.IsNullOrEmpty(v))
-            return def;
-
-        return v;
-    }
 }

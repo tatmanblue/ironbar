@@ -8,6 +8,8 @@ namespace core.Ledger
     /// State of block.  When a block is created it is unconfirmed.  Going through the consensus
     /// functionality the block will go to confirmed to approved.  Confirmed means nodes accept
     /// the block and approved means consensus is complete.
+    ///
+    /// see https://github.com/tatmanblue/ironbar/blob/main/docs/Iron%20Bar%20Block%20State%20progression.jpg
     /// </summary>
     public enum BlockStatus
     {

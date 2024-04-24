@@ -42,14 +42,34 @@ public class ChildNodeRPCService : NodeToNodeConnection.NodeToNodeConnectionBase
         }
     }
 
-    public override Task<Empty> BlockCreated(BlockCreatedRequest request, ServerCallContext context)
+    public override Task<BlockCreatedReply> BlockCreated(BlockCreatedRequest request, ServerCallContext context)
     {
         try
         {
             logger.LogInformation($"Blocked received {request.Block}");
             ILedgerPhysicalBlock pb = ledgerManager.SyncBlock(request.Block, request.Verification);
-            return Task.FromResult(new Empty());
-        } // catch LedgerBlockException and return fail block created
+
+            BlockCreatedReply reply = new BlockCreatedReply()
+            {
+                Block = request.Block,
+                Verification = request.Verification,
+                Result = BlockStatus.Approved.ToString()
+            };
+
+            logger.LogInformation($"Blocked accepted {request.Block}");
+            return Task.FromResult(reply);
+        }
+        catch (LedgerBlockException)
+        {
+            BlockCreatedReply reply = new BlockCreatedReply()
+            {
+                Block = request.Block,
+                Verification = request.Verification,
+                Result = BlockStatus.Rejected.ToString()
+            };
+
+            return Task.FromResult(reply);
+        }
         catch (Exception ex)
         {
             logger.LogCritical(ex.Message);

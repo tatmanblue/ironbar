@@ -80,22 +80,55 @@ public class BootNodeRPCClient : IHostedService, IDisposable
         logger.LogInformation($"BootNodeRPCClient is sharing new block {pb.Id}");
         List<Task> tasks = new();
         int nodesAcceptingBlock = 0;
+        int maxAccepting = connectionManager.ActiveConnections.Count;
+
+        if (0 == maxAccepting)
+        {
+            if (pb.Status == BlockStatus.Unconfirmed)
+                // when there are no child nodes to validate, the status will be confirmed
+                // which indicates boot node accepted the block and theres been no additional validation
+                ledgerManager.AdvanceBlock(pb, BlockStatus.Confirmed);
+            return;
+        }
         
         foreach (ChildNodeConnection conn in connectionManager.ActiveConnections)
         {
             tasks.Add(
-                Task.Run(() => SendBlockToChildNode(pb, conn))
+                Task.Run(() =>
+                {
+                    Interlocked.Add(ref nodesAcceptingBlock, SendBlockToChildNode(pb, conn));
+                })
             );
         }
         
         logger.LogInformation($"Sharing new block with {tasks.Count} nodes ");
         Task.WhenAll(tasks).ContinueWith(done =>
         {
-            logger.LogDebug($"Child nodes notified of new block, accepting nodes {nodesAcceptingBlock}");
-        });
+            logger.LogDebug("All nodes have replied");
+        }).Wait();
+        
+        logger.LogInformation($"{maxAccepting} child nodes notified of new block, accepting nodes {nodesAcceptingBlock}");
+        
+        // only handle block advancement when input block started as unconfirmed
+        if (pb.Status != BlockStatus.Unconfirmed)
+            return;
+        
+        int bftPercentRequired = EnvironmentUtility.FromEnvOrDefaultAsInt("IRONBAR_BFT_PERCENT", "50");
+        double bftCompute = (double)nodesAcceptingBlock / maxAccepting;
+        int bftAcceptance = (int) Math.Floor(bftCompute * 100);
+
+        if (bftAcceptance >= bftPercentRequired)
+        {
+            ledgerManager.AdvanceBlock(pb, BlockStatus.Approved);
+        }
+        else
+        {
+            logger.LogCritical($"Not enough child nodes accepted block {pb.Id} to accept block");
+            ledgerManager.AdvanceBlock(pb, BlockStatus.Rejected);
+        }
     }
 
-    private void SendBlockToChildNode(ILedgerPhysicalBlock pb, ChildNodeConnection conn)
+    private int SendBlockToChildNode(ILedgerPhysicalBlock pb, ChildNodeConnection conn)
     {
         var channel = GrpcChannel.ForAddress(conn.Address);
         var client = new NodeToNodeConnection.NodeToNodeConnectionClient(channel);
@@ -104,9 +137,12 @@ public class BootNodeRPCClient : IHostedService, IDisposable
             Block = pb.ToString(),
             Verification = pb.Hash
         };
-        var empty = client.BlockCreated(blockCreatedRequest);
-        // TODO if client rejects the ledger, it means there is a problem like synchronization or bad actor.
-        // TODO what should happen?  
+        BlockCreatedReply reply = client.BlockCreated(blockCreatedRequest);
+        BlockStatus replyStatus = Enum.Parse<BlockStatus>(reply.Result);
+        if (pb.Status == BlockStatus.Unconfirmed && replyStatus == BlockStatus.Approved)
+            return 1;
+
+        return 0;
     }
 
     private void OnNotifyNodeOfShutdown(ChildNodeConnection clientNode)
