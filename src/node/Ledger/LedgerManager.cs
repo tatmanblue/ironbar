@@ -109,6 +109,18 @@ public class LedgerManager : ILedgerManager
         return pb;
     }
 
+    public ILedgerPhysicalBlock AdvanceBlock(ILedgerPhysicalBlock pb, BlockStatus status)
+    {
+        if (false == isOperational)
+            throw new LedgerException("LedgerManager", $"LedgerManager is not operational");
+
+        ILedgerPhysicalBlock updatedBlock = ledgers[0].AdvanceBlock(pb, status);
+        
+        eventPub?.FireBlockCreated(updatedBlock);
+
+        return updatedBlock;
+    }
+    
     public ILedgerPhysicalBlock GetBlock(int id)
     {
         // couple of problems here:
@@ -164,15 +176,15 @@ public class LedgerManager : ILedgerManager
     /// </summary>
     /// <param name="block"></param>
     /// <param name="verification"></param>
-    public void SyncBlock(string block, string verification)
+    public ILedgerPhysicalBlock SyncBlock(string block, string verification)
     {
         ILedgerPhysicalBlock pb = PhysicalBlock.FromString(block);
         if (pb.Hash != verification)
             throw new LedgerBlockException($"Hash mismatch {pb.Id}");
 
         ledgers[0].ValidateBlock(pb);
-        
         ledgers[0].SyncBlock(pb);
         logger.LogInformation($"Block {pb.Id} received");
+        return pb;
     }
 }

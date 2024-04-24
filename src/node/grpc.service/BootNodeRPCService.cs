@@ -30,7 +30,12 @@ public class BootNodeRPCService : NodeToNodeConnection.NodeToNodeConnectionBase
     {
         logger.LogInformation($"Connection established from {request.ClientAddr} {context.Host} {context.Method} {context.Peer}");
 
-        ChildNodeConnection connection = new ChildNodeConnection { Address = request.ClientAddr };
+        ChildNodeConnection connection = new ChildNodeConnection
+        {
+            Address = request.ClientAddr, 
+            Name = request.FriendlyName,
+            Version = request.NodeVersion
+        };
         connectionManager.AddNewChildNode(connection);
         
         eventPub.FireClientConnected(connection);
@@ -43,12 +48,11 @@ public class BootNodeRPCService : NodeToNodeConnection.NodeToNodeConnectionBase
     
     public override Task<DisconnectReply> Disconnect(DisconnectRequest request, ServerCallContext context)
     {
-        // TODO:
         logger.LogInformation($"Node disconnecting {request.ClientAddr}");
-        connectionManager.RemoveChildNode(request.ClientAddr);
+        connectionManager.RemoveChildNode(request.FriendlyName);
         return Task.FromResult(new DisconnectReply
         {
-            Message = $"Goodbye {request.ClientAddr}"
+            Message = $"Goodbye {request.FriendlyName} {request.ClientAddr}"
         });
     }
     #endregion

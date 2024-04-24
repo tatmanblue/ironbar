@@ -12,5 +12,13 @@ public class ChildPhysicalBlockValidator : IPhysicalBlockValidator
             throw new LedgerNotValidException($"Invalid Chain. block {block.Id}");
         if (block.ParentId != lastParentIndex.BlockId)
             throw new LedgerNotValidException($"Invalid Chain. block {block.Id}");
+        
+        if (0 == block.ReferenceId)
+            return;
+        
+        ILedgerIndex reference = indexes.GetIndex(block.ReferenceId);
+        if (block.ReferenceHash != reference.Hash)
+            throw new LedgerNotValidException($"Invalid Chain. block {block.Id}");
+
     }
 }

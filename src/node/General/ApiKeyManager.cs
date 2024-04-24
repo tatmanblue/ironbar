@@ -14,12 +14,25 @@ public class ApiKeyManager
     private string writeApiKey = string.Empty;
     private string readApiKey = string.Empty;
     private string readDetailsApiKey = string.Empty;
+    private string adminApiKey = string.Empty;
 
     public ApiKeyManager()
     {
         writeApiKey = FromEnvOrDefault("IRONBAR_WRITE_API_KEY", "");
         readApiKey = FromEnvOrDefault("IRONBAR_READ_API_KEY", "");
         readDetailsApiKey = FromEnvOrDefault("IRONBAR_READ_DETAILS_API_KEY", "");
+        adminApiKey = FromEnvOrDefault("IRONBAR_ADMIN_API_KEY", "");
+    }
+
+    public bool IsAdmin(string apiKey)
+    {
+        if (string.IsNullOrEmpty(adminApiKey))
+            return false;
+        
+        if (0 == apiKey.CompareTo(adminApiKey))
+            return true;
+        
+        return false;
     }
     
     public bool IsWriteAllowed(string apiKey)

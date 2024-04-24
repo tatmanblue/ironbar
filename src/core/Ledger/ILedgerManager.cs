@@ -13,7 +13,22 @@ namespace core.Ledger
         void Start(IServiceProvider serviceProvider);
         void Stop();
 
+        /// <summary>
+        /// for creating a new block into the system.  system generates the entire block
+        /// from the input which is the data the consumer wants saved in the block
+        /// </summary>
+        /// <param name="blockData">consumer data to be part of the block</param>
+        /// <returns></returns>
         ILedgerPhysicalBlock Create(string blockData);
+
+        /// <summary>
+        /// "Advances" a block state.  Such as to confirmed from unconfirmed
+        /// Block data does not change.  Block reference Id references previous block
+        /// </summary>
+        /// <param name="pb"></param>
+        /// <param name="status"></param>
+        /// <returns></returns>
+        ILedgerPhysicalBlock AdvanceBlock(ILedgerPhysicalBlock pb, BlockStatus status);
         ILedgerPhysicalBlock GetBlock(int id);
         List<ILedgerIndex> ListAllBlocks();
 
@@ -28,6 +43,7 @@ namespace core.Ledger
         /// </summary>
         /// <param name="block"></param>
         /// <param name="verification"></param>
-        void SyncBlock(string block, string verification);
+        /// <returns></returns>
+        ILedgerPhysicalBlock SyncBlock(string block, string verification);
     }
 }

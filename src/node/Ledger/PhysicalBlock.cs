@@ -9,12 +9,14 @@ namespace Node.Ledger;
 
 public class PhysicalBlock : ILedgerPhysicalBlock
 {
+    #region ILedgerPhysicalBlock properties
     public int Id { get; internal set; } = -1;
 
     public int ParentId { get; internal set; } = -1;
     public int ReferenceId { get; internal set; } = 0;
 
     public string ParentHash { get; internal set; } = "0";
+    public string ReferenceHash { get; internal set; } = HashUtility.ComputeHash(Nonce.New().ToString());
 
     public int LedgerId { get; internal set; }
 
@@ -32,13 +34,14 @@ public class PhysicalBlock : ILedgerPhysicalBlock
     public BlockStatus Status { get; private set; }
 
     public ILedgerSignBlock SignBlock { get; internal set; }
-
+    #endregion
+    
     protected internal PhysicalBlock(BlockStatus status)
     {
         Status = status;
     }
     
-    public string ComputeHash()
+    private string ComputeHash()
     {
         return HashUtility.ComputeHash(HashString());
     }
@@ -51,28 +54,61 @@ public class PhysicalBlock : ILedgerPhysicalBlock
     {
         // TODO: what about the sign block and Status
         string transactionDataString = Encoding.UTF8.GetString(TransactionData, 0, TransactionData.Length);
-        string objectString = $"{ParentId}:{Id}:{ParentHash}:{ReferenceId}:{LedgerId}:{TimeStamp}:{Nonce}:{transactionDataString}";
+        string objectString = $"{ParentId}:{Id}:{ParentHash}:{ReferenceId}:{ReferenceHash}:{LedgerId}:{TimeStamp}:{Nonce}:{transactionDataString}";
 
         return objectString;
     }
 
     public override string ToString()
     {
+        /*
+          Order of elements in the string are as follows
+          0 - ParentId
+          1 - BlockId
+          2 - ParentHash
+          3 - ReferenceId
+          4 - ReferenceHash
+          5 - LedgerId
+          6 - Time Stamp
+          7 - Nonce
+          8 - status
+          9 - actual data
+         10 - hash
+        */
         string transactionDataString = Encoding.UTF8.GetString(TransactionData, 0, TransactionData.Length); 
+        
         // TODO: what about the sign block
-        string objectString = $"{ParentId}:{Id}:{ParentHash}:{ReferenceId}:{LedgerId}:{TimeStamp.ToFileDateTime()}:{Nonce}:{Status}:{transactionDataString}:{Hash}";
+        // DO NOT use  Verbatim String Literals (@) to make this easier to read is it affects actual output
+        string objectString = $@"{ParentId}:{Id}:{ParentHash}:{ReferenceId}:{ReferenceHash}:{LedgerId}:{TimeStamp.ToFileDateTime()}:{Nonce}:{Status}:{transactionDataString}:{Hash}";
 
         return objectString;
     }
 
     public static PhysicalBlock FromString(string data)
     {
+        /*
+          Order of elements in the string are as follows
+          0 - ParentId
+          1 - BlockId
+          2 - ParentHash
+          3 - ReferenceId
+          4 - ReferenceHash
+          5 - LedgerId
+          6 - Time Stamp
+          7 - Nonce
+          8 - status
+          9 - actual data
+         10 - hash
+          
+        */
+        
+        
         string[] elements = data.Split(":");
         DateTime timeStamp;
-        if (false == DateTime.TryParseExact(elements[5], Constants.DateTimeFormat, System.Globalization.CultureInfo.InvariantCulture, System.Globalization.DateTimeStyles.None, out timeStamp))
-            throw new LedgerNotValidException($"{elements[5]}");
+        if (false == DateTime.TryParseExact(elements[6], Constants.DateTimeFormat, System.Globalization.CultureInfo.InvariantCulture, System.Globalization.DateTimeStyles.None, out timeStamp))
+            throw new LedgerNotValidException($"{elements[6]}");
 
-        BlockStatus status = Enum.Parse<BlockStatus>(elements[7]);
+        BlockStatus status = Enum.Parse<BlockStatus>(elements[8]);
 
         PhysicalBlock block = new PhysicalBlock(status)
         {
@@ -80,14 +116,15 @@ public class PhysicalBlock : ILedgerPhysicalBlock
             Id = Convert.ToInt32(elements[1]),
             ParentHash = elements[2],
             ReferenceId = Convert.ToInt32(elements[3]),
-            LedgerId = Convert.ToInt32(elements[4]),
+            ReferenceHash = elements[4],
+            LedgerId = Convert.ToInt32(elements[5]),
             TimeStamp = timeStamp,
-            Nonce = Nonce.FromString(elements[6]),
-            TransactionData = Encoding.UTF8.GetBytes(elements[8])
+            Nonce = Nonce.FromString(elements[7]),
+            TransactionData = Encoding.UTF8.GetBytes(elements[9])
         };
 
         // compare hash from string with computedHash. they should match
-        if (elements[9] != block.Hash)
+        if (elements[10] != block.Hash)
             throw new LedgerNotValidException($"block {block.Id}");
 
         return block;

@@ -7,6 +7,7 @@ service BlockHandlingApi {
     rpc Create(CreateBlockRequest) returns (CreateBlockReply);
     rpc Read(ReadBlockRequest) returns (ReadBlockReply);
     rpc List(ListBlocksRequest) returns (ListBlocksReply);
+    rpc ListNodes(ListNodesRequest) returns (ListNodesReply);
 }
 
 message CreateBlockRequest {
@@ -52,4 +53,18 @@ message Block {
   string status = 2;
   string blockHash = 3;
   string blockData = 4;
+}
+
+message ListNodesRequest {
+  string apiKey = 1;
+}
+
+message ListNodesReply {
+  repeated NodeInfo nodes = 1;
+}
+
+message NodeInfo
+{
+  string name = 1;
+  string version = 2;
 }

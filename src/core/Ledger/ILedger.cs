@@ -54,6 +54,8 @@ namespace core.Ledger
         /// <param name="block"></param>
         /// <returns></returns>
         ILedgerPhysicalBlock AddBlock(ILedgerPhysicalBlock block);
+
+        ILedgerPhysicalBlock AdvanceBlock(ILedgerPhysicalBlock pb, BlockStatus status);
         /// <summary>
         /// Expectation is this block is being sourced from an external client
         /// such as a webpage or mobile app and so the block will be treated as new.  This

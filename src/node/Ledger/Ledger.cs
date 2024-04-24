@@ -9,21 +9,21 @@ using Node.Interfaces;
 namespace Node.Ledger;
 
 /// <summary>
-/// A ledger, which consistents of blockchain entries
+/// A ledger, which consists of blockchain entries
 /// There is at least 1 ledger, most likely multiple.  The
-/// ledger with ID=1 is the master ledger.
+/// ledger with ID=1 is the master ledger.  All content for one ledger is
+/// written to single directory.
 /// 
 /// A ledger consists of an index, which is the list of all
 /// blocks in the ledger, and blocks, which is the data of the ledger.
 ///
-/// A block has two parts.  The block itself and a consenus entry which
+/// A block has two parts.  The block itself and a consensus entry which
 /// confirms all nodes running at the time agreed to the block.  The
-/// block and the consens entry are written to separate files.
+/// block and the consensus entry are written to separate files.
 /// </summary>
 public class Ledger : ILedger
 {
-    private readonly ILogger<Ledger> logger;
-    
+    #region ILedger properties
     /// <summary>
     /// Ledger ID.  1 is master ledger.  It is controlled by the nodes
     /// with the master bootnode overall "overseer"
@@ -49,7 +49,10 @@ public class Ledger : ILedger
     ///  
     /// </summary>
     public ILedgerIndexManager Indexes { get; private set; }
+    #endregion
     
+    private readonly ILogger<Ledger> logger;
+
     private string LedgerPath => System.IO.Path.Combine(this.RootDataPath, this.Name);
 
     private string LedgerIndexFileName => System.IO.Path.Combine(LedgerPath, "index.txt");
@@ -156,6 +159,12 @@ public class Ledger : ILedger
         }
     }
 
+    /// <summary>
+    /// TODO this method is not used publicly
+    /// </summary>
+    /// <param name="block"></param>
+    /// <returns></returns>
+    /// <exception cref="LedgerException"></exception>
     public ILedgerPhysicalBlock AddBlock(ILedgerPhysicalBlock block)
     {
         if (LedgerState.Available != State)
@@ -176,6 +185,27 @@ public class Ledger : ILedger
             ParentId = parent.BlockId,
             LedgerId = Id,
             TransactionData = data,
+            SignBlock = new SignBlock()
+        };
+        return AddBlock(block);
+    }
+
+    public ILedgerPhysicalBlock AdvanceBlock(ILedgerPhysicalBlock pb, BlockStatus status)
+    {
+        ValidateBlock(pb);
+        
+        int blockId = Indexes.GetNextBlockId();
+        ILedgerIndex parent = Indexes.GetIndex(blockId - 1);
+        
+        PhysicalBlock block = new PhysicalBlock(status)
+        {
+            Id = blockId,
+            ParentHash = parent.Hash,
+            ParentId = parent.BlockId,
+            ReferenceId = pb.Id,
+            ReferenceHash = pb.ReferenceHash,
+            LedgerId = Id,
+            TransactionData = pb.TransactionData,
             SignBlock = new SignBlock()
         };
         return AddBlock(block);

@@ -12,11 +12,13 @@ namespace core.Ledger
     public enum BlockStatus
     {
         Error,                  
-        Unconfirmed,
-        Confirmed,
-        Approved,
+        Unconfirmed,                                // starting state for any block
+        Confirmed,                                  // sent by child node stating unconfirmed block is acceptable
+                                                    // if a block is saved as confirmed, it means theres no child nodes
+        Approved,                                   // updated by boot node when unconfirmed nodes confirm block
         System,                                     // mainly for the index block
-        Rejected
+        Rejected,                                   // updated by boot node when enough nodes deny block
+        SystemDeleted                               // special case where status was set without adding new block
     }
 
     public enum LedgerState

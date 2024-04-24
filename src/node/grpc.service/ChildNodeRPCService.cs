@@ -47,9 +47,9 @@ public class ChildNodeRPCService : NodeToNodeConnection.NodeToNodeConnectionBase
         try
         {
             logger.LogInformation($"Blocked received {request.Block}");
-            ledgerManager.SyncBlock(request.Block, request.Verification);
+            ILedgerPhysicalBlock pb = ledgerManager.SyncBlock(request.Block, request.Verification);
             return Task.FromResult(new Empty());
-        }
+        } // catch LedgerBlockException and return fail block created
         catch (Exception ex)
         {
             logger.LogCritical(ex.Message);

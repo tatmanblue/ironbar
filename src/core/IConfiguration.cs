@@ -2,7 +2,7 @@
 namespace core
 {
     /// <summary>
-    /// This replaces IOption (in node)
+    /// 
     /// </summary>
     public interface IConfiguration
     {

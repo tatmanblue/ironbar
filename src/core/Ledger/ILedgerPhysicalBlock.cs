@@ -23,6 +23,7 @@ namespace core.Ledger
         /// </summary>
         int ReferenceId { get; }
         string ParentHash { get; }
+        string ReferenceHash { get; }
         int LedgerId { get; }
         DateTime TimeStamp { get; }
         Nonce Nonce { get; }
@@ -31,6 +32,5 @@ namespace core.Ledger
         BlockStatus Status { get; }
         ILedgerSignBlock SignBlock { get; }
 
-        string ComputeHash();
     }
 }

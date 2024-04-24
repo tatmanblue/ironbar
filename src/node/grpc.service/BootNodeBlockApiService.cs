@@ -15,12 +15,14 @@ public class BootNodeBlockApiService : BlockHandlingApi.BlockHandlingApiBase
     private readonly ILogger<BootNodeBlockApiService> logger;
     private readonly ILedgerManager ledgerManager;
     private readonly ApiKeyManager apiKeyManager;
+    private readonly ConnectionManager connectionManager;
     
-    public BootNodeBlockApiService(ILogger<BootNodeBlockApiService> logger, ApiKeyManager apiKeyManager, ILedgerManager ledgerManager)
+    public BootNodeBlockApiService(ILogger<BootNodeBlockApiService> logger,ILedgerManager ledgerManager, ApiKeyManager apiKeyManager, ConnectionManager connectionManager)
     {
         this.logger = logger;
         this.apiKeyManager = apiKeyManager;
         this.ledgerManager = ledgerManager;
+        this.connectionManager = connectionManager;
     }
 
     public override Task<CreateBlockReply> Create(CreateBlockRequest request, ServerCallContext context)
@@ -111,5 +113,25 @@ public class BootNodeBlockApiService : BlockHandlingApi.BlockHandlingApiBase
         {
             throw new BlockChainSystemException("List Blocks failed");
         }
+    }
+
+    public override Task<ListNodesReply> ListNodes(ListNodesRequest request, ServerCallContext context)
+    {
+        if (false == apiKeyManager.IsAdmin(request.ApiKey))
+            throw new ApiKeyManagerException();
+
+        ListNodesReply response = new ListNodesReply();
+
+        foreach (ChildNodeConnection conn in connectionManager.ActiveConnections)
+        {
+            NodeInfo info = new NodeInfo()
+            {
+                Name = conn.Name,
+                Version = conn.Version
+            };
+            response.Nodes.Add(info);
+        }
+
+        return Task.FromResult(response);
     }
 }

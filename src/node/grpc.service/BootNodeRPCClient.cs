@@ -77,8 +77,9 @@ public class BootNodeRPCClient : IHostedService, IDisposable
 
     private void OnBlockCreated(ILedgerPhysicalBlock pb)
     {
-        logger.LogInformation("BootNodeRPCClient is sharing new block");
+        logger.LogInformation($"BootNodeRPCClient is sharing new block {pb.Id}");
         List<Task> tasks = new();
+        int nodesAcceptingBlock = 0;
         
         foreach (ChildNodeConnection conn in connectionManager.ActiveConnections)
         {
@@ -87,10 +88,10 @@ public class BootNodeRPCClient : IHostedService, IDisposable
             );
         }
         
-        logger.LogInformation($"Shared new block with {tasks.Count} nodes ");
+        logger.LogInformation($"Sharing new block with {tasks.Count} nodes ");
         Task.WhenAll(tasks).ContinueWith(done =>
         {
-            logger.LogDebug("Child nodes notified of new block");
+            logger.LogDebug($"Child nodes notified of new block, accepting nodes {nodesAcceptingBlock}");
         });
     }
 
@@ -104,7 +105,8 @@ public class BootNodeRPCClient : IHostedService, IDisposable
             Verification = pb.Hash
         };
         var empty = client.BlockCreated(blockCreatedRequest);
-        // TODO if client rejects the ledger, it means there is a synchronization problem. what should happen? 
+        // TODO if client rejects the ledger, it means there is a problem like synchronization or bad actor.
+        // TODO what should happen?  
     }
 
     private void OnNotifyNodeOfShutdown(ChildNodeConnection clientNode)

@@ -48,9 +48,9 @@ public class ConnectionManager
         children.Add(child);
     }
 
-    public void RemoveChildNode(string address)
+    public void RemoveChildNode(string friendlyName)
     {
-        ChildNodeConnection child = children.Find(c => c.Address == address);
+        ChildNodeConnection child = children.Find(c => c.Name == friendlyName);
         children.Remove(child);
     }
 
