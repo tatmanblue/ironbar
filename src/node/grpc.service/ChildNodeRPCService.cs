@@ -25,6 +25,7 @@ public class ChildNodeRPCService : NodeToNodeConnection.NodeToNodeConnectionBase
         this.eventPub = eventPub;
         this.ledgerIndexFactory = ledgerIndexFactory;
         this.ledgerManager = ledgerManager;
+        logger.LogInformation($"ChildNodeRPCService initialized.");
     }
 
     public override Task<Empty> SyncIndex(IndexRequest request, ServerCallContext context)

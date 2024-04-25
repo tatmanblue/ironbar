@@ -23,6 +23,7 @@ public class BootNodeRPCService : NodeToNodeConnection.NodeToNodeConnectionBase
         this.connectionManager = connectionManager;
         this.logger = logger;
         this.eventPub = eventPub;
+        logger.LogInformation($"BootNodeRPCService initialized.");
     }
 
     #region connection APIS

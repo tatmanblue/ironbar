@@ -25,11 +25,16 @@ public class ChildNodeService : IHostedService, IDisposable
 
     public Task StopAsync(CancellationToken cancellationToken)
     {
-        logger.LogInformation("ClientNodeService is stopping.");
-        serviceState = ChildNodeServiceState.ShuttingDown;
+        logger.LogInformation($"ClientNodeService is stopping. {serviceState}");
         doWorkDelay.Change(Timeout.Infinite, 0);
 
-        // send message to bootnode this node is going off line
+        if (serviceState != ChildNodeServiceState.Running)
+        {
+            serviceState = ChildNodeServiceState.ShuttingDown;
+            return Task.CompletedTask;
+        }
+
+        serviceState = ChildNodeServiceState.ShuttingDown;
         rpcClient.SendShuttingDownMessage();
 
         return Task.CompletedTask;

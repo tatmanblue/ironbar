@@ -12,6 +12,8 @@ public class ConfigurationOptions : IConfiguration
     /// this is the friendly name that appears in logs etc....
     /// </summary>
     public string FriendlyName { get; set; } = "Node";
+
+    public string Version { get; } = "0.0.3";
     /// <summary>
     /// This node, boot or child, will listen for RPC calls on this port
     /// </summary>
@@ -40,7 +42,8 @@ public class ConfigurationOptions : IConfiguration
         return $"\r\n" +
                $"IsBootNode: {IsBootNode}\r\n" +
                $"RPC Server: {BootAddress}\r\n" +
-               $"RPC Port: {RPCPort}\r\n"
+               $"RPC Port: {RPCPort}\r\n" +
+               $"Version: {Version}\r\n"
             ;
     }
 

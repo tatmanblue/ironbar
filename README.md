@@ -73,8 +73,7 @@ The bootnode is responsible for delegating work to additional nodes as well as a
 
 The remaining nodes will be responsible for blockchain management:  creating new chains, validating , and distributed storage of chains (distributed block chain ledger).
 
-When a new block is created, the bootnode will randomly assign creation to some nodes and randomly assign
-validation to some nodes.   
+When a new block is created, the bootnode will assign validation to all nodes.   
 
 When there is only 1 node, the bootnode handles it all and there is no distributed block chain ledger.
 

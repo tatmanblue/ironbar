@@ -26,7 +26,7 @@ To be able to deploy one or more interoperable nodes to Azure, AWS and locally
 
 
 ### To completion Steps
-1. Nodes validate and approve ledger
+1. Nodes validate and approve ledger (partially done)
 
 
 

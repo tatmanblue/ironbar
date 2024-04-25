@@ -10,6 +10,7 @@ namespace core
         /// this is the friendly name that appears in logs etc....
         /// </summary>
         string FriendlyName { get; }
+        string Version { get; }
         /// <summary>
         /// true means the node is bootnode, which means the node controls
         /// behaviors of other nodes. 

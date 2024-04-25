@@ -15,8 +15,13 @@ namespace Node
             ConfigurationOptions configurationOptions = ConfigurationOptions.FromEnvironment();
             
             var builder = WebApplication.CreateBuilder(args);
+
+            builder.Logging.ClearProviders();
+            builder.Logging.AddConsole(options =>
+            {
+                options.Format = Microsoft.Extensions.Logging.Console.ConsoleLoggerFormat.Default;
+            });
             
-            builder.Logging.AddConsole();
             builder.Services.AddGrpc().AddServiceOptions<BootNodeBlockApiService>(options =>
             {
                 // just a hard restriction on input specifically for creating blocks

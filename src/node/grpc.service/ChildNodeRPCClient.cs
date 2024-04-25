@@ -28,18 +28,16 @@ public class ChildNodeRPCClient
         {
             Task.Delay(delay).Wait();
             AppContext.SetSwitch("System.Net.Http.SocketsHttpHandler.Http2UnencryptedSupport", true);
-            // TODO need to fix this and get actual address
-            string localIP = "localhost";
+            string localIP = $"{IpAddressUtility.LocalIP()}";
             string bootNodeIP = $"{options.BootAddress}";
-            logger.LogInformation($"Attempting connect to channel is: {bootNodeIP} and my ip is {IpAddressUtility.LocalIP().ToString()}");
+            logger.LogInformation($"Attempting connect to channel is: {bootNodeIP} and my ip is {localIP}");
             var channel = GrpcChannel.ForAddress(bootNodeIP);
             var client = new NodeToNodeConnection.NodeToNodeConnectionClient(channel);
             var reply = client.Connect(new ConnectRequest()
             {
-                ClientAddr = $"http://{localIP}:{options.RPCPort}",
+                ClientAddr = CreateClientAddress(),
                 FriendlyName = options.FriendlyName,
-                NodeVersion = "n/a"
-                
+                NodeVersion = options.Version
             });
             logger.LogInformation("BootNode says: " + reply.Message);
 
@@ -67,7 +65,11 @@ public class ChildNodeRPCClient
             logger.LogInformation($"Attempting connect to channel is: {bootNodeIP} and my ip is {localIP}");
             var channel = GrpcChannel.ForAddress(bootNodeIP);
             var client = new NodeToNodeConnection.NodeToNodeConnectionClient(channel);
-            var reply = client.Disconnect(new DisconnectRequest() { ClientAddr = $"http://{localIP}:{options.RPCPort}" });
+            var reply = client.Disconnect(new DisconnectRequest()
+            {
+                ClientAddr = CreateClientAddress(),
+                FriendlyName = options.FriendlyName
+            });
             logger.LogInformation("BootNode says: " + reply.Message);
 
             return true;
@@ -82,6 +84,11 @@ public class ChildNodeRPCClient
 
             return false;
         }
+    }
 
+    private string CreateClientAddress()
+    {
+        string localIP = $"{IpAddressUtility.LocalIP()}";
+        return $"http://{localIP}:{options.RPCPort}";
     }
 }

@@ -54,3 +54,8 @@ SET IRONBAR_TYPE=child
 
 
 
+SET IRONBAR_BOOT_SERVER=https://ironbar-bootnode-6iwlqscuzq-uc.a.run.app:50051
+SET IRONBAR_DATA_PATH=f:\temp\ironbar
+SET IRONBAR_RPC_PORT=50055
+SET IRONBAR_NODE_NAME=node_gc
+SET IRONBAR_TYPE=child

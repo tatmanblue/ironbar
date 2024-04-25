@@ -23,6 +23,7 @@ public class BootNodeBlockApiService : BlockHandlingApi.BlockHandlingApiBase
         this.apiKeyManager = apiKeyManager;
         this.ledgerManager = ledgerManager;
         this.connectionManager = connectionManager;
+        logger.LogInformation($"BootNodeBlockApiService initialized.");
     }
 
     public override Task<CreateBlockReply> Create(CreateBlockRequest request, ServerCallContext context)
