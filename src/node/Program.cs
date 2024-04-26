@@ -42,7 +42,7 @@ namespace Node
                 // TODO: should not use hardcoded Any.  Find more flexible options
                 
                 // Setup a HTTP/2 endpoint without TLS.  This is for listening for GRPC calls
-                kestrelOptions.Listen(IPAddress.Any, configurationOptions.RPCPort, o => o.Protocols = HttpProtocols.Http2);
+                kestrelOptions.Listen(IPAddress.Any, configurationOptions.RPCPort, o => o.Protocols = HttpProtocols.Http1AndHttp2);
             });
             
             var app = builder.Build();

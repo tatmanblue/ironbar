@@ -1,6 +1,7 @@
 ﻿using System.Net;
 using System.Net.Sockets;
 using core.Utility;
+using Grpc.Core;
 using Grpc.Net.Client;
 using IConfiguration = core.IConfiguration;
 
@@ -27,10 +28,30 @@ public class ChildNodeRPCClient
         try
         {
             Task.Delay(delay).Wait();
-            AppContext.SetSwitch("System.Net.Http.SocketsHttpHandler.Http2UnencryptedSupport", true);
             string localIP = $"{IpAddressUtility.LocalIP()}";
             string bootNodeIP = $"{options.BootAddress}";
+            
+
             logger.LogInformation($"Attempting connect to channel is: {bootNodeIP} and my ip is {localIP}");
+
+            AppContext.SetSwitch("System.Net.Http.SocketsHttpHandler.Http2UnencryptedSupport", true);
+            /*
+            var channelOptions = new GrpcChannelOptions();
+            channelOptions.HttpClient = new HttpClient()
+            {
+                BaseAddress = new Uri(bootNodeIP),
+                DefaultRequestVersion = new Version(1, 1),
+            };
+            channelOptions.Credentials = ChannelCredentials.Insecure;
+            
+            channelOptions.HttpHandler = new HttpClientHandler()
+            {
+                // Set the HTTP version explicitly to 1.1
+                MaxHttpVersion = System.Net.HttpVersion.Version11
+            };
+            var channel = GrpcChannel.ForAddress(bootNodeIP, channelOptions);
+            */
+            
             var channel = GrpcChannel.ForAddress(bootNodeIP);
             var client = new NodeToNodeConnection.NodeToNodeConnectionClient(channel);
             var reply = client.Connect(new ConnectRequest()
