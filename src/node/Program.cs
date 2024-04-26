@@ -1,5 +1,6 @@
 
 using System.Net;
+using System.Security.Authentication;
 using core.Ledger;
 using Microsoft.AspNetCore.Server.Kestrel.Core;
 using Node.General;
@@ -39,10 +40,15 @@ namespace Node
 
             builder.WebHost.ConfigureKestrel(kestrelOptions =>
             {
-                // TODO: should not use hardcoded Any.  Find more flexible options
-                
                 // Setup a HTTP/2 endpoint without TLS.  This is for listening for GRPC calls
-                kestrelOptions.Listen(IPAddress.Any, configurationOptions.RPCPort, o => o.Protocols = HttpProtocols.Http1AndHttp2);
+                kestrelOptions.Listen(IPAddress.Any, configurationOptions.RPCPort, o =>
+                {
+                    o.Protocols = HttpProtocols.Http2;
+                });
+                kestrelOptions.ConfigureHttpsDefaults(o =>
+                {
+                    o.SslProtocols = SslProtocols.None;
+                });
             });
             
             var app = builder.Build();

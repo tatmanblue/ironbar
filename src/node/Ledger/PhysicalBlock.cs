@@ -106,7 +106,7 @@ public class PhysicalBlock : ILedgerPhysicalBlock
         string[] elements = data.Split(":");
         DateTime timeStamp;
         if (false == DateTime.TryParseExact(elements[6], Constants.DateTimeFormat, System.Globalization.CultureInfo.InvariantCulture, System.Globalization.DateTimeStyles.None, out timeStamp))
-            throw new LedgerNotValidException($"{elements[6]}");
+            throw new LedgerBlockException($"Failed to get time stamp: {elements[6]}");
 
         BlockStatus status = Enum.Parse<BlockStatus>(elements[8]);
 
@@ -125,7 +125,7 @@ public class PhysicalBlock : ILedgerPhysicalBlock
 
         // compare hash from string with computedHash. they should match
         if (elements[10] != block.Hash)
-            throw new LedgerNotValidException($"block {block.Id}");
+            throw new LedgerBlockException($"block {block.Id} PhysicalBlock failed to deserialize");
 
         return block;
     }

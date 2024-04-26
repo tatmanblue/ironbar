@@ -180,7 +180,7 @@ public class LedgerManager : ILedgerManager
     {
         ILedgerPhysicalBlock pb = PhysicalBlock.FromString(block);
         if (pb.Hash != verification)
-            throw new LedgerBlockException($"Hash mismatch {pb.Id}");
+            throw new LedgerBlockException($"Verification hash mismatch {pb.Id}");
 
         ledgers[0].ValidateBlock(pb);
         ledgers[0].SyncBlock(pb);

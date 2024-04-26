@@ -47,7 +47,7 @@ public class ChildNodeRPCService : NodeToNodeConnection.NodeToNodeConnectionBase
     {
         try
         {
-            logger.LogInformation($"Blocked received {request.Block}");
+            logger.LogTrace($"Blocked received {request.Block}");
             ILedgerPhysicalBlock pb = ledgerManager.SyncBlock(request.Block, request.Verification);
 
             BlockCreatedReply reply = new BlockCreatedReply()
@@ -57,11 +57,12 @@ public class ChildNodeRPCService : NodeToNodeConnection.NodeToNodeConnectionBase
                 Result = BlockStatus.Approved.ToString()
             };
 
-            logger.LogInformation($"Blocked accepted {request.Block}");
+            logger.LogDebug($"Blocked accepted {request.Block}");
             return Task.FromResult(reply);
         }
-        catch (LedgerBlockException)
+        catch (LedgerBlockException lbe)
         {
+            logger.LogError($"LedgerBlockException: {lbe.Message}");
             BlockCreatedReply reply = new BlockCreatedReply()
             {
                 Block = request.Block,
