@@ -57,7 +57,8 @@ public class BootNodeRPCClient : IHostedService, IDisposable
     
     private void OnChildNodeCreated(ChildNodeConnection conn)
     {
-        logger.LogInformation($"BootNodeRPCClient is handling a new node {conn.Name}/{conn.Address}");
+        // Task.Delay(2000).Wait();
+        logger.LogInformation($"BootNodeRPCClient is handling a new node {conn.Name} using {conn.Address}");
         IndexRequest request = new IndexRequest();
         List<ILedgerIndex> indexes = ledgerManager.ListAllBlocks();
         string runningHash = string.Empty;
@@ -72,7 +73,7 @@ public class BootNodeRPCClient : IHostedService, IDisposable
         
         var channel = GrpcChannel.ForAddress(conn.Address);
         var client = new NodeToNodeConnection.NodeToNodeConnectionClient(channel);
-        logger.LogDebug($"Channel created for {conn.Name}, sending index using {conn.Address}");
+        logger.LogDebug($"Channel created for {conn.Name}");
         client.SyncIndex(request);
         logger.LogInformation($"Sent index to node {conn.Name}");
     }
@@ -119,6 +120,7 @@ public class BootNodeRPCClient : IHostedService, IDisposable
         double bftCompute = (double)nodesAcceptingBlock / maxAccepting;
         int bftAcceptance = (int) Math.Floor(bftCompute * 100);
 
+        logger.LogDebug($"BFT computations > bftAcceptance:{bftAcceptance} >= bftPercentRequired:{bftPercentRequired} [bftCompute: {bftCompute}]");
         if (bftAcceptance >= bftPercentRequired)
         {
             ledgerManager.AdvanceBlock(pb, BlockStatus.Approved);
