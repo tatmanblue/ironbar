@@ -10,6 +10,8 @@ namespace Node.Ledger;
 /// </summary>
 public class BootNodeServicesEvents : IServicesEventPub, IServicesEventSub
 {
+    private ILogger<BootNodeServicesEvents> logger;
+    
     public async virtual void FireBlockCreated(ILedgerPhysicalBlock pb)
     {
         BlockCreated bc = OnBlockCreated;
@@ -23,6 +25,8 @@ public class BootNodeServicesEvents : IServicesEventPub, IServicesEventSub
     {
         ChildNodeConnected nc = OnChildNodeConnected;
         if (null == nc) return;
+        
+        logger?.LogDebug("Invoking OnChildNodeConnected");
         nc.Invoke(connection);
     }
 
@@ -38,6 +42,11 @@ public class BootNodeServicesEvents : IServicesEventPub, IServicesEventSub
         IndexInitialized indexInitialized = OnIndexInitialized;
         if (null == indexInitialized) return;
         indexInitialized.Invoke();
+    }
+
+    public BootNodeServicesEvents(IServiceProvider serviceProvider)
+    {
+        this.logger = serviceProvider.GetRequiredService<ILogger<BootNodeServicesEvents>>();
     }
 
     #region ILedgerEventSub
@@ -66,6 +75,11 @@ public class ChildNodeServicesEvents : BootNodeServicesEvents
     
     public override void FireServiceShutdown(ChildNodeConnection cn)
     {
+    }
+
+    public ChildNodeServicesEvents(IServiceProvider serviceProvider) : base(serviceProvider)
+    {
+        
     }
 }
 

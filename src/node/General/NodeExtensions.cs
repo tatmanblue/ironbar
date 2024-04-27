@@ -65,6 +65,7 @@ public static class NodeExtensions
         {
               endpoints.MapGrpcService<BootNodeRPCService>();
               endpoints.MapGrpcService<BootNodeBlockApiService>();
+              endpoints.MapHealthChecks("/health");
         });
     }
     
@@ -83,6 +84,7 @@ public static class NodeExtensions
         {
             endpoints.MapGrpcService<ChildNodeService>();
             endpoints.MapGrpcService<ChildNodeRPCService>();
+            endpoints.MapHealthChecks("/health");
         });
     }
 }

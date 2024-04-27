@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Reflection;
 using System.Text.Json.Serialization;
 using core;
 using core.Utility;
@@ -13,7 +14,7 @@ public class ConfigurationOptions : IConfiguration
     /// </summary>
     public string FriendlyName { get; set; } = "Node";
 
-    public string Version { get; } = "0.0.3.2";
+    public string Version { get; } = "0.0.3.5";
     /// <summary>
     /// This node, boot or child, will listen for RPC calls on this port
     /// </summary>
@@ -39,11 +40,18 @@ public class ConfigurationOptions : IConfiguration
 
     public override string ToString()
     {
+        Assembly assembly = Assembly.GetExecutingAssembly();
+        Version version = assembly.GetName().Version;
+
+        // Print the version to the console
+        Console.WriteLine("Assembly Version: " + version);        
+        
         return $"\r\n" +
                $"IsBootNode: {IsBootNode}\r\n" +
                $"RPC Server: {BootAddress}\r\n" +
                $"RPC Port: {RPCPort}\r\n" +
-               $"Version: {Version}\r\n"
+               $"Version: {Version}\r\n" +
+               $"Assembly Version: {version}\r\n"
             ;
     }
 

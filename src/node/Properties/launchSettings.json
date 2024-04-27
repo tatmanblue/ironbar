@@ -38,6 +38,20 @@
         "IRONBAR_NODE_NAME": "node_rider"
       }
     },
+    "gc_child": {
+      "commandName": "Project",
+      "dotnetRunMessages": true,
+      "launchBrowser": false,
+      "applicationUrl": "http://localhost:5295",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "IRONBAR_TYPE": "child",
+        "IRONBAR_NAME": "gc_node_1b",
+        "IRONBAR_RPC_PORT": "50052",
+        "IRONBAR_BOOT_SERVER": "https://ironbar-bootnode-6iwlqscuzq-uc.a.run.app:443",
+        "IRONBAR_DATA_PATH": "f:\\temp\\ironbar"
+      }
+    },
     "http": {
       "commandName": "Project",
       "dotnetRunMessages": true,

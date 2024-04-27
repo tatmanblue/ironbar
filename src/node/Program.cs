@@ -1,5 +1,6 @@
 
 using System.Net;
+using System.Reflection;
 using System.Security.Authentication;
 using core.Ledger;
 using Microsoft.AspNetCore.Server.Kestrel.Core;
@@ -23,9 +24,9 @@ namespace Node
                 options.Format = Microsoft.Extensions.Logging.Console.ConsoleLoggerFormat.Default;
             });
             
+            builder.Services.AddHealthChecks();
             builder.Services.AddGrpc().AddServiceOptions<BootNodeBlockApiService>(options =>
             {
-                // just a hard restriction on input specifically for creating blocks
                 options.MaxReceiveMessageSize = configurationOptions.GrpcMessageSizeLimit * 1024;
             });
             
@@ -56,6 +57,7 @@ namespace Node
             ILogger<Program> l = app.Services.GetRequiredService<ILogger<Program>>();
             l.LogInformation($"Running as configured: {configurationOptions.ToString()}");
 
+            app.UseHealthChecks("/health");
             app.UseRouting(); 
 
             if (false == configurationOptions.IsBootNode)

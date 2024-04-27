@@ -31,6 +31,7 @@ public class ConnectionManager
     /// </summary>
     /// <param name="lifeTime"></param>
     /// <param name="logger"></param>
+    /// <param name="servicesEventPub"></param>
     public ConnectionManager(IHostApplicationLifetime lifeTime, 
         ILogger<ConnectionManager> logger,
         IServicesEventPub servicesEventPub)

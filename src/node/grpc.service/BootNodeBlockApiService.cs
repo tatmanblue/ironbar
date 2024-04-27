@@ -50,6 +50,7 @@ public class BootNodeBlockApiService : BlockHandlingApi.BlockHandlingApiBase
         
         try 
         {
+            logger.LogInformation($"Reading block {request.BlockId}");
             bool readMessage = apiKeyManager.IsReadDetailsAllowed(request.ApiKey);
             ILedgerPhysicalBlock pb = ledgerManager.GetBlock(Convert.ToInt32(request.BlockId));
             string blockData = string.Empty;
@@ -86,6 +87,7 @@ public class BootNodeBlockApiService : BlockHandlingApi.BlockHandlingApiBase
 
         try
         {
+            logger.LogInformation($"Listing blocks details:{request.IncludeBody}");
             bool readMessage = apiKeyManager.IsReadDetailsAllowed(request.ApiKey) && request.IncludeBody;
 
             ListBlocksReply reply = new ListBlocksReply();
@@ -121,6 +123,7 @@ public class BootNodeBlockApiService : BlockHandlingApi.BlockHandlingApiBase
         if (false == apiKeyManager.IsAdmin(request.ApiKey))
             throw new ApiKeyManagerException();
 
+        logger.LogInformation($"Listing nodes");
         ListNodesReply response = new ListNodesReply();
 
         foreach (ChildNodeConnection conn in connectionManager.ActiveConnections)

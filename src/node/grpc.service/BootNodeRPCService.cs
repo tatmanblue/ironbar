@@ -37,10 +37,14 @@ public class BootNodeRPCService : NodeToNodeConnection.NodeToNodeConnectionBase
             Name = request.FriendlyName,
             Version = request.NodeVersion
         };
+        
+        logger.LogDebug("Adding new connection in connection manager");
         connectionManager.AddNewChildNode(connection);
         
+        logger.LogDebug("Firing client connected event");
         eventPub.FireClientConnected(connection);
         
+        logger.LogDebug("Sending reply");
         return Task.FromResult(new ConnectReply
         {
             Message = $"Hello {request.FriendlyName}"

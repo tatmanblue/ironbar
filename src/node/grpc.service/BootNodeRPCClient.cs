@@ -57,9 +57,7 @@ public class BootNodeRPCClient : IHostedService, IDisposable
     
     private void OnChildNodeCreated(ChildNodeConnection conn)
     {
-        logger.LogInformation("BootNodeRPCClient is handling a new node");
-        var channel = GrpcChannel.ForAddress(conn.Address);
-        var client = new NodeToNodeConnection.NodeToNodeConnectionClient(channel);
+        logger.LogInformation($"BootNodeRPCClient is handling a new node {conn.Name}/{conn.Address}");
         IndexRequest request = new IndexRequest();
         List<ILedgerIndex> indexes = ledgerManager.ListAllBlocks();
         string runningHash = string.Empty;
@@ -71,8 +69,12 @@ public class BootNodeRPCClient : IHostedService, IDisposable
         }
 
         request.Verification = runningHash;
+        
+        var channel = GrpcChannel.ForAddress(conn.Address);
+        var client = new NodeToNodeConnection.NodeToNodeConnectionClient(channel);
+        logger.LogDebug($"Channel created for {conn.Name}, sending index using {conn.Address}");
         client.SyncIndex(request);
-        logger.LogInformation("Sent index to node");
+        logger.LogInformation($"Sent index to node {conn.Name}");
     }
 
     private void OnBlockCreated(ILedgerPhysicalBlock pb)
