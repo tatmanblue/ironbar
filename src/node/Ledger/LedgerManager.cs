@@ -140,6 +140,24 @@ public class LedgerManager : ILedgerManager
         return indexes;
     }
 
+    public string CreateIndexesVerification(IList<string> rows)
+    {
+        string runningProof = string.Empty;
+        int count = 1;
+        List<ILedgerIndex> indexes = new List<ILedgerIndex>();
+        foreach (string idx in rows)
+        {
+            logger.LogInformation($"{count}: {idx}");
+            ILedgerIndex ledgerIndex = ledgerIndexFactory.CreateLedgerIndex(idx);
+            indexes.Add(ledgerIndex);
+            runningProof = HashUtility.ComputeHash($"{runningProof}{ledgerIndex.Hash}");
+            
+            count++;
+        }
+
+        return runningProof;
+    }
+
     /// <summary>
     /// this is a child node only function
     /// </summary>
@@ -178,6 +196,9 @@ public class LedgerManager : ILedgerManager
     /// <param name="verification"></param>
     public ILedgerPhysicalBlock SyncBlock(string block, string verification)
     {
+        
+        logger.LogDebug($"Block received is: '{block}'");
+        
         ILedgerPhysicalBlock pb = PhysicalBlock.FromString(block);
         if (pb.Hash != verification)
             throw new LedgerBlockException($"Verification hash mismatch {pb.Id}");

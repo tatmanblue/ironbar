@@ -131,7 +131,8 @@ public class BootNodeBlockApiService : BlockHandlingApi.BlockHandlingApiBase
             NodeInfo info = new NodeInfo()
             {
                 Name = conn.Name,
-                Version = conn.Version
+                Version = conn.Version,
+                State = conn.State.ToString()
             };
             response.Nodes.Add(info);
         }

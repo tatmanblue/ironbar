@@ -81,6 +81,7 @@ public class BootNodeRPCClient : IHostedService, IDisposable
     private void OnBlockCreated(ILedgerPhysicalBlock pb)
     {
         logger.LogInformation($"BootNodeRPCClient is sharing new block {pb.Id}");
+        logger.LogDebug($"The block as string is '{pb.ToString()}'");
         List<Task> tasks = new();
         int nodesAcceptingBlock = 0;
         int maxAccepting = connectionManager.ActiveConnections.Count;
@@ -107,7 +108,7 @@ public class BootNodeRPCClient : IHostedService, IDisposable
         logger.LogInformation($"Sharing new block with {tasks.Count} nodes ");
         Task.WhenAll(tasks).ContinueWith(done =>
         {
-            logger.LogDebug("All nodes have replied");
+            logger.LogDebug($"All nodes have replied. {nodesAcceptingBlock}");
         }).Wait();
         
         logger.LogInformation($"{maxAccepting} child nodes notified of new block, accepting nodes {nodesAcceptingBlock}");

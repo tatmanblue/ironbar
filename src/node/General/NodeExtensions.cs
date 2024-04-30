@@ -1,4 +1,5 @@
 ﻿using core.Ledger;
+using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Node.grpc.service;
 using Node.Interfaces;
 using Node.Ledger;
@@ -66,6 +67,7 @@ public static class NodeExtensions
               endpoints.MapGrpcService<BootNodeRPCService>();
               endpoints.MapGrpcService<BootNodeBlockApiService>();
               endpoints.MapHealthChecks("/health");
+
         });
     }
     

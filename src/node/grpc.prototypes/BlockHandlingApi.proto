@@ -67,4 +67,5 @@ message NodeInfo
 {
   string name = 1;
   string version = 2;
+  string state = 3;
 }

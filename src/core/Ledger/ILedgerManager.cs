@@ -32,6 +32,7 @@ namespace core.Ledger
         ILedgerPhysicalBlock GetBlock(int id);
         List<ILedgerIndex> ListAllBlocks();
 
+        string CreateIndexesVerification(IList<string> rows);
         /// <summary>
         /// used by child nodes to get in sync with bootnoode
         /// </summary>

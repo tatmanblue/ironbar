@@ -55,6 +55,15 @@ public class ConnectionManager
         children.Remove(child);
     }
 
+    public void SetChildState(string friendlyName, ChildNodeState state)
+    {
+        ChildNodeConnection child = children.Find(c => c.Name == friendlyName);
+        if (null == child)
+            throw new ConnectionManagerException();
+
+        child.State = state;
+    }
+
     public void HandleServiceShutdown()
     {
         logger.LogInformation("ConnectionManager handling application shut down");

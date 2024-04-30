@@ -8,14 +8,19 @@ service NodeToNodeConnection {
   // These are the real API.  Some endpoints are client node to boot node
   // and some endpoints are the opposite.  
   // TODO: should we name these by use or even separate them into new a proto
+  // TODO: replace all of the strings with types where applicable
   
   // Connection endpoints
   rpc Connect(ConnectRequest) returns (ConnectReply);
   rpc Disconnect(DisconnectRequest) returns (DisconnectReply);
   
-  // block messages
+  // block messages and sent by boot node to clients
   rpc SyncIndex(IndexRequest) returns (google.protobuf.Empty);
   rpc BlockCreated(BlockCreatedRequest) returns (BlockCreatedReply);
+  
+  // sent by client to boot node to complete node initialization 
+  rpc ClientRequestIndex(ConnectRequest) returns (IndexResponse);
+  rpc ClientValidatesIndex(ValidateIndexRequest) returns (ValidateIndexResponse);
 }
 
 message ConnectRequest {
@@ -40,6 +45,24 @@ message DisconnectReply {
 message IndexRequest {
   repeated string indexes = 1;
   string verification = 2;
+}
+
+// similar as IndexRequest, named differently because its a response not a request
+message IndexResponse {
+    repeated string indexes = 1;
+    string nonce = 3;
+}
+
+message ValidateIndexRequest {
+   string clientAddr = 1;
+   string friendlyName = 2;
+   string nonce = 3;
+   string evaluated = 4;
+   string validation = 5;
+}
+
+message ValidateIndexResponse {
+   string approved = 1;
 }
 
 message BlockCreatedRequest {

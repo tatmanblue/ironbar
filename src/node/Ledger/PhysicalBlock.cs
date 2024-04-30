@@ -54,7 +54,7 @@ public class PhysicalBlock : ILedgerPhysicalBlock
     {
         // TODO: what about the sign block and Status
         string transactionDataString = Encoding.UTF8.GetString(TransactionData, 0, TransactionData.Length);
-        string objectString = $"{ParentId}:{Id}:{ParentHash}:{ReferenceId}:{ReferenceHash}:{LedgerId}:{TimeStamp}:{Nonce}:{transactionDataString}";
+        string objectString = $"{ParentId}:{Id}:{ParentHash}:{ReferenceId}:{ReferenceHash}:{LedgerId}:{TimeStamp.ToFileDateTime()}:{Nonce}:{transactionDataString}";
 
         return objectString;
     }

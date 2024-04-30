@@ -14,7 +14,7 @@ public class ConfigurationOptions : IConfiguration
     /// </summary>
     public string FriendlyName { get; set; } = "Node";
 
-    public string Version { get; } = "0.0.3.6";
+    public string Version { get; } = "0.0.3.7";
     /// <summary>
     /// This node, boot or child, will listen for RPC calls on this port
     /// </summary>
