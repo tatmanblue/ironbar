@@ -33,6 +33,14 @@ public class BootNodeRPCService : NodeToNodeConnection.NodeToNodeConnectionBase
     }
 
     #region connection APIS
+    /// <summary>
+    /// Child nodes connecting to the boot node now have a multi-step process. "Connect" is
+    /// first which allows for the other steps to proceed.  Child nodes must get through all
+    /// steps successfully in order be allowed to validate blocks
+    /// </summary>
+    /// <param name="request"></param>
+    /// <param name="context"></param>
+    /// <returns></returns>
     public override Task<ConnectReply> Connect(ConnectRequest request, ServerCallContext context)
     {
         logger.LogInformation($"Connection established from {request.ClientAddr} {context.Host} {context.Method} {context.Peer}");
@@ -48,9 +56,6 @@ public class BootNodeRPCService : NodeToNodeConnection.NodeToNodeConnectionBase
         logger.LogDebug("Adding new connection in connection manager");
         connectionManager.AddNewChildNode(connection);
         
-        logger.LogWarning("WILL NOT! Firing client connected event");
-        // eventPub.FireClientConnected(connection);
-        
         logger.LogDebug("Sending reply");
         return Task.FromResult(new ConnectReply
         {
@@ -58,6 +63,15 @@ public class BootNodeRPCService : NodeToNodeConnection.NodeToNodeConnectionBase
         });
     }
 
+    /// <summary>
+    /// Child nodes connecting to the boot node now have a multi-step process.  This step
+    /// is part of 2 messages of validating the index.  The child node requests the index file
+    /// (and will be expected to send a validation message next)
+    /// </summary>
+    /// <param name="request"></param>
+    /// <param name="context"></param>
+    /// <returns></returns>
+    /// <exception cref="RpcException"></exception>
     public override Task<IndexResponse> ClientRequestIndex(ConnectRequest request, ServerCallContext context)
     {
         try
@@ -82,6 +96,17 @@ public class BootNodeRPCService : NodeToNodeConnection.NodeToNodeConnectionBase
         }
     }
 
+    /// <summary>
+    /// Child nodes connecting to the boot node now have a multi-step process.  This step
+    /// is second part of 2 messages of validating the index.  The child node is sending its validation
+    /// of the index.  If the boot node accepts the child node validation, the child node will be
+    /// enabled to validate blocks in the system
+    /// </summary>
+    /// <param name="request"></param>
+    /// <param name="context"></param>
+    /// <returns></returns>
+    /// <exception cref="BlockChainException"></exception>
+    /// <exception cref="RpcException"></exception>
     public override Task<ValidateIndexResponse> ClientValidatesIndex(ValidateIndexRequest request, ServerCallContext context)
     {
         try
@@ -94,6 +119,10 @@ public class BootNodeRPCService : NodeToNodeConnection.NodeToNodeConnectionBase
                 runningHash = HashUtility.ComputeHash($"{runningHash}{idx.Hash}");
             }
 
+            // the child node validation did not match that of the boot node therefore it is assumed
+            // the child node is not a good player in the system and will not allowed to continue.
+            // There is a legit possibility this could happen if a new block comes into the system while this
+            // child was validating the index (which would be "old" at this point).
             if (runningHash != request.Validation)
                 throw new BlockChainException();
             

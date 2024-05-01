@@ -14,7 +14,7 @@ public class ConfigurationOptions : IConfiguration
     /// </summary>
     public string FriendlyName { get; set; } = "Node";
 
-    public string Version { get; } = "0.0.3.7";
+    public string Version { get; } = "0.0.3.10";
     /// <summary>
     /// This node, boot or child, will listen for RPC calls on this port
     /// </summary>
@@ -42,9 +42,6 @@ public class ConfigurationOptions : IConfiguration
     {
         Assembly assembly = Assembly.GetExecutingAssembly();
         Version version = assembly.GetName().Version;
-
-        // Print the version to the console
-        Console.WriteLine("Assembly Version: " + version);        
         
         return $"\r\n" +
                $"IsBootNode: {IsBootNode}\r\n" +

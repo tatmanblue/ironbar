@@ -23,6 +23,9 @@ public class ChildNodeConnection
 public static class Globals
 {
     public static string APPROVED = "true";
+    
+    public static int APPROVED_BLOCK = 1;
+    public static int NOT_APPROVED_BLOCK = 0;
 }
 
 public class ConnectionManagerException : Exception

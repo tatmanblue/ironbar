@@ -50,12 +50,12 @@ public class ChildNodeRPCClient
             string bootNodeIP = $"{options.BootAddress}";
             
 
-            logger.LogInformation($"Attempting connect to channel is: {bootNodeIP} and my ip is {localIP}");
+            logger.LogInformation($"Attempting connect to channel is: {bootNodeIP} and my ip is {localIP} and node is named {options.FriendlyName}");
             
             AppContext.SetSwitch("System.Net.Http.SocketsHttpHandler.Http2UnencryptedSupport", true);
             
             var channelOptions = new GrpcChannelOptions();
-            channelOptions.Credentials = ChannelCredentials.Insecure;
+            // channelOptions.Credentials = ChannelCredentials.Insecure;
             
             logger.LogDebug($"Channel options are {channelOptions.ToString()}");
             var channel = GrpcChannel.ForAddress(bootNodeIP, channelOptions);

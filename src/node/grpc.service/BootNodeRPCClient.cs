@@ -55,10 +55,13 @@ public class BootNodeRPCClient : IHostedService, IDisposable
         eventSub.OnShutdown += OnNotifyNodeOfShutdown;
     }
     
+    /// <summary>
+    /// TODO this handler is now deprecated with the change how child nodes "say hello" to the boot node
+    /// </summary>
+    /// <param name="conn"></param>
     private void OnChildNodeCreated(ChildNodeConnection conn)
     {
-        // Task.Delay(2000).Wait();
-        logger.LogInformation($"BootNodeRPCClient is handling a new node {conn.Name} using {conn.Address}");
+        logger.LogWarning($"BootNodeRPCClient is handling a new node {conn.Name} using {conn.Address} (deprecated)");
         IndexRequest request = new IndexRequest();
         List<ILedgerIndex> indexes = ledgerManager.ListAllBlocks();
         string runningHash = string.Empty;
@@ -83,6 +86,8 @@ public class BootNodeRPCClient : IHostedService, IDisposable
         logger.LogInformation($"BootNodeRPCClient is sharing new block {pb.Id}");
         logger.LogDebug($"The block as string is '{pb.ToString()}'");
         List<Task> tasks = new();
+        
+        // TODO: use a list where conn.State == Approved
         int nodesAcceptingBlock = 0;
         int maxAccepting = connectionManager.ActiveConnections.Count;
 
@@ -100,7 +105,9 @@ public class BootNodeRPCClient : IHostedService, IDisposable
             tasks.Add(
                 Task.Run(() =>
                 {
-                    Interlocked.Add(ref nodesAcceptingBlock, SendBlockToChildNode(pb, conn));
+                    logger.LogDebug($"Sending block to '{conn.Name}' state [{conn.State}]");
+                    int result = SendBlockToChildNode(pb, conn);
+                    Interlocked.Add(ref nodesAcceptingBlock, result);
                 })
             );
         }
@@ -108,10 +115,8 @@ public class BootNodeRPCClient : IHostedService, IDisposable
         logger.LogInformation($"Sharing new block with {tasks.Count} nodes ");
         Task.WhenAll(tasks).ContinueWith(done =>
         {
-            logger.LogDebug($"All nodes have replied. {nodesAcceptingBlock}");
+            logger.LogInformation($"All nodes have replied. those confirming: {nodesAcceptingBlock} of {maxAccepting}");
         }).Wait();
-        
-        logger.LogInformation($"{maxAccepting} child nodes notified of new block, accepting nodes {nodesAcceptingBlock}");
         
         // only handle block advancement when input block started as unconfirmed
         if (pb.Status != BlockStatus.Unconfirmed)
@@ -133,21 +138,46 @@ public class BootNodeRPCClient : IHostedService, IDisposable
         }
     }
 
+    /// <summary>
+    /// Sends a block to a child node.  Meant to run as a Task.
+    /// </summary>
+    /// <param name="pb"></param>
+    /// <param name="conn"></param>
+    /// <returns>1 (APPROVED_BLOCK) when child node approves the block </returns>
     private int SendBlockToChildNode(ILedgerPhysicalBlock pb, ChildNodeConnection conn)
     {
-        var channel = GrpcChannel.ForAddress(conn.Address);
-        var client = new NodeToNodeConnection.NodeToNodeConnectionClient(channel);
-        BlockCreatedRequest blockCreatedRequest = new BlockCreatedRequest()
+        try
         {
-            Block = pb.ToString(),
-            Verification = pb.Hash
-        };
-        BlockCreatedReply reply = client.BlockCreated(blockCreatedRequest);
-        BlockStatus replyStatus = Enum.Parse<BlockStatus>(reply.Result);
-        if (pb.Status == BlockStatus.Unconfirmed && replyStatus == BlockStatus.Approved)
-            return 1;
+            logger.LogDebug($"creating channel for {conn.Name}. Setting Http2UnencryptedSupport==true");
+            AppContext.SetSwitch("System.Net.Http.SocketsHttpHandler.Http2UnencryptedSupport", true);
+            var channel = GrpcChannel.ForAddress(conn.Address);
+            var client = new NodeToNodeConnection.NodeToNodeConnectionClient(channel);
+            BlockCreatedRequest blockCreatedRequest = new BlockCreatedRequest()
+            {
+                Block = pb.ToString(),
+                Verification = pb.Hash
+            };
+            BlockCreatedReply reply = client.BlockCreated(blockCreatedRequest);
+            BlockStatus replyStatus = Enum.Parse<BlockStatus>(reply.Result);
 
-        return 0;
+            logger.LogInformation(
+                $"Node '{conn.Name}' responded for block {pb.Id}/{pb.Status} = {reply.Result}[{replyStatus}] ");
+
+            // send unconfirmed blocks to child nodes to validate the block is good, child response must approve 
+            // to advance the block
+            if (pb.Status == BlockStatus.Unconfirmed && replyStatus == BlockStatus.Approved)
+                return Globals.APPROVED_BLOCK;
+
+            // sending approved blocks is just informational and child node response is not as important
+            if (pb.Status == BlockStatus.Approved)
+                return Globals.APPROVED_BLOCK;
+        }
+        catch (Exception ex)
+        {
+            logger.LogCritical($"Exception caught when sending block {pb.Id} to node: '{conn.Name}'.  Ex:{ex.Message} ");
+        }
+
+        return Globals.NOT_APPROVED_BLOCK;
     }
 
     private void OnNotifyNodeOfShutdown(ChildNodeConnection clientNode)
