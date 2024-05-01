@@ -26,6 +26,13 @@ namespace core
         /// </summary>
         string BootAddress { get; }
         /// <summary>
+        /// The public URI for this node instance service address.  If blank,
+        /// it will be computed based on ability to probe the network.  Do not include
+        /// Port as it will build it using RPCPort above
+        /// </summary>
+        string ServiceAddress { get; }
+
+        /// <summary>
         /// path to plugins
         /// </summary>
         string PluginPath { get; }

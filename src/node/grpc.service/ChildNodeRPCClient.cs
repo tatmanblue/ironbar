@@ -46,34 +46,37 @@ public class ChildNodeRPCClient
         try
         {
             Task.Delay(delay).Wait();
-            string localIP = $"{IpAddressUtility.LocalIP()}";
+            string childSvcAddress = CreateChildSvcAddress();
             string bootNodeIP = $"{options.BootAddress}";
             
 
-            logger.LogInformation($"Attempting connect to channel is: {bootNodeIP} and my ip is {localIP} and node is named {options.FriendlyName}");
-            
+            logger.LogInformation($"Attempting connect to channel is: {bootNodeIP} and child service address is '{childSvcAddress}' and node is named '{options.FriendlyName}'");
             AppContext.SetSwitch("System.Net.Http.SocketsHttpHandler.Http2UnencryptedSupport", true);
             
             var channelOptions = new GrpcChannelOptions();
             // channelOptions.Credentials = ChannelCredentials.Insecure;
-            
-            logger.LogDebug($"Channel options are {channelOptions.ToString()}");
             var channel = GrpcChannel.ForAddress(bootNodeIP, channelOptions);
             
+            
+            // Step 1 -- just "say hi" to boot node
             var client = new NodeToNodeConnection.NodeToNodeConnectionClient(channel);
             ConnectRequest request = new ConnectRequest()
             {
-                ClientAddr = CreateClientAddress(),
+                ClientAddr = childSvcAddress,
                 FriendlyName = options.FriendlyName,
                 NodeVersion = options.Version
             };
             var reply = client.Connect(request);
             logger.LogInformation("BootNode says: " + reply.Message);
 
+            
+            // Step 2 -- get the indexes from the boot node
             var indexes = client.ClientRequestIndex(request);
             string verification = ledgerManager.CreateIndexesVerification(indexes.Indexes);
             logger.LogInformation($"Received index from boot node.  Verification hash: {verification}");
 
+            
+            // Step 3 - send verification to bootnode and process bootnode response
             ValidateIndexRequest validateIndexRequest = new()
             {
                 FriendlyName = options.FriendlyName,
@@ -111,14 +114,14 @@ public class ChildNodeRPCClient
         try
         {
             AppContext.SetSwitch("System.Net.Http.SocketsHttpHandler.Http2UnencryptedSupport", true);
-            string localIP = $"{IpAddressUtility.LocalIP()}";
+            string childSvcAddress = CreateChildSvcAddress();
             string bootNodeIP = $"{options.BootAddress}";
-            logger.LogInformation($"Attempting connect to channel is: {bootNodeIP} and my ip is {localIP}");
+            logger.LogInformation($"Attempting connect to channel is: {bootNodeIP} and child service address is: '{childSvcAddress}'");
             var channel = GrpcChannel.ForAddress(bootNodeIP);
             var client = new NodeToNodeConnection.NodeToNodeConnectionClient(channel);
             var reply = client.Disconnect(new DisconnectRequest()
             {
-                ClientAddr = CreateClientAddress(),
+                ClientAddr = childSvcAddress,
                 FriendlyName = options.FriendlyName
             });
             logger.LogInformation("BootNode says: " + reply.Message);
@@ -137,9 +140,14 @@ public class ChildNodeRPCClient
         }
     }
 
-    private string CreateClientAddress()
+    private string CreateChildSvcAddress()
     {
-        string localIP = $"{IpAddressUtility.LocalIP()}";
-        return $"http://{localIP}:{options.RPCPort}";
+        string hostAddress =  $"{IpAddressUtility.LocalIP()}";
+        if (false == string.IsNullOrEmpty(options.ServiceAddress))
+        {
+            hostAddress = options.ServiceAddress;
+        }
+        
+        return $"http://{hostAddress}:{options.RPCPort}";
     }
 }

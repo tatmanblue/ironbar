@@ -25,7 +25,13 @@ public class ConfigurationOptions : IConfiguration
     /// boot node
     /// </summary>
     public string BootAddress { get; set; } = "http://localhost:50051";
-    
+
+    /// <summary>
+    /// The public URI for this node instance service address.  If blank,
+    /// it will be computed based on ability to probe the network.  Do not include
+    /// Port as it will build it using RPCPort above
+    /// </summary>
+    public string ServiceAddress { get; set; } = "";
     public string PluginPath { get; set; } = "plugins";
     public string DataPath { get; set; } = "data";
     public bool IsBootNode { get; set; } = false;
@@ -71,6 +77,7 @@ public class ConfigurationOptions : IConfiguration
         options.DataPath = FromEnvOrDefault("IRONBAR_DATA_PATH", "data");
         options.PluginPath = FromEnvOrDefault("IRONBAR_PLUGIN_PATH", "plugins");
         options.GrpcMessageSizeLimit = FromEnvOrDefaultAsInt("IRONBAR_GRPC_LIMIT", "1");
+        options.ServiceAddress = FromEnvOrDefault("IRONBAR_SVC_URI", "");
         
         return options;
     }
