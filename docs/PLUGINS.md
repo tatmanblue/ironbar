@@ -1,6 +1,6 @@
 # Plug-ins Architecture
 
-updated: 2020.05.26
+updated: 2025.08.04
 
 ## Overview
 
@@ -24,7 +24,9 @@ there are 2:  ledger and API.
 
 API plugins will only be allowed to run on the bootnode.
 
-Ledger plugins will be required to run on all nodes before allowing them to work.
+~~Ledger plugins will be required to run on all nodes before allowing them to work.~~  Reconsidering design to
+allow ledger plugins to run on boot node only.  This would allow for more flexibility in
+boot node behavior.  This is still under consideration.
 
 ## Interfaces
 
