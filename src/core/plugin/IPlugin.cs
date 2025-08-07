@@ -6,6 +6,8 @@ namespace core.Plugin
     /// <summary>
     /// Plugins must implement this interface but should not implement this interface directly
     /// as it is inherited from IApiPlugin or ILedgerPlugin
+    ///
+    /// TODO this interface is not yet finalized and may change in future releases
     /// </summary>
     public interface IPlugin
     {

@@ -15,8 +15,9 @@ the use cases are more varied.
 # Status
 Prototype/irregular updates
 
-### 2024.03.30 Update
-Reopening this project to add CI/CD deployment to AWS or Azure.
+### 2025.08.04 Update
+Updating project to .NET 8 to use top level statements and other .NET 8 features.  No functional changes.  Add in Aspire
+support.  And fix the plugin architecture in preparation for adding plugins.
 
 This project is being updated with new functionality on an irregular basis.  Please review [work.md](https://github.com/tatmanblue/ironbar/blob/master/docs/WORK.md) 
 for details on goals and progress towards those goals.  There is no regular release schedule in place.  Work is completed on an adhoc schedule.
