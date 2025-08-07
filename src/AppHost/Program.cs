@@ -28,5 +28,5 @@ builder.AddProject<node>("BootNode")
     .WithEnvironment("IRONBAR_PLUGIN_PATH", pluginPath)
     .WithEnvironment("IRONBAR_GRPC_LIMIT", grpcLimit)
     .WithEnvironment("IRONBAR_SVC_URI", svcUri);
-    
+
 builder.Build().Run();
