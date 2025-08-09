@@ -12,6 +12,6 @@ namespace core.Ledger
         /// <param name="path"></param>
         /// <param name="block"></param>
         void SaveBlock(ILedgerPhysicalBlock block);
-        void SaveLedgerIndex(ILedgerIndex index);
+        void SaveLedgerIndex(List<ILedgerIndex> index);
     }
 }

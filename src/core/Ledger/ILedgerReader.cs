@@ -17,6 +17,6 @@ namespace core.Ledger
         /// <param name="id"></param>
         /// <returns></returns>
         ILedgerPhysicalBlock GetLedgerPhysicalBlock(int id, Func<string, ILedgerPhysicalBlock> blockAllocator);
-        ILedgerIndex GetLedgerIndex(Func<string, ILedgerIndex> indexAllocator);
+        ILedgerIndex GetLedgerIndex(int index, Func<string, ILedgerIndex> indexAllocator);
     }
 }

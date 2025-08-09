@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Text;
 
 namespace core.Ledger
@@ -7,6 +8,7 @@ namespace core.Ledger
     public class DefaultTextFileLedgerReader : ILedgerReader
     {
         private string ledgerPath = string.Empty;
+        private string ledgerIndexFileName => System.IO.Path.Combine(ledgerPath, "index.txt");
         public DefaultTextFileLedgerReader(string path)
         {
             ledgerPath = path;
@@ -26,9 +28,13 @@ namespace core.Ledger
             return blockAllocator(blockData);
         }
         
-        public ILedgerIndex GetLedgerIndex(Func<string, ILedgerIndex> indexAllocator)
+        public ILedgerIndex GetLedgerIndex(int index, Func<string, ILedgerIndex> indexAllocator)
         {
-            throw new NotImplementedException();
+            string[] lines = File.ReadAllLines(ledgerIndexFileName);
+            if (lines.Length > 0)
+                return indexAllocator(lines[index]);
+
+            throw new LedgerNotValidException("No ledger index found");
         }
     }
 }

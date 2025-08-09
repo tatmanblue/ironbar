@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 
 namespace core.Ledger
@@ -6,6 +7,7 @@ namespace core.Ledger
     public class DefaultTextFileLedgerWriter : ILedgerWriter
     {
         private string ledgerPath = string.Empty;
+        private string ledgerIndexFileName => System.IO.Path.Combine(ledgerPath, "index.txt");
         public DefaultTextFileLedgerWriter(string path)
         {
             ledgerPath = path;
@@ -22,9 +24,21 @@ namespace core.Ledger
             }
         }
         
-        public void SaveLedgerIndex(ILedgerIndex index)
+        public void SaveLedgerIndex(List<ILedgerIndex> data)
         {
-            throw new NotImplementedException();
+            if (true == File.Exists(ledgerIndexFileName))
+                File.Delete(ledgerIndexFileName);
+        
+            using (StreamWriter sw = File.AppendText(ledgerIndexFileName))
+            {
+                foreach (ILedgerIndex idx in data)
+                {
+                    sw.WriteLine(idx.ToString());
+                }
+
+                sw.Flush();
+                sw.Close();
+            }
         }
     }
 }
