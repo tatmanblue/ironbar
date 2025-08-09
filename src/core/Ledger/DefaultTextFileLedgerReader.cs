@@ -25,5 +25,10 @@ namespace core.Ledger
             string blockData = System.IO.File.ReadAllText(System.IO.Path.Combine(ledgerPath, $"block.{id}.txt"));
             return blockAllocator(blockData);
         }
+        
+        public ILedgerIndex GetLedgerIndex(Func<string, ILedgerIndex> indexAllocator)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

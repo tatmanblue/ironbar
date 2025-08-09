@@ -1,6 +1,9 @@
 ﻿using System;
 namespace core.Ledger
 {
+    /// <summary>
+    /// TODO:  Not sure why I made this an interface
+    /// </summary>
     public interface ILedgerIndex
     {
         int BlockId { get; }

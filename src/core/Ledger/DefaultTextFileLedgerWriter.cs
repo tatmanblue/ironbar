@@ -21,5 +21,10 @@ namespace core.Ledger
                 sw.Close();
             }
         }
+        
+        public void SaveLedgerIndex(ILedgerIndex index)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

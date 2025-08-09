@@ -5,7 +5,7 @@ namespace core.Ledger
 {
     /// <summary>
     /// this represents data as it will appear when saved on disk
-    /// TODO: signing blocks
+    /// TODO:  Not sure why I made this an interface
     /// </summary>
     public interface ILedgerPhysicalBlock
     {
