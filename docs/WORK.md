@@ -11,9 +11,9 @@ This document highlights two parts:
 The main focus of this document is #1 above and notes for what will follow completing #1.
 
 ## CI/CD Updates
-1. Update dotnet Version
+1. Update dotnet Version -- done  
 2. Using Tilt and Helm Charts for running in docker which will allow for deployment in cloud services like AWS
-2.1 Update to use Aspire
+2.1 Update to use Aspire -- done  
 
 ## Version 0.0.3.0 Goal
 Version 0.0.3.0  
