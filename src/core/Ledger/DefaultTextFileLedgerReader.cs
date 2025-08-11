@@ -31,7 +31,7 @@ namespace core.Ledger
         public ILedgerIndex GetLedgerIndex(int index, Func<string, ILedgerIndex> indexAllocator)
         {
             string[] lines = File.ReadAllLines(ledgerIndexFileName);
-            if (lines.Length > 0)
+            if (lines.Length > 0 && index >= 0 && index < lines.Length)
                 return indexAllocator(lines[index]);
 
             throw new LedgerNotValidException("No ledger index found");

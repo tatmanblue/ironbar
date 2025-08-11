@@ -36,7 +36,7 @@ The [license](LICENSE.md) included applies only to the files in this repo.   As 
 the libraries and demos in this project.  The license here does not apply to 3rd party assets. You agree to purchase those assets and abide by their licensing terms. 
 
 ```
-   Copyright 2024 Matthew Raffel 
+   Copyright 2025 Matthew Raffel 
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
