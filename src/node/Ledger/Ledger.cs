@@ -66,20 +66,34 @@ public class Ledger : ILedger
         Name = name;
         RootDataPath = path;
         this.blockValidator = blockValidator;
+        // TODO: make this injectable
         Writer = new DefaultTextFileLedgerWriter(LedgerPath);
         Reader =  new DefaultTextFileLedgerReader(LedgerPath);
-        Indexes = new LedgerIndexManager(Name, LedgerIndexFileName);
+        Indexes = new LedgerIndexManager(Name, LedgerPath);
     }
 
     #region Public methods, ILedger methods
     public void InitializeStorage()
     {
+        // TODO now that the reader/writer are separate, what does initialize storage mean?
         if (false == Directory.Exists(LedgerPath))
             Directory.CreateDirectory(LedgerPath);
     }
-    
+
+    public void Check()
+    {
+        // check that the directory exists
+        if (false == Directory.Exists(LedgerPath))
+            throw new LedgerNotFoundException($"Ledger directory not found {LedgerPath}");
+
+        // check that the index file exists
+        if (false == File.Exists(LedgerIndexFileName))
+            throw new LedgerNotFoundException($"Ledger index file not found {LedgerIndexFileName}");
+    }
+
     /// <summary>
     /// Bootnode is starting up for the first time so it needs to create the initial block
+    /// and create the index data
     /// </summary>
     public void Initialize()
     {
@@ -110,10 +124,7 @@ public class Ledger : ILedger
     public void Validate()
     {
         State = LedgerState.StartingUp;
-
-        if (false == File.Exists(LedgerIndexFileName))
-            throw new LedgerNotFoundException(LedgerIndexFileName);
-
+        
         try
         {
             Indexes.Load();
@@ -150,6 +161,17 @@ public class Ledger : ILedger
             }
             
             State = LedgerState.Available;
+        }
+        catch(LedgerNotFoundException lnfe)
+        {
+            logger.LogError($"Ledger Not Found....{lnfe.Message}");
+            throw;
+        }
+        catch(LedgerNotValidException lnve)
+        {
+            logger.LogError($"{lnve.Message}");
+            State = LedgerState.Nonfunctional;
+            throw;
         }
         catch(Exception e)
         {
@@ -214,9 +236,9 @@ public class Ledger : ILedger
     public ILedgerPhysicalBlock ReadBlock(int blockId)
     {
         // TODO replace with a Block Factory function like we did with indexes
-        PhysicalBlock readBlock = Reader.GetLedgerPhysicalBlock(blockId, (data) => {
+        ILedgerPhysicalBlock readBlock = Reader.GetLedgerPhysicalBlock(blockId, (data) => {
             return PhysicalBlock.FromString(data);
-        }) as PhysicalBlock;
+        });
         
         return readBlock;
     }

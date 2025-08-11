@@ -7,7 +7,7 @@ namespace core.Ledger
 
     /// <summary>
     /// This represents a block in memory 
-    /// TODO: signing blocks
+    /// TODO:  Not sure why I made this an interface
     /// </summary>
     public interface ILedgerLogicalBlock<T>
     {

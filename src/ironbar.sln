@@ -11,7 +11,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "credentials", "plugins\cred
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "node", "node\node.csproj", "{17382770-C4D2-440E-9947-330A919EE44E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AppHost", "AppHost\AppHost.csproj", "{58EAD726-FF65-4056-ADCA-09AA5A18BCCD}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AspireHost", "AspireHost\AspireHost.csproj", "{58EAD726-FF65-4056-ADCA-09AA5A18BCCD}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ServiceDefaults", "ServiceDefaults\ServiceDefaults.csproj", "{E15AD574-FA66-4D9D-B790-292946AB82CF}"
 EndProject

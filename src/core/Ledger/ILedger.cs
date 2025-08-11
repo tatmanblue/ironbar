@@ -27,6 +27,13 @@ namespace core.Ledger
         // means
         ILedgerWriter Writer { get; }
         ILedgerReader Reader { get; }
+
+        /// <summary>
+        /// This is function to ensure the ledger and indexes can be read and written
+        /// to and from the storage mechanism.  It does not mean the ledger is valid
+        /// just that it is accessible
+        /// </summary>
+        void Check();
         
         /// <summary>
         /// Very important:  a ledger instance has to be valid to be used

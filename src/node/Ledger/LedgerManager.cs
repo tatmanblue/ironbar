@@ -49,6 +49,9 @@ public class LedgerManager : ILedgerManager
         {
             try
             {
+                // If validate fails with LedgerNotFoundException, we can try to initialize a new
+                // ledger (if bootnode) or sync with bootnode (if child node)
+                masterLedger.Check();
                 masterLedger.Validate();
             }
             catch (LedgerNotFoundException)

@@ -10,22 +10,23 @@ namespace Node.Ledger;
 /// </summary>
 public class LedgerIndexManager : ILedgerIndexManager
 {
+    public ILedgerWriter Writer { get; private set; }
+    public ILedgerReader Reader { get; private set; }
     private List<ILedgerIndex> data = new List<ILedgerIndex>();
     private bool isLoaded = false;
+    private string ledgerName = string.Empty;
 
-    public string IndexFile { get; private set; }
-    public string LedgerName { get; private set; }
-
-    public LedgerIndexManager(string name, string indexFile)
+    public LedgerIndexManager(string name, string ledgerPath)
     {
-        IndexFile = indexFile;
-        LedgerName = name;
+        ledgerName = name;
+        Writer = new DefaultTextFileLedgerWriter(ledgerPath);
+        Reader =  new DefaultTextFileLedgerReader(ledgerPath);
     }
 
     public ILedgerIndex Add(string hash, DateTime created, BlockStatus status)
     {
         if (false == isLoaded)
-            throw new LedgerException(LedgerName, "Attempted to add index before loading");
+            throw new LedgerException(ledgerName, "Attempted to add index before loading");
 
         LedgerIndex index = new LedgerIndex();
         index.BlockId = GetNextBlockId();
@@ -44,13 +45,11 @@ public class LedgerIndexManager : ILedgerIndexManager
     }
 
     /// <summary>
-    /// initialization resets the ledger data if existing data is called.
+    /// initialization starts a new index file
     /// </summary>
     public void Initialize()
     {
-        if (true == File.Exists(IndexFile))
-            File.Delete(IndexFile);
-
+        data = new List<ILedgerIndex>();
         isLoaded = true;
     }
 
@@ -69,15 +68,17 @@ public class LedgerIndexManager : ILedgerIndexManager
         Save();
     }
 
+    public void Validate()
+    {
+        if (false == isLoaded)
+            throw new LedgerNotValidException("Ledger Index is not loaded");
+    }
+
     public void Load()
     {
-        data.Clear();
-
-        string[] lines = File.ReadAllLines(IndexFile);
-        foreach(string line in lines)
-        {
-            data.Add(LedgerIndex.FromString(line));
-        }
+        data = Reader.GetLedgerIndex((data) => {
+            return LedgerIndex.FromString(data);
+        });
         isLoaded = true;
     }
 
@@ -86,20 +87,7 @@ public class LedgerIndexManager : ILedgerIndexManager
     /// </summary>
     public void Save()
     {
-        // because we write all lines, have to delete the existing file first
-        if (true == File.Exists(IndexFile))
-            File.Delete(IndexFile);
-        
-        using (StreamWriter sw = File.AppendText(IndexFile))
-        {
-            foreach (LedgerIndex idx in data)
-            {
-                sw.WriteLine(idx.ToString());
-            }
-
-            sw.Flush();
-            sw.Close();
-        }
+        Writer.SaveLedgerIndex(data);
     }
 
     public int GetNextBlockId()

@@ -22,11 +22,13 @@ support.  And fix the plugin architecture in preparation for adding plugins.
 This project is being updated with new functionality on an irregular basis.  Please review [work.md](https://github.com/tatmanblue/ironbar/blob/master/docs/WORK.md) 
 for details on goals and progress towards those goals.  There is no regular release schedule in place.  Work is completed on an adhoc schedule.
 
-The architecture of this project is still being worked out.  In part, several ideas started but not completed.  I do
-make corrections and improvements as I work through implementing changes.   My apologizes for the scattered state of the project.
+The architecture of this project is still being worked out therefore there are parts that are ugly, incomplete, and even just wrong.  
+This is due in part, several ideas started but not completed and designs started and not finished.  
+I do make corrections and improvements as I work through implementing changes.   
+My apologizes for the scattered state of the project.
 
 ## File Revision
-2024.03.30
+2025.08.06
 
 
 # License
@@ -34,7 +36,7 @@ The [license](LICENSE.md) included applies only to the files in this repo.   As 
 the libraries and demos in this project.  The license here does not apply to 3rd party assets. You agree to purchase those assets and abide by their licensing terms. 
 
 ```
-   Copyright 2024 Matthew Raffel 
+   Copyright 2025 Matthew Raffel 
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -62,7 +64,7 @@ Visual Studio (both PC and Mac).  If you chose to use a different IDE please
 make sure the solution and projects files are correctly updated in your pull request.
 
 > dotnet --version  
-> 8.0.200
+> 9.0.203
 
 # Source Code Structure/Projects
 
