@@ -11,6 +11,7 @@ namespace core.Ledger
     {
         void Initialize();
         void InitializeFromSync(List<ILedgerIndex> rows);
+        void Validate();
         void Load();
         void Save();
         int Count();

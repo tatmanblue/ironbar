@@ -12,3 +12,24 @@ in the ledger.
 
 When blocks are created, child nodes will do validation against existing blocks.  In cases where a child is missing the 
 blocks necesssary for validation, the child node will request these additional blocks before making the validation.
+
+## Start up
+
+Boot node and child nodes start up in a similar manner.  See `LedgerManager.Start()` [src](https://github.com/tatmanblue/ironbar/blob/main/src/node/Ledger/LedgerManager.cs). 
+The `Start()` method tries to be smart about what to do based on the state of the local store as well as node type.  It starts
+by assuming the ledger data exists and if errors occur, then assumes the ledger data does not exist and tries to create it.
+
+
+| Function   | File Based                                                                                                                               | Object Based |
+|------------|------------------------------------------------------------------------------------------------------------------------------------------|--------------|
+| Check      | Checks that directory structures exist and index file exists.  Either of these missing means assumes first time run and no ledger exists |              |
+| Validate   |                                                                                                                                          |              |
+| Initialize | Creates the directory structure, index file and initial starting block                                                                   |              |
+
+
+
+When a child node starts up, it connects to the boot node.  The boot node shares the index of all blocks with the child node.
+The child node then requests any blocks it does not have.
+The boot node sends these blocks to the child node.
+The child node validates these blocks and adds them to its local store.
+The child node is now in sync with the boot node.

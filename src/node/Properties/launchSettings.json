@@ -17,7 +17,7 @@
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development",
         "IRONBAR_TYPE": "boot",
-        "IRONBAR_DATA_PATH": "f:\\temp\\ironbar",
+        "IRONBAR_DATA_PATH": "D:\\sysstuff\\downloads\\ironbar\\data",
         "IRONBAR_WRITE_API_KEY": "829ABECB472A49FAAE8436730E3716EE",
         "IRONBAR_READ_API_KEY": "D6C9EF21D256495985269548D5FF70AA",
         "IRONBAR_READ_DETAILS_API_KEY": "CD0A9C4A7B7E4B1DB47F6FAF889A8FF6",
@@ -34,7 +34,7 @@
         "IRONBAR_TYPE": "child",
         "IRONBAR_RPC_PORT": "50059",
         "IRONBAR_BOOT_SERVER": "http://localhost:50051",
-        "IRONBAR_DATA_PATH": "f:\\temp\\ironbar",
+        "IRONBAR_DATA_PATH": "D:\\sysstuff\\downloads\\ironbar\\data",
         "IRONBAR_NODE_NAME": "node_rider"
       }
     },
@@ -49,7 +49,7 @@
         "IRONBAR_NODE_NAME": "gc_node_1b",
         "IRONBAR_RPC_PORT": "50051",
         "IRONBAR_BOOT_SERVER": "https://ironbar-bootnode-6iwlqscuzq-uc.a.run.app:443",
-        "IRONBAR_DATA_PATH": "f:\\temp\\ironbar"
+        "IRONBAR_DATA_PATH": "D:\\sysstuff\\downloads\\ironbar\\data"
       }
     },
     "http": {

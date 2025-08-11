@@ -12,9 +12,13 @@ string GetEnvVar(string varName, string defaultValue = "")
     return value;
 }
 
+
+Env.Load();
+
 var builder = DistributedApplication.CreateBuilder(args);
 string type = GetEnvVar("IRONBAR_TYPE", "boot");
 string rpcPort = GetEnvVar("IRONBAR_RPC_PORT", "50051");
+string bootAddress = GetEnvVar("IRONBAR_BOOT_SERVER", "http://localhost:50051");
 string dataPath = GetEnvVar("IRONBAR_DATA_PATH", "data");
 string pluginPath = GetEnvVar("IRONBAR_PLUGIN_PATH", "plugins");
 string grpcLimit = GetEnvVar("IRONBAR_GRPC_LIMIT", "1");
@@ -25,6 +29,7 @@ builder.AddProject<node>("BootNode")
     .WithEnvironment("IRONBAR_TYPE", type)
     .WithEnvironment("IRONBAR_RPC_PORT", rpcPort)
     .WithEnvironment("IRONBAR_DATA_PATH", dataPath)
+    .WithEnvironment("IRONBAR_BOOT_SERVER", bootAddress)
     .WithEnvironment("IRONBAR_PLUGIN_PATH", pluginPath)
     .WithEnvironment("IRONBAR_GRPC_LIMIT", grpcLimit)
     .WithEnvironment("IRONBAR_SVC_URI", svcUri);

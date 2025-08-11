@@ -1,4 +1,5 @@
-﻿using core.Utility;
+﻿using core.Security;
+using core.Utility;
 
 namespace Node.General;
 
@@ -7,11 +8,9 @@ namespace Node.General;
 /// 1 - write permissions
 /// 2 - general read permissions
 /// 3 - detailed read permissions
-///
-/// TODO prob should extract an interface and make consumers work against an interface so that
-/// TODO this can be extended at some point
+/// 4 - admin permissions
 /// </summary>
-public class ApiKeyManager
+public class ApiKeyManager : IApiKeyManager
 {
     private string writeApiKey = string.Empty;
     private string readApiKey = string.Empty;

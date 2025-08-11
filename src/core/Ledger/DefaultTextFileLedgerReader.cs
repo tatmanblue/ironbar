@@ -16,10 +16,16 @@ namespace core.Ledger
 
         public int CountBlocks()
         {
-            // TODO:  this can take a long time
-            // https://docs.microsoft.com/en-us/dotnet/api/system.io.directory.getfiles?view=netframework-4.8#System_IO_Directory_GetFiles_System_String_System_String_
-            // probably optimize this in some way
-            return System.IO.Directory.GetFiles(ledgerPath, $"block.*.txt").Length;
+            try
+            {
+                // TODO:  this can take a long time
+                // https://docs.microsoft.com/en-us/dotnet/api/system.io.directory.getfiles?view=netframework-4.8#System_IO_Directory_GetFiles_System_String_System_String_
+                // probably optimize this in some way
+                return System.IO.Directory.GetFiles(ledgerPath, $"block.*.txt").Length;
+            } catch (IOException)
+            {
+                throw new LedgerNotFoundException("No ledger directory found");
+            }
         }
 
         public ILedgerPhysicalBlock GetLedgerPhysicalBlock(int id, Func<string, ILedgerPhysicalBlock> blockAllocator)
@@ -39,18 +45,27 @@ namespace core.Ledger
         
         public List<ILedgerIndex> GetLedgerIndex( Func<string, ILedgerIndex> indexAllocator)
         {
-            string[] lines = File.ReadAllLines(ledgerIndexFileName);
-            List<ILedgerIndex> result = new List<ILedgerIndex>();
-            if (lines.Length > 0)
+            try
             {
-                for (int i = 0; i < lines.Length; i++)
+                string[] lines = File.ReadAllLines(ledgerIndexFileName);
+                List<ILedgerIndex> result = new List<ILedgerIndex>();
+                if (lines.Length > 0)
                 {
-                    result.Add(indexAllocator(lines[i]));
-                }
-                return result;
-            }
+                    for (int i = 0; i < lines.Length; i++)
+                    {
+                        result.Add(indexAllocator(lines[i]));
+                    }
 
-            throw new LedgerNotValidException("No ledger index found");
+                    return result;
+                }
+                // TODO this exception is not quite right possibly
+                throw new LedgerNotValidException("No ledger index found");
+            }
+            catch (IOException e)
+            {
+                throw new LedgerNotValidException("No ledger index found");
+            }
+            
         }
     }
 }
