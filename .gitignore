@@ -6,6 +6,7 @@ temp/
 .idea/
 scripts/data/
 index.txt
+.env
 
 # for azure
 *.PublishSettings
