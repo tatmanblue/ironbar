@@ -15,15 +15,18 @@ blocks necesssary for validation, the child node will request these additional b
 
 ## Start up
 
-Boot node and child nodes start up in a similar manner.  See `LedgerManager.Start()` [src](https://github.com/tatmanblue/ironbar/blob/main/src/node/Ledger/LedgerManager.cs). 
+Boot node and child nodes start up in a similar manner.  See `LedgerManager.Start()` see [src](https://github.com/tatmanblue/ironbar/blob/main/src/node/Ledger/LedgerManager.cs) for code. 
 The `Start()` method tries to be smart about what to do based on the state of the local store as well as node type.  It starts
 by assuming the ledger data exists and if errors occur, then assumes the ledger data does not exist and tries to create it.
+
+At a hight level, the start up is the same regardless of storage type (file based or object based).  The following
+table summarizes the key functions that are called during the start up process.
 
 
 | Function   | File Based                                                                                                                               | Object Based |
 |------------|------------------------------------------------------------------------------------------------------------------------------------------|--------------|
 | Check      | Checks that directory structures exist and index file exists.  Either of these missing means assumes first time run and no ledger exists |              |
-| Validate   |                                                                                                                                          |              |
+| Validate   | For now, some simple checks that some key blocks and index values match                                                                  |              |
 | Initialize | Creates the directory structure, index file and initial starting block                                                                   |              |
 
 
