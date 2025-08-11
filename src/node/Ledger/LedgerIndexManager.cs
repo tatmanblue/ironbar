@@ -10,16 +10,20 @@ namespace Node.Ledger;
 /// </summary>
 public class LedgerIndexManager : ILedgerIndexManager
 {
+    public ILedgerWriter Writer { get; private set; }
+    public ILedgerReader Reader { get; private set; }
     private List<ILedgerIndex> data = new List<ILedgerIndex>();
     private bool isLoaded = false;
 
     public string IndexFile { get; private set; }
     public string LedgerName { get; private set; }
 
-    public LedgerIndexManager(string name, string indexFile)
+    public LedgerIndexManager(string name, string ledgerPath, string indexFile)
     {
         IndexFile = indexFile;
         LedgerName = name;
+        Writer = new DefaultTextFileLedgerWriter(ledgerPath);
+        Reader =  new DefaultTextFileLedgerReader(ledgerPath);
     }
 
     public ILedgerIndex Add(string hash, DateTime created, BlockStatus status)
@@ -48,6 +52,7 @@ public class LedgerIndexManager : ILedgerIndexManager
     /// </summary>
     public void Initialize()
     {
+        // TODO since index reader/writer is injectable, we should make this call directly
         if (true == File.Exists(IndexFile))
             File.Delete(IndexFile);
 
@@ -71,14 +76,9 @@ public class LedgerIndexManager : ILedgerIndexManager
 
     public void Load()
     {
-        data.Clear();
-
-        string[] lines = File.ReadAllLines(IndexFile);
-        foreach(string line in lines)
-        {
-            data.Add(LedgerIndex.FromString(line));
-        }
-        isLoaded = true;
+        data = Reader.GetLedgerIndex((data) => {
+            return LedgerIndex.FromString(data);
+        });
     }
 
     /// <summary>
@@ -86,20 +86,7 @@ public class LedgerIndexManager : ILedgerIndexManager
     /// </summary>
     public void Save()
     {
-        // because we write all lines, have to delete the existing file first
-        if (true == File.Exists(IndexFile))
-            File.Delete(IndexFile);
-        
-        using (StreamWriter sw = File.AppendText(IndexFile))
-        {
-            foreach (LedgerIndex idx in data)
-            {
-                sw.WriteLine(idx.ToString());
-            }
-
-            sw.Flush();
-            sw.Close();
-        }
+        Writer.SaveLedgerIndex(data);
     }
 
     public int GetNextBlockId()

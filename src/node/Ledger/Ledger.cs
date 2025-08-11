@@ -66,9 +66,10 @@ public class Ledger : ILedger
         Name = name;
         RootDataPath = path;
         this.blockValidator = blockValidator;
+        // TODO: make this injectable
         Writer = new DefaultTextFileLedgerWriter(LedgerPath);
         Reader =  new DefaultTextFileLedgerReader(LedgerPath);
-        Indexes = new LedgerIndexManager(Name, LedgerIndexFileName);
+        Indexes = new LedgerIndexManager(Name, path, LedgerIndexFileName);
     }
 
     #region Public methods, ILedger methods
@@ -214,9 +215,9 @@ public class Ledger : ILedger
     public ILedgerPhysicalBlock ReadBlock(int blockId)
     {
         // TODO replace with a Block Factory function like we did with indexes
-        PhysicalBlock readBlock = Reader.GetLedgerPhysicalBlock(blockId, (data) => {
+        ILedgerPhysicalBlock readBlock = Reader.GetLedgerPhysicalBlock(blockId, (data) => {
             return PhysicalBlock.FromString(data);
-        }) as PhysicalBlock;
+        });
         
         return readBlock;
     }

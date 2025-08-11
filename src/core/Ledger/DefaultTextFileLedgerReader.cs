@@ -36,5 +36,21 @@ namespace core.Ledger
 
             throw new LedgerNotValidException("No ledger index found");
         }
+        
+        public List<ILedgerIndex> GetLedgerIndex( Func<string, ILedgerIndex> indexAllocator)
+        {
+            string[] lines = File.ReadAllLines(ledgerIndexFileName);
+            List<ILedgerIndex> result = new List<ILedgerIndex>();
+            if (lines.Length > 0)
+            {
+                for (int i = 0; i < lines.Length; i++)
+                {
+                    result.Add(indexAllocator(lines[i]));
+                }
+                return result;
+            }
+
+            throw new LedgerNotValidException("No ledger index found");
+        }
     }
 }
