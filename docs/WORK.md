@@ -1,5 +1,5 @@
 # Overview
-updated: 2020.06.27
+updated: 2025.08.11
 
 This document contains high level goals--think epic level.  Currently, you can run 1 boot node and several child nodes.  Blocks are copied and validated
 between boot and child nodes.  There is a public grpc based API for creating and retrieving blocks (this is not documented at this time however).
@@ -12,7 +12,7 @@ between boot and child nodes.  There is a public grpc based API for creating and
 
 ## Version 0.0.3.0 Goal
 Version 0.0.3.0  
-To be able to deploy one or more interoperable nodes to Azure, AWS and locally (on-going)
+To be able to deploy one or more interoperable nodes to Azure, AWS and locally (mostly possible and additional work is on-going)
 
 ### Immeditate Steps:
 1. Fix interface mess.  Some things have interfaces some do not and those same "somes" are injected or not (on-going)
