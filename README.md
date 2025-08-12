@@ -15,15 +15,10 @@ the use cases are more varied.
 # Status
 Prototype/irregular updates
 
-### 2025.08.04 Update
-Updating project to .NET 9 to use top level statements and other .NET 9 features.  No functional changes.  Add in Aspire
-support.  And fix the plugin architecture in preparation for adding plugins.
-
 This project is being updated with new functionality on an irregular basis.  Please review [work.md](https://github.com/tatmanblue/ironbar/blob/master/docs/WORK.md) 
 for details on goals and progress towards those goals.  There is no regular release schedule in place.  Work is completed on an adhoc schedule.
 
-The architecture of this project is still being worked out therefore there are parts that are ugly, incomplete, and even just wrong. This is due in part, several ideas started but not completed and designs started and not finished.  
-
+The architecture of this project is still being worked out therefore there are parts that are ugly, incomplete, and even just wrong. This is due in part, several ideas started but not completed and designs started and not finished.
 I do make corrections and improvements as I work through implementing changes. My apologizes for the scattered state of the project.
 
 ## File Revision

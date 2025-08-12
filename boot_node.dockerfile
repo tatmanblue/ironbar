@@ -1,5 +1,5 @@
 # Set the base image
-FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build-env
+FROM mcr.microsoft.com/dotnet/sdk:9.0 AS build-env
 
 # Set the working directory
 WORKDIR /node_dir

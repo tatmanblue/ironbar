@@ -4,7 +4,7 @@ services:
   child-node:
     container_name: child-node
     environment:
-       IRONBAR_VERSION: 0.0.2
+       IRONBAR_VERSION: 0.0.3
        IRONBAR_TYPE: child
        IRONBAR_BOOT_SERVER: http://boot-node:50051
     build:
