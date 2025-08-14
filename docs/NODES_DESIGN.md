@@ -23,11 +23,11 @@ At a hight level, the start up is the same regardless of storage type (file base
 table summarizes the key functions that are called during the start up process.
 
 
-| Function   | File Based                                                                                                                               | Object Based |
-|------------|------------------------------------------------------------------------------------------------------------------------------------------|--------------|
-| Check      | Checks that directory structures exist and index file exists.  Either of these missing means assumes first time run and no ledger exists |              |
-| Validate   | For now, some simple checks that some key blocks and index values match                                                                  |              |
-| Initialize | Creates the directory structure, index file and initial starting block                                                                   |              |
+| Function   | File Based                                                                                                                               | Object Based                                             |
+|------------|------------------------------------------------------------------------------------------------------------------------------------------|----------------------------------------------------------|
+| Check      | Checks that directory structures exist and index file exists.  Either of these missing means assumes first time run and no ledger exists | Checks if the containers exist and the index.file exists |
+| Validate   | For now, some simple checks that some key blocks and index values match                                                                  |                                                          |
+| Initialize | Creates the directory structure, index file and initial starting block                                                                   | Creates the containers, index file and initial starting block |
 
 
 

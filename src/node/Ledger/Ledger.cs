@@ -58,37 +58,29 @@ public class Ledger : ILedger
     private string LedgerIndexFileName => System.IO.Path.Combine(LedgerPath, "index.txt");
 
     private IPhysicalBlockValidator blockValidator;
-
-    public Ledger(ILogger<Ledger> logger, IPhysicalBlockValidator blockValidator, int id, string name, string path)
+    
+    public Ledger(ILogger<Ledger> logger, IPhysicalBlockValidator blockValidator,
+        ILedgerReader reader, ILedgerWriter writer, ILedgerIndexFactory indexFactory, 
+        int id, string name)
     {
         this.logger = logger;
+        this.blockValidator = blockValidator;
         Id = id;
         Name = name;
-        RootDataPath = path;
-        this.blockValidator = blockValidator;
-        // TODO: make this injectable
-        Writer = new DefaultTextFileLedgerWriter(LedgerPath);
-        Reader =  new DefaultTextFileLedgerReader(LedgerPath);
-        Indexes = new LedgerIndexManager(Name, LedgerPath);
+        Reader = reader;
+        Writer = writer;
+        Indexes = new LedgerIndexManager(Name, Reader, Writer, indexFactory);
     }
 
     #region Public methods, ILedger methods
     public void InitializeStorage()
     {
-        // TODO now that the reader/writer are separate, what does initialize storage mean?
-        if (false == Directory.Exists(LedgerPath))
-            Directory.CreateDirectory(LedgerPath);
+        Writer.InitializeStorage();
     }
 
     public void Check()
     {
-        // check that the directory exists
-        if (false == Directory.Exists(LedgerPath))
-            throw new LedgerNotFoundException($"Ledger directory not found {LedgerPath}");
-
-        // check that the index file exists
-        if (false == File.Exists(LedgerIndexFileName))
-            throw new LedgerNotFoundException($"Ledger index file not found {LedgerIndexFileName}");
+        Writer.CheckStorage();
     }
 
     /// <summary>

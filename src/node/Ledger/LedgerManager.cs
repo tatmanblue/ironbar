@@ -36,13 +36,18 @@ public class LedgerManager : ILedgerManager
     {
         IConfiguration options = serviceProvider.GetRequiredService<IConfiguration>();
         
-        logger.LogInformation($"LedgerManager is started, using '{System.IO.Path.GetFullPath(options.DataPath)}' for data path");
+        logger.LogInformation($"LedgerManager is started, using '{options.StorageType}' for storage");
 
         ILogger<Ledger> ledgerLogger = serviceProvider.GetRequiredService<ILogger<Ledger>>();
         IPhysicalBlockValidator blockValidator = serviceProvider.GetRequiredService<IPhysicalBlockValidator>();
+        ILedgerReader reader = serviceProvider.GetRequiredService<ILedgerReader>();
+        ILedgerWriter writer = serviceProvider.GetRequiredService<ILedgerWriter>();
+        ILedgerIndexFactory indexFactory = serviceProvider.GetRequiredService<ILedgerIndexFactory>();
 
         // 2 - open the master ledger index file and initialize the master ledger
-        Ledger masterLedger = new Ledger(ledgerLogger, blockValidator, MASTER_LEDGER_ID, options.FriendlyName, options.DataPath);
+        // TODO maybe its time to clean up this, even make this DI
+        Ledger masterLedger = new Ledger(ledgerLogger, blockValidator, reader, writer, indexFactory, 
+            MASTER_LEDGER_ID, options.FriendlyName);
         ledgers.Add(masterLedger);
 
         try

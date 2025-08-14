@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Text.Json;
 using core.Ledger;
 using core.Utility;
 
@@ -40,5 +41,10 @@ public class LedgerIndex : ILedgerIndex
 
         index.Created = expectedDate;
         return index;
+    }
+
+    public static ILedgerIndex FromJson(string json)
+    {
+        return JsonSerializer.Deserialize<LedgerIndex>(json);
     }
 }

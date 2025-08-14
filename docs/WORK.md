@@ -9,7 +9,7 @@ if a block is valid.  The boot node creates the genesis block on ledger initiali
 ## Goal:  flexible storage
 1. Extract out interfaces for storage (done)
 2. Support for object storage.  Considering using [minio](https://github.com/minio/minio-dotnet) since it supports S3, Azure, and Google Cloud Storage.
-3. Easy configuration of storage via json or environment variables
+3. Easy configuration of storage via json or environment variables (done)  
 
 ## Goal: Configuration and Operation
 1. A blazor dashboard to see state and manage the nodes 

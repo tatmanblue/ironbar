@@ -40,5 +40,22 @@ namespace core.Ledger
                 sw.Close();
             }
         }
+
+        public void InitializeStorage()
+        {
+            if (false == Directory.Exists(ledgerPath))
+                Directory.CreateDirectory(ledgerPath);
+        }
+
+        public void CheckStorage()
+        {
+            // check that the directory exists
+            if (false == Directory.Exists(ledgerPath))
+                throw new LedgerNotFoundException($"Ledger directory not found {ledgerPath}");
+
+            // check that the index file exists
+            if (false == File.Exists(ledgerIndexFileName))
+                throw new LedgerNotFoundException($"Ledger index file not found {ledgerIndexFileName}");
+        }
     }
 }

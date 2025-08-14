@@ -2,7 +2,7 @@
 
 namespace Node.Ledger;
 
-public class TypeFactory : ILedgerIndexFactory
+public class TextFileLedgerIndexTypeFactory : ILedgerIndexFactory
 {
     public ILedgerIndex CreateLedgerIndex(int blockId, string hash, DateTime created, BlockStatus status)
     {

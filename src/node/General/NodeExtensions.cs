@@ -21,6 +21,7 @@ public static class NodeExtensions
         core.IConfiguration options = builder.Services.BuildServiceProvider().GetService<core.IConfiguration>();
         ILedgerReader reader;
         ILedgerWriter writer;
+        ILedgerIndexFactory factory;
 
         if (options.StorageType == StorageType.AzureBlob)
         {
@@ -31,19 +32,22 @@ public static class NodeExtensions
             string accountKey = Environment.GetEnvironmentVariable("IRONBAR_AZURE_BLOB_ACCOUNT_KEY") ?? 
                                 throw new ApplicationException("IRONBAR_AZURE_BLOB_ACCOUNT_KEY environment variable not set");
             
-            ILogger<AzureBlogReaderWriter> logger = builder.Services.BuildServiceProvider().GetRequiredService<ILogger<AzureBlogReaderWriter>>();
-            reader = new AzureBlogReaderWriter(logger, options.FriendlyName,  accountName, accountKey);
+            ILogger<AzureBlobReaderWriter> logger = builder.Services.BuildServiceProvider().GetRequiredService<ILogger<AzureBlobReaderWriter>>();
+            reader = new AzureBlobReaderWriter(logger, options.FriendlyName,  accountName, accountKey);
             writer = reader as ILedgerWriter ?? throw new InvalidOperationException();
+            factory = new JsonLedgerIndexTypeFactory();
         }
         else
         {
             string ledgerPath = Path.Combine(options.DataPath, options.FriendlyName);
             reader = new DefaultTextFileLedgerReader(ledgerPath);
             writer = new DefaultTextFileLedgerWriter(ledgerPath);
+            factory = new TextFileLedgerIndexTypeFactory();
         }
         
         builder.Services.AddSingleton<ILedgerReader>(reader);
         builder.Services.AddSingleton<ILedgerWriter>(writer);
+        builder.Services.AddSingleton<ILedgerIndexFactory>(factory);
     }
     
     public static void ConfigureBootNodeServices(this WebApplicationBuilder builder, core.IConfiguration options)
