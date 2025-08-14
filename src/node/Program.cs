@@ -27,6 +27,7 @@ builder.Services.AddGrpc().AddServiceOptions<BootNodeBlockApiService>(options =>
 
 builder.Services.AddSingleton<core.IConfiguration>(configurationOptions);
 builder.Services.AddSingleton<ILedgerIndexFactory, TypeFactory>();
+builder.ConfigureStoreOptions();
 
 if (false == configurationOptions.IsBootNode)
     builder.ConfigureChildNodeServices(configurationOptions);                

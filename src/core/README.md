@@ -2,7 +2,7 @@
 
 ## Interfaces
 The original design, many moons ago (I was really surprised to realize this project has been around for more than 6 years now), 
-included a couple of unique concepts to most block chain implementations.  
+included a couple of concepts unique to most block chain implementations.  
 
 One of those decisions was to allow plugins to extend the core functionality of the application.  An example might be
 adding support for a credential which would not be part of the core application.   To ensure plugins behaved well, plugins 

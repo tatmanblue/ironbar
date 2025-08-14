@@ -55,7 +55,7 @@ public class AzureBlogReaderWriter : ILedgerReader, ILedgerWriter
         var blobClient = containerClient.GetBlobClient("index.json");
 
         if (!blobClient.Exists())
-            return new List<ILedgerIndex>();
+            throw new LedgerNotFoundException($"{containerName} ledger index not found");
 
         var downloadInfo = blobClient.DownloadContent();
         var json = downloadInfo.Value.Content.ToString();
@@ -81,7 +81,23 @@ public class AzureBlogReaderWriter : ILedgerReader, ILedgerWriter
 
     public void SaveLedgerIndex(List<ILedgerIndex> index)
     {
-        throw new NotImplementedException();
+        // Serialize each ILedgerIndex to JSON using System.Text.Json
+        var jsonList = new List<string>();
+        foreach (var idx in index)
+        {
+            // Serialize each index object
+            var json = System.Text.Json.JsonSerializer.Serialize(idx);
+            jsonList.Add(json);
+        }
+        // Combine into a JSON array
+        var jsonArray = "[" + string.Join(",", jsonList) + "]";
+
+        var containerClient = blobServiceClient.GetBlobContainerClient(containerName);
+        var blobClient = containerClient.GetBlobClient("index.json");
+
+        // Upload the JSON array to the blob
+        using var stream = new System.IO.MemoryStream(System.Text.Encoding.UTF8.GetBytes(jsonArray));
+        blobClient.Upload(stream, overwrite: true);
     }
     
     private BlobServiceClient GetBlobServiceClient(string accountName, string accountKey)
