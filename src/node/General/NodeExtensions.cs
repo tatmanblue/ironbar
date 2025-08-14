@@ -21,7 +21,8 @@ public static class NodeExtensions
         core.IConfiguration options = builder.Services.BuildServiceProvider().GetService<core.IConfiguration>();
         ILedgerReader reader;
         ILedgerWriter writer;
-        ILedgerIndexFactory factory;
+        ILedgerIndexFactory indexFactory;
+        ILedgerPhysicalBlockFactory blockFactory;
 
         if (options.StorageType == StorageType.AzureBlob)
         {
@@ -35,19 +36,22 @@ public static class NodeExtensions
             ILogger<AzureBlobReaderWriter> logger = builder.Services.BuildServiceProvider().GetRequiredService<ILogger<AzureBlobReaderWriter>>();
             reader = new AzureBlobReaderWriter(logger, options.FriendlyName,  accountName, accountKey);
             writer = reader as ILedgerWriter ?? throw new InvalidOperationException();
-            factory = new JsonLedgerIndexTypeFactory();
+            indexFactory = new JsonLedgerIndexTypeFactory();
+            blockFactory = new JsonPhysicalBlockTypeFactory();
         }
         else
         {
             string ledgerPath = Path.Combine(options.DataPath, options.FriendlyName);
             reader = new DefaultTextFileLedgerReader(ledgerPath);
             writer = new DefaultTextFileLedgerWriter(ledgerPath);
-            factory = new TextFileLedgerIndexTypeFactory();
+            indexFactory = new TextFileLedgerIndexTypeFactory();
+            blockFactory = new TextFilePhysicalBlockTypeFactory();
         }
         
         builder.Services.AddSingleton<ILedgerReader>(reader);
         builder.Services.AddSingleton<ILedgerWriter>(writer);
-        builder.Services.AddSingleton<ILedgerIndexFactory>(factory);
+        builder.Services.AddSingleton<ILedgerIndexFactory>(indexFactory);
+        builder.Services.AddSingleton<ILedgerPhysicalBlockFactory>(blockFactory);
     }
     
     public static void ConfigureBootNodeServices(this WebApplicationBuilder builder, core.IConfiguration options)

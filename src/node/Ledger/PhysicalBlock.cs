@@ -129,4 +129,9 @@ public class PhysicalBlock : ILedgerPhysicalBlock
 
         return block;
     }
+    
+    public static PhysicalBlock FromJson(string json)
+    {
+        return System.Text.Json.JsonSerializer.Deserialize<PhysicalBlock>(json);
+    }
 }

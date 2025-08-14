@@ -30,7 +30,7 @@ public class LedgerIndexManager : ILedgerIndexManager
         if (false == isLoaded)
             throw new LedgerException(ledgerName, "Attempted to add index before loading");
         
-        ILedgerIndex index = indexFactory.CreateLedgerIndex(GetNextBlockId(), hash, created, status);
+        ILedgerIndex index = indexFactory.Create(GetNextBlockId(), hash, created, status);
         data.Add(index);
 
         return index;
@@ -73,7 +73,7 @@ public class LedgerIndexManager : ILedgerIndexManager
 
     public void Load()
     {
-        data = reader.GetLedgerIndex((data) => indexFactory.CreateLedgerIndex(data));
+        data = reader.GetLedgerIndex((data) => indexFactory.Create(data));
         isLoaded = true;
     }
 

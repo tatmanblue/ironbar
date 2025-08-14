@@ -4,7 +4,7 @@ namespace Node.Ledger;
 
 public class TextFileLedgerIndexTypeFactory : ILedgerIndexFactory
 {
-    public ILedgerIndex CreateLedgerIndex(int blockId, string hash, DateTime created, BlockStatus status)
+    public ILedgerIndex Create(int blockId, string hash, DateTime created, BlockStatus status)
     {
         LedgerIndex index = new LedgerIndex();
         index.BlockId = blockId;
@@ -15,7 +15,7 @@ public class TextFileLedgerIndexTypeFactory : ILedgerIndexFactory
         return index;
     }
 
-    public ILedgerIndex CreateLedgerIndex(string data)
+    public ILedgerIndex Create(string data)
     {
         return LedgerIndex.FromString(data);
     }

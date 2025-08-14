@@ -10,6 +10,7 @@ if a block is valid.  The boot node creates the genesis block on ledger initiali
 1. Extract out interfaces for storage (done)
 2. Support for object storage.  Considering using [minio](https://github.com/minio/minio-dotnet) since it supports S3, Azure, and Google Cloud Storage.
 3. Easy configuration of storage via json or environment variables (done)  
+4. Clean up the intefaces around Ledger, LedgerIndex and construction of objects
 
 ## Goal: Configuration and Operation
 1. A blazor dashboard to see state and manage the nodes 

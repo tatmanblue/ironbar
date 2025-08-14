@@ -58,13 +58,16 @@ public class Ledger : ILedger
     private string LedgerIndexFileName => System.IO.Path.Combine(LedgerPath, "index.txt");
 
     private IPhysicalBlockValidator blockValidator;
+    private ILedgerPhysicalBlockFactory blockFactory;
     
     public Ledger(ILogger<Ledger> logger, IPhysicalBlockValidator blockValidator,
         ILedgerReader reader, ILedgerWriter writer, ILedgerIndexFactory indexFactory, 
+        ILedgerPhysicalBlockFactory blockFactory,
         int id, string name)
     {
         this.logger = logger;
         this.blockValidator = blockValidator;
+        this.blockFactory = blockFactory;
         Id = id;
         Name = name;
         Reader = reader;
@@ -192,15 +195,8 @@ public class Ledger : ILedger
         int blockId = Indexes.GetNextBlockId();
         ILedgerIndex parent = Indexes.GetIndex(blockId - 1);
         
-        PhysicalBlock block = new PhysicalBlock(status)
-        {
-            Id = blockId,
-            ParentHash = parent.Hash,
-            ParentId = parent.BlockId,
-            LedgerId = Id,
-            TransactionData = data,
-            SignBlock = new SignBlock()
-        };
+        ILedgerPhysicalBlock block = blockFactory.Create(blockId, status, parent.Hash, parent.BlockId, Id, data, new SignBlock());
+
         return AddBlock(block);
     }
 
@@ -210,26 +206,16 @@ public class Ledger : ILedger
         
         int blockId = Indexes.GetNextBlockId();
         ILedgerIndex parent = Indexes.GetIndex(blockId - 1);
+        ILedgerPhysicalBlock block = blockFactory.Create(
+            blockId, status, parent.Hash, parent.BlockId, pb.Id, pb.Hash, Id, pb.TransactionData, new SignBlock());
         
-        PhysicalBlock block = new PhysicalBlock(status)
-        {
-            Id = blockId,
-            ParentHash = parent.Hash,
-            ParentId = parent.BlockId,
-            ReferenceId = pb.Id,
-            ReferenceHash = pb.Hash,
-            LedgerId = Id,
-            TransactionData = pb.TransactionData,
-            SignBlock = new SignBlock()
-        };
         return AddBlock(block);
     }
 
     public ILedgerPhysicalBlock ReadBlock(int blockId)
     {
-        // TODO replace with a Block Factory function like we did with indexes
         ILedgerPhysicalBlock readBlock = Reader.GetLedgerPhysicalBlock(blockId, (data) => {
-            return PhysicalBlock.FromString(data);
+            return blockFactory.Create(data);
         });
         
         return readBlock;
