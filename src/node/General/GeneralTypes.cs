@@ -1,5 +1,6 @@
 ﻿namespace Node.General;
 
+
 public enum ChildNodeState
 {
     Unknown,

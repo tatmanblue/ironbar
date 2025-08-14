@@ -15,6 +15,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AspireHost", "AspireHost\As
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ServiceDefaults", "ServiceDefaults\ServiceDefaults.csproj", "{E15AD574-FA66-4D9D-B790-292946AB82CF}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "storage", "storage\storage.csproj", "{2423EA01-42DE-43BE-A47A-F5B811665DCE}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -85,6 +87,18 @@ Global
 		{E15AD574-FA66-4D9D-B790-292946AB82CF}.Release|x64.Build.0 = Release|Any CPU
 		{E15AD574-FA66-4D9D-B790-292946AB82CF}.Release|x86.ActiveCfg = Release|Any CPU
 		{E15AD574-FA66-4D9D-B790-292946AB82CF}.Release|x86.Build.0 = Release|Any CPU
+		{2423EA01-42DE-43BE-A47A-F5B811665DCE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2423EA01-42DE-43BE-A47A-F5B811665DCE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2423EA01-42DE-43BE-A47A-F5B811665DCE}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{2423EA01-42DE-43BE-A47A-F5B811665DCE}.Debug|x64.Build.0 = Debug|Any CPU
+		{2423EA01-42DE-43BE-A47A-F5B811665DCE}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{2423EA01-42DE-43BE-A47A-F5B811665DCE}.Debug|x86.Build.0 = Debug|Any CPU
+		{2423EA01-42DE-43BE-A47A-F5B811665DCE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2423EA01-42DE-43BE-A47A-F5B811665DCE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2423EA01-42DE-43BE-A47A-F5B811665DCE}.Release|x64.ActiveCfg = Release|Any CPU
+		{2423EA01-42DE-43BE-A47A-F5B811665DCE}.Release|x64.Build.0 = Release|Any CPU
+		{2423EA01-42DE-43BE-A47A-F5B811665DCE}.Release|x86.ActiveCfg = Release|Any CPU
+		{2423EA01-42DE-43BE-A47A-F5B811665DCE}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

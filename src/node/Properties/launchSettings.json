@@ -49,7 +49,8 @@
         "IRONBAR_NODE_NAME": "gc_node_1b",
         "IRONBAR_RPC_PORT": "50051",
         "IRONBAR_BOOT_SERVER": "https://ironbar-bootnode-6iwlqscuzq-uc.a.run.app:443",
-        "IRONBAR_DATA_PATH": "D:\\sysstuff\\downloads\\ironbar\\data"
+        "IRONBAR_DATA_PATH": "D:\\sysstuff\\downloads\\ironbar\\data",
+        "IRONBAR_STORAGE_TYPE": "filesystem"
       }
     },
     "http": {

@@ -23,6 +23,7 @@ string dataPath = GetEnvVar("IRONBAR_DATA_PATH", "data");
 string pluginPath = GetEnvVar("IRONBAR_PLUGIN_PATH", "plugins");
 string grpcLimit = GetEnvVar("IRONBAR_GRPC_LIMIT", "1");
 string svcUri = GetEnvVar("IRONBAR_SVC_URI", "");
+string storage = GetEnvVar("IRONBAR_STORAGE_TYPE", "filesystem");
 
 // configure the bootnode
 builder.AddProject<node>("BootNode")
@@ -32,6 +33,7 @@ builder.AddProject<node>("BootNode")
     .WithEnvironment("IRONBAR_BOOT_SERVER", bootAddress)
     .WithEnvironment("IRONBAR_PLUGIN_PATH", pluginPath)
     .WithEnvironment("IRONBAR_GRPC_LIMIT", grpcLimit)
-    .WithEnvironment("IRONBAR_SVC_URI", svcUri);
+    .WithEnvironment("IRONBAR_SVC_URI", svcUri)
+    .WithEnvironment("IRONBAR_STORAGE_TYPE", storage);
 
 builder.Build().Run();

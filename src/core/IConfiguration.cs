@@ -1,4 +1,6 @@
 ﻿using System;
+using core.Ledger;
+
 namespace core
 {
     /// <summary>
@@ -16,6 +18,7 @@ namespace core
         /// behaviors of other nodes. 
         /// </summary>
         bool IsBootNode { get; }
+        StorageType StorageType { get; }
         /// <summary>
         /// The node, either as boot or child, will listen for RPC calls on this port
         /// </summary>

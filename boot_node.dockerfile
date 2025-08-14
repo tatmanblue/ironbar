@@ -7,6 +7,7 @@ WORKDIR /node_dir
 # Copy all project files and restore as distinct layers
 COPY ./src ./src
 
+# technically we could remove the aspire projects
 WORKDIR /node_dir/src
 RUN dotnet restore
 RUN dotnet publish -c Release -o /node_dir/bin
