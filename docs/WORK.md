@@ -11,7 +11,7 @@ if a block is valid.  The boot node creates the genesis block on ledger initiali
 2. Support for object storage.  Considering using [minio](https://github.com/minio/minio-dotnet) since it supports S3, Azure, and Google Cloud Storage.
    2.1 Azure storage (done)
 3. Easy configuration of storage via json or environment variables (done)  
-4. Clean up the intefaces around Ledger, LedgerIndex and construction of objects
+4. Clean up the interfaces around Ledger, LedgerIndex and construction of objects
 5. Setup instructions
 
 ## Goal: Configuration and Operation
@@ -22,5 +22,4 @@ if a block is valid.  The boot node creates the genesis block on ledger initiali
 1. Add more validation checks to the block validation process
 
 ## Possible Extensions
-1. Load Aries compatible agent as a plugin to ironbar with either [ping](https://github.com/hyperledger/aries-rfcs/tree/master/features/0048-trust-ping) or didcomm protocol working
-2. Integrate with [Arcus](https://github.com/tatmanblue/Arcus)  
+1. Integrate with [Arcus](https://github.com/tatmanblue/Arcus)  
