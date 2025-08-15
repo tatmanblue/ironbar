@@ -23,6 +23,7 @@ public static class NodeExtensions
         ILedgerWriter writer;
         ILedgerIndexFactory indexFactory;
         ILedgerPhysicalBlockFactory blockFactory;
+        ILedgerSignBlockFactory signBlockFactory;
 
         if (options.StorageType == StorageType.AzureBlob)
         {
@@ -34,10 +35,11 @@ public static class NodeExtensions
                                 throw new ApplicationException("IRONBAR_AZURE_BLOB_ACCOUNT_KEY environment variable not set");
             
             ILogger<AzureBlobReaderWriter> logger = builder.Services.BuildServiceProvider().GetRequiredService<ILogger<AzureBlobReaderWriter>>();
-            reader = new AzureBlobReaderWriter(logger, options.FriendlyName,  accountName, accountKey);
-            writer = reader as ILedgerWriter ?? throw new InvalidOperationException();
             indexFactory = new JsonLedgerIndexTypeFactory();
             blockFactory = new JsonPhysicalBlockTypeFactory();
+            signBlockFactory = new JsonSignBlockTypeFactory();
+            reader = new AzureBlobReaderWriter(logger, indexFactory, blockFactory, options.FriendlyName,  accountName, accountKey);
+            writer = reader as ILedgerWriter ?? throw new InvalidOperationException();
         }
         else
         {

@@ -1,4 +1,5 @@
 ﻿using core.Ledger;
+using Newtonsoft.Json;
 
 namespace Node.Ledger;
 
@@ -40,6 +41,18 @@ public class JsonPhysicalBlockTypeFactory : ILedgerPhysicalBlockFactory
     
     public ILedgerPhysicalBlock Create(string block)
     {
-        return PhysicalBlock.FromJson(block);
+        var settings = new JsonSerializerSettings
+        {
+            Converters = { new SignBlockConverter(null) },
+            Formatting = Formatting.Indented
+        };
+        
+        return PhysicalBlock.FromJson(block, settings);
     }
+    /*
+    public ILedgerSignBlock CreateSignBlock(string block)
+    {
+        return SignBlock.FromJson(block);
+    }
+    */
 }

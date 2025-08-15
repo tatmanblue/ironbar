@@ -32,5 +32,11 @@ namespace core.Ledger
         BlockStatus Status { get; }
         ILedgerSignBlock SignBlock { get; }
 
+        /// <summary>
+        /// For serialization to JSON used by blob storage and other mechanisms
+        /// (Notes ToString() overrides will be used by TextFileLedgerWriter)
+        /// </summary>
+        /// <returns></returns>
+        string ToJson();
     }
 }

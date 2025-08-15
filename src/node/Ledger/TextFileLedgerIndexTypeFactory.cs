@@ -19,4 +19,17 @@ public class TextFileLedgerIndexTypeFactory : ILedgerIndexFactory
     {
         return LedgerIndex.FromString(data);
     }
+    
+    public ILedgerIndex Create() => new LedgerIndex();
+
+    /// <summary>
+    /// Currently not supporting this send DefaultTextFileLedgerReader does not use it (yet)
+    /// </summary>
+    /// <param name="data"></param>
+    /// <returns></returns>
+    /// <exception cref="NotImplementedException"></exception>
+    public List<ILedgerIndex> CreateList(string data)
+    {
+        throw new NotImplementedException();
+    }
 }

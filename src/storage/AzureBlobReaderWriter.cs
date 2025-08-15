@@ -1,10 +1,12 @@
-﻿using core.Ledger;
+﻿using System.Runtime;
+using core.Ledger;
 using Azure.Identity;
 using Azure.Storage;
 using Azure.Storage.Blobs;
 using Azure.Storage.Blobs.Models;
 using Azure.Storage.Blobs.Specialized;
 using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
 
 namespace storage;
 
@@ -16,14 +18,16 @@ namespace storage;
 public class AzureBlobReaderWriter : ILedgerReader, ILedgerWriter
 {
     private readonly ILogger<AzureBlobReaderWriter> logger;
+    private readonly ILedgerIndexFactory indexFactory;
+    private readonly ILedgerPhysicalBlockFactory blockFactory;
     private readonly BlobServiceClient blobServiceClient;
     private readonly string containerName;
     
     private const string INDEX_NAME = "index.json";
     private const string BLOB_PREFIX_NAME = "block-";
     
-    // Cache for ledger index list
-    private List<ILedgerIndex> cachedLedgerIndexList;
+    // For performance (and potentially costs reasons) cache for ledger index list
+    private List<ILedgerIndex> cachedLedgerIndexList = new();
 
     /// <summary>
     /// 
@@ -32,9 +36,12 @@ public class AzureBlobReaderWriter : ILedgerReader, ILedgerWriter
     /// <param name="nodeName">Since each node stores its own indexes and blocks, nodeName services as index into the object storage</param>
     /// <param name="accountName"></param>
     /// <param name="accountKey"></param>
-    public AzureBlobReaderWriter(ILogger<AzureBlobReaderWriter> logger, string nodeName, string accountName, string accountKey)
+    public AzureBlobReaderWriter(ILogger<AzureBlobReaderWriter> logger, ILedgerIndexFactory indexFactory, 
+        ILedgerPhysicalBlockFactory blockFactory, string nodeName, string accountName, string accountKey)
     {
         this.logger = logger;
+        this.indexFactory = indexFactory;
+        this.blockFactory = blockFactory;
         containerName = nodeName;
         blobServiceClient = GetBlobServiceClient(accountName, accountKey);
     }
@@ -67,7 +74,6 @@ public class AzureBlobReaderWriter : ILedgerReader, ILedgerWriter
 
     public ILedgerIndex GetLedgerIndex(int index, Func<string, ILedgerIndex> indexAllocator)
     {
-        // Load cache if not loaded
         if (cachedLedgerIndexList == null)
         {
             cachedLedgerIndexList = GetLedgerIndex(indexAllocator);
@@ -90,15 +96,9 @@ public class AzureBlobReaderWriter : ILedgerReader, ILedgerWriter
         var downloadInfo = blobClient.DownloadContent();
         var json = downloadInfo.Value.Content.ToString();
         
-        var indexList = new List<ILedgerIndex>();
-        var jsonArray = System.Text.Json.JsonDocument.Parse(json).RootElement;
+        logger.LogDebug($"block index data has been retrieved | {json} |");
 
-        foreach (var element in jsonArray.EnumerateArray())
-        {
-            var elementJson = element.GetRawText();
-            var index = indexAllocator(elementJson);
-            indexList.Add(index);
-        }
+        var indexList = indexFactory.CreateList(json);
         
         cachedLedgerIndexList = indexList;
 
@@ -110,29 +110,20 @@ public class AzureBlobReaderWriter : ILedgerReader, ILedgerWriter
         var containerClient = blobServiceClient.GetBlobContainerClient(containerName);
         if (!containerClient.Exists())
             throw new LedgerNotFoundException($"{containerName} ledger storage not found");
-
-        // Blob name for the block
+        
         var blobName = $"{BLOB_PREFIX_NAME}{block.Id}.json";
         var blobClient = containerClient.GetBlobClient(blobName);
-
-        // Serialize block to JSON
-        var json = System.Text.Json.JsonSerializer.Serialize(block);
-
+        
+        // TODO: would we want to use TypeFactory to handle different formats?
         // Upload block JSON to blob
+        var json = block.ToJson();
         using var stream = new System.IO.MemoryStream(System.Text.Encoding.UTF8.GetBytes(json));
         blobClient.Upload(stream, overwrite: true);
     }
 
     public void SaveLedgerIndex(List<ILedgerIndex> index)
     {
-        var jsonList = new List<string>();
-        foreach (var idx in index)
-        {
-            // Serialize each index object
-            var json = System.Text.Json.JsonSerializer.Serialize(idx);
-            jsonList.Add(json);
-        }
-        var jsonArray = "[" + string.Join(",", jsonList) + "]";
+        var jsonArray = JsonConvert.SerializeObject(index);
 
         var containerClient = blobServiceClient.GetBlobContainerClient(containerName);
         var blobClient = containerClient.GetBlobClient(INDEX_NAME);

@@ -42,4 +42,11 @@ public class TextFilePhysicalBlockTypeFactory : ILedgerPhysicalBlockFactory
     {
         return PhysicalBlock.FromString(block);
     }
+
+    /*
+    public ILedgerSignBlock CreateSignBlock(string block)
+    {
+        throw new NotImplementedException();
+    }
+    */
 }

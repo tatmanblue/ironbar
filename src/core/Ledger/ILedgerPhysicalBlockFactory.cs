@@ -39,9 +39,10 @@ public interface ILedgerPhysicalBlockFactory
         string referenceHash, int ledgerId, byte[] transactionData, ILedgerSignBlock signBlock);
     
     /// <summary>
-    /// Primarily for creating new blocks via "serialized" data
+    /// Primarily for creating new blocks via "serialized" data and isolating the implementation details
     /// </summary>
     /// <param name="block"></param>
     /// <returns>ILedgerPhysicalBlock</returns>
     ILedgerPhysicalBlock Create(string block);
+    // ILedgerSignBlock CreateSignBlock(string block);
 }

@@ -59,15 +59,17 @@ public class Ledger : ILedger
 
     private IPhysicalBlockValidator blockValidator;
     private ILedgerPhysicalBlockFactory blockFactory;
+    private ILedgerSignBlockFactory signBlockFactory;
     
     public Ledger(ILogger<Ledger> logger, IPhysicalBlockValidator blockValidator,
         ILedgerReader reader, ILedgerWriter writer, ILedgerIndexFactory indexFactory, 
-        ILedgerPhysicalBlockFactory blockFactory,
+        ILedgerPhysicalBlockFactory blockFactory, ILedgerSignBlockFactory signBlockFactory,
         int id, string name)
     {
         this.logger = logger;
         this.blockValidator = blockValidator;
         this.blockFactory = blockFactory;
+        this.signBlockFactory = signBlockFactory;
         Id = id;
         Name = name;
         Reader = reader;
@@ -164,13 +166,13 @@ public class Ledger : ILedger
         }
         catch(LedgerNotValidException lnve)
         {
-            logger.LogError($"{lnve.Message}");
+            logger.LogError($"Ledger validation Error.  Ledger not functional. {lnve.Message}");
             State = LedgerState.Nonfunctional;
             throw;
         }
         catch(Exception e)
         {
-            logger.LogError($"{e.Message}");
+            logger.LogError($"Unexplained Ledger Validation Error.  You may not have a valid ledger. {e.GetType().FullName}: {e.Message}");
             State = LedgerState.Nonfunctional;
             throw new LedgerException(Name, e);
         }

@@ -219,11 +219,12 @@ public class LedgerManager : ILedgerManager
         ILedgerWriter writer = serviceProvider.GetRequiredService<ILedgerWriter>();
         ILedgerIndexFactory indexFactory = serviceProvider.GetRequiredService<ILedgerIndexFactory>();
         ILedgerPhysicalBlockFactory blockFactory = serviceProvider.GetRequiredService<ILedgerPhysicalBlockFactory>();
+        ILedgerSignBlockFactory signBlockFactory = serviceProvider.GetRequiredService<ILedgerSignBlockFactory>();
 
         // 2 - open the master ledger index file and initialize the master ledger
         // TODO maybe its time to clean up this, even make this DI
         Ledger masterLedger = new Ledger(ledgerLogger, blockValidator, reader, writer, indexFactory, blockFactory,
-            MASTER_LEDGER_ID, options.FriendlyName);
+            signBlockFactory, MASTER_LEDGER_ID, options.FriendlyName);
         ledgers.Add(masterLedger);
 
         return masterLedger;
