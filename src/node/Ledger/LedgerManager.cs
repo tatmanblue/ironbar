@@ -38,19 +38,10 @@ public class LedgerManager : ILedgerManager
         IConfiguration options = serviceProvider.GetRequiredService<IConfiguration>();
         
         logger.LogInformation($"LedgerManager is started, using '{options.StorageType}' for storage");
-
-        ILogger<Ledger> ledgerLogger = serviceProvider.GetRequiredService<ILogger<Ledger>>();
-        IPhysicalBlockValidator blockValidator = serviceProvider.GetRequiredService<IPhysicalBlockValidator>();
-        ILedgerReader reader = serviceProvider.GetRequiredService<ILedgerReader>();
-        ILedgerWriter writer = serviceProvider.GetRequiredService<ILedgerWriter>();
-        ILedgerIndexFactory indexFactory = serviceProvider.GetRequiredService<ILedgerIndexFactory>();
-        ILedgerPhysicalBlockFactory blockFactory = serviceProvider.GetRequiredService<ILedgerPhysicalBlockFactory>();
-
+        
         // 2 - open the master ledger index file and initialize the master ledger
         // TODO maybe its time to clean up this, even make this DI
-        Ledger masterLedger = new Ledger(ledgerLogger, blockValidator, reader, writer, indexFactory, blockFactory,
-            MASTER_LEDGER_ID, options.FriendlyName);
-        ledgers.Add(masterLedger);
+        Ledger masterLedger = CreateMasterLedger(serviceProvider);
 
         try
         {
@@ -217,5 +208,24 @@ public class LedgerManager : ILedgerManager
         ledgers[0].SyncBlock(pb);
         logger.LogInformation($"Block {pb.Id} received");
         return pb;
+    }
+
+    protected Ledger CreateMasterLedger(IServiceProvider serviceProvider)
+    {
+        IConfiguration options = serviceProvider.GetRequiredService<IConfiguration>();
+        ILogger<Ledger> ledgerLogger = serviceProvider.GetRequiredService<ILogger<Ledger>>();
+        IPhysicalBlockValidator blockValidator = serviceProvider.GetRequiredService<IPhysicalBlockValidator>();
+        ILedgerReader reader = serviceProvider.GetRequiredService<ILedgerReader>();
+        ILedgerWriter writer = serviceProvider.GetRequiredService<ILedgerWriter>();
+        ILedgerIndexFactory indexFactory = serviceProvider.GetRequiredService<ILedgerIndexFactory>();
+        ILedgerPhysicalBlockFactory blockFactory = serviceProvider.GetRequiredService<ILedgerPhysicalBlockFactory>();
+
+        // 2 - open the master ledger index file and initialize the master ledger
+        // TODO maybe its time to clean up this, even make this DI
+        Ledger masterLedger = new Ledger(ledgerLogger, blockValidator, reader, writer, indexFactory, blockFactory,
+            MASTER_LEDGER_ID, options.FriendlyName);
+        ledgers.Add(masterLedger);
+
+        return masterLedger;
     }
 }

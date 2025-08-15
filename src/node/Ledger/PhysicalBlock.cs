@@ -36,6 +36,11 @@ public class PhysicalBlock : ILedgerPhysicalBlock
     public ILedgerSignBlock SignBlock { get; internal set; }
     #endregion
     
+    protected internal PhysicalBlock()
+    {
+        Status = BlockStatus.Error;
+    }
+    
     protected internal PhysicalBlock(BlockStatus status)
     {
         Status = status;
