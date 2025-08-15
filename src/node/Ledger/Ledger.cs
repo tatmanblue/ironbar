@@ -97,14 +97,17 @@ public class Ledger : ILedger
         InitializeStorage();
 
         Indexes.Initialize();
-        PhysicalBlock block = new PhysicalBlock(BlockStatus.System)
-        {
-            Id = Indexes.GetNextBlockId(),
-            LedgerId = Id,
-            ParentHash = HashUtility.ComputeHash(Nonce.New().ToString()),
-            TransactionData = System.Text.Encoding.ASCII.GetBytes("boot ledger initialized"),
-            SignBlock = new SignBlock()
-        };
+
+        string message = "Initializing boot ledger";
+        ILedgerPhysicalBlock block = blockFactory.Create(
+            Indexes.GetNextBlockId(),
+            BlockStatus.System,
+            HashUtility.ComputeHash(message),
+            -1,
+            Id,
+            System.Text.Encoding.ASCII.GetBytes(message),
+            signBlockFactory.Create()
+        );
         
         AddBlockInternal(block);
     }

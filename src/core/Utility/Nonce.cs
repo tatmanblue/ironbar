@@ -5,7 +5,7 @@ namespace core.Utility
 {
     public class Nonce
     {
-        public int Value { get; private set; } = 0;
+        public int Value { get; set; } = 0;
 
         public override string ToString()
         {

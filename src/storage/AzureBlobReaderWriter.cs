@@ -66,6 +66,8 @@ public class AzureBlobReaderWriter : ILedgerReader, ILedgerWriter
 
         var downloadInfo = blobClient.DownloadContent();
         var json = downloadInfo.Value.Content.ToString();
+        
+        logger.LogDebug($"block id {id} data has been retrieved: {json}");
 
         return blockAllocator(json);
     }

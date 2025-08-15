@@ -17,7 +17,7 @@ public class JsonPhysicalBlockTypeFactory : ILedgerPhysicalBlockFactory
             TransactionData = transactionData,
             SignBlock = signBlock
         };
-        
+
         return block;
     }
 
@@ -35,10 +35,10 @@ public class JsonPhysicalBlockTypeFactory : ILedgerPhysicalBlockFactory
             TransactionData = transactionData,
             SignBlock = signBlock
         };
-        
+
         return block;
     }
-    
+
     public ILedgerPhysicalBlock Create(string block, ILedgerSignBlockFactory signBlockFactory)
     {
         var settings = new JsonSerializerSettings
@@ -46,13 +46,7 @@ public class JsonPhysicalBlockTypeFactory : ILedgerPhysicalBlockFactory
             Converters = { new SignBlockConverter(signBlockFactory) },
             Formatting = Formatting.Indented
         };
-        
+
         return PhysicalBlock.FromJson(block, settings);
     }
-    /*
-    public ILedgerSignBlock CreateSignBlock(string block)
-    {
-        return SignBlock.FromJson(block);
-    }
-    */
 }

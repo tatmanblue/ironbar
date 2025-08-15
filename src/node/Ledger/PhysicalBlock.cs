@@ -20,7 +20,7 @@ public class PhysicalBlock : ILedgerPhysicalBlock
     public int Id { get; set; } = -1;
 
     public int ParentId { get; set; } = -1;
-    public int ReferenceId { get; set; } = 0;
+    public int ReferenceId { get; set; } = -1;
 
     public string ParentHash { get; set; } = "0";
     public string ReferenceHash { get; set; } = HashUtility.ComputeHash(Nonce.New().ToString());
