@@ -43,6 +43,6 @@ public interface ILedgerPhysicalBlockFactory
     /// </summary>
     /// <param name="block"></param>
     /// <returns>ILedgerPhysicalBlock</returns>
-    ILedgerPhysicalBlock Create(string block);
-    // ILedgerSignBlock CreateSignBlock(string block);
+    ILedgerPhysicalBlock Create(string block, ILedgerSignBlockFactory signBlockFactory);
+
 }

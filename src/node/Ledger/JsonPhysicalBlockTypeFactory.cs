@@ -39,11 +39,11 @@ public class JsonPhysicalBlockTypeFactory : ILedgerPhysicalBlockFactory
         return block;
     }
     
-    public ILedgerPhysicalBlock Create(string block)
+    public ILedgerPhysicalBlock Create(string block, ILedgerSignBlockFactory signBlockFactory)
     {
         var settings = new JsonSerializerSettings
         {
-            Converters = { new SignBlockConverter(null) },
+            Converters = { new SignBlockConverter(signBlockFactory) },
             Formatting = Formatting.Indented
         };
         

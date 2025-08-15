@@ -37,16 +37,15 @@ public class TextFilePhysicalBlockTypeFactory : ILedgerPhysicalBlockFactory
         
         return block;
     }
-    
+
+    public ILedgerPhysicalBlock Create(string block, ILedgerSignBlockFactory signBlockFactory)
+    {
+        return Create(block);
+    }
+
     public ILedgerPhysicalBlock Create(string block)
     {
         return PhysicalBlock.FromString(block);
     }
-
-    /*
-    public ILedgerSignBlock CreateSignBlock(string block)
-    {
-        throw new NotImplementedException();
-    }
-    */
+    
 }

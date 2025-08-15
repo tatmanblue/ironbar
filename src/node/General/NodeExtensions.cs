@@ -38,7 +38,7 @@ public static class NodeExtensions
             indexFactory = new JsonLedgerIndexTypeFactory();
             blockFactory = new JsonPhysicalBlockTypeFactory();
             signBlockFactory = new JsonSignBlockTypeFactory();
-            reader = new AzureBlobReaderWriter(logger, indexFactory, blockFactory, options.FriendlyName,  accountName, accountKey);
+            reader = new AzureBlobReaderWriter(logger, indexFactory, options.FriendlyName,  accountName, accountKey);
             writer = reader as ILedgerWriter ?? throw new InvalidOperationException();
         }
         else
@@ -48,12 +48,14 @@ public static class NodeExtensions
             writer = new DefaultTextFileLedgerWriter(ledgerPath);
             indexFactory = new TextFileLedgerIndexTypeFactory();
             blockFactory = new TextFilePhysicalBlockTypeFactory();
+            signBlockFactory = new TextFileSignBlockTypeFactory();
         }
         
         builder.Services.AddSingleton<ILedgerReader>(reader);
         builder.Services.AddSingleton<ILedgerWriter>(writer);
         builder.Services.AddSingleton<ILedgerIndexFactory>(indexFactory);
         builder.Services.AddSingleton<ILedgerPhysicalBlockFactory>(blockFactory);
+        builder.Services.AddSingleton<ILedgerSignBlockFactory>(signBlockFactory);
     }
     
     public static void ConfigureBootNodeServices(this WebApplicationBuilder builder, core.IConfiguration options)

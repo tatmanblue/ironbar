@@ -197,7 +197,8 @@ public class Ledger : ILedger
         int blockId = Indexes.GetNextBlockId();
         ILedgerIndex parent = Indexes.GetIndex(blockId - 1);
         
-        ILedgerPhysicalBlock block = blockFactory.Create(blockId, status, parent.Hash, parent.BlockId, Id, data, new SignBlock());
+        ILedgerPhysicalBlock block = blockFactory.Create(
+            blockId, status, parent.Hash, parent.BlockId, Id, data, signBlockFactory.Create());
 
         return AddBlock(block);
     }
@@ -209,7 +210,7 @@ public class Ledger : ILedger
         int blockId = Indexes.GetNextBlockId();
         ILedgerIndex parent = Indexes.GetIndex(blockId - 1);
         ILedgerPhysicalBlock block = blockFactory.Create(
-            blockId, status, parent.Hash, parent.BlockId, pb.Id, pb.Hash, Id, pb.TransactionData, new SignBlock());
+            blockId, status, parent.Hash, parent.BlockId, pb.Id, pb.Hash, Id, pb.TransactionData, signBlockFactory.Create());
         
         return AddBlock(block);
     }
@@ -217,7 +218,7 @@ public class Ledger : ILedger
     public ILedgerPhysicalBlock ReadBlock(int blockId)
     {
         ILedgerPhysicalBlock readBlock = Reader.GetLedgerPhysicalBlock(blockId, (data) => {
-            return blockFactory.Create(data);
+            return blockFactory.Create(data, signBlockFactory);
         });
         
         return readBlock;

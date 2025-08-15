@@ -19,7 +19,6 @@ public class AzureBlobReaderWriter : ILedgerReader, ILedgerWriter
 {
     private readonly ILogger<AzureBlobReaderWriter> logger;
     private readonly ILedgerIndexFactory indexFactory;
-    private readonly ILedgerPhysicalBlockFactory blockFactory;
     private readonly BlobServiceClient blobServiceClient;
     private readonly string containerName;
     
@@ -37,11 +36,10 @@ public class AzureBlobReaderWriter : ILedgerReader, ILedgerWriter
     /// <param name="accountName"></param>
     /// <param name="accountKey"></param>
     public AzureBlobReaderWriter(ILogger<AzureBlobReaderWriter> logger, ILedgerIndexFactory indexFactory, 
-        ILedgerPhysicalBlockFactory blockFactory, string nodeName, string accountName, string accountKey)
+        string nodeName, string accountName, string accountKey)
     {
         this.logger = logger;
         this.indexFactory = indexFactory;
-        this.blockFactory = blockFactory;
         containerName = nodeName;
         blobServiceClient = GetBlobServiceClient(accountName, accountKey);
     }
