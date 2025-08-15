@@ -2,11 +2,12 @@ using System.Net;
 using System.Security.Authentication;
 using core.Ledger;
 using Microsoft.AspNetCore.Server.Kestrel.Core;
+using DotNetEnv;
 using Node.General;
 using Node.Ledger;
 using Node.grpc.service;
 
-
+Env.Load();
 ConfigurationOptions configurationOptions = ConfigurationOptions.FromEnvironment();
 
 var builder = WebApplication.CreateBuilder(args);
@@ -26,7 +27,8 @@ builder.Services.AddGrpc().AddServiceOptions<BootNodeBlockApiService>(options =>
 });
 
 builder.Services.AddSingleton<core.IConfiguration>(configurationOptions);
-builder.Services.AddSingleton<ILedgerIndexFactory, TypeFactory>();
+builder.Services.AddSingleton<ILedgerIndexFactory, TextFileLedgerIndexTypeFactory>();
+builder.ConfigureStoreOptions();
 
 if (false == configurationOptions.IsBootNode)
     builder.ConfigureChildNodeServices(configurationOptions);                

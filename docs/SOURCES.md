@@ -12,6 +12,7 @@ This page contains documentation sources used to drive the design of `Iron Bar`
 
 # Technologies
 [Encoder](https://www.nuget.org/packages/SimpleBase/)  
+[minio](https://github.com/minio/minio-dotnet)  
 
 # For thought
 NGROK - might be able to use this to host iron bar locally instead of on AWS or Azure

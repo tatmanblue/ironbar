@@ -21,6 +21,7 @@ public class LedgerManager : ILedgerManager
     protected readonly ILedgerIndexFactory ledgerIndexFactory;
 
     // Instance allocated
+    // TODO why isnt this a dictionary of ledgers by interface?
     protected List<Ledger> ledgers = new List<Ledger>();
     protected bool isOperational = false;
     protected IServicesEventPub eventPub;
@@ -36,14 +37,11 @@ public class LedgerManager : ILedgerManager
     {
         IConfiguration options = serviceProvider.GetRequiredService<IConfiguration>();
         
-        logger.LogInformation($"LedgerManager is started, using '{System.IO.Path.GetFullPath(options.DataPath)}' for data path");
-
-        ILogger<Ledger> ledgerLogger = serviceProvider.GetRequiredService<ILogger<Ledger>>();
-        IPhysicalBlockValidator blockValidator = serviceProvider.GetRequiredService<IPhysicalBlockValidator>();
-
+        logger.LogInformation($"LedgerManager is started, using '{options.StorageType}' for storage");
+        
         // 2 - open the master ledger index file and initialize the master ledger
-        Ledger masterLedger = new Ledger(ledgerLogger, blockValidator, MASTER_LEDGER_ID, options.FriendlyName, options.DataPath);
-        ledgers.Add(masterLedger);
+        // TODO maybe its time to clean up this, even make this DI
+        Ledger masterLedger = CreateMasterLedger(serviceProvider);
 
         try
         {
@@ -151,7 +149,7 @@ public class LedgerManager : ILedgerManager
         foreach (string idx in rows)
         {
             logger.LogInformation($"{count}: {idx}");
-            ILedgerIndex ledgerIndex = ledgerIndexFactory.CreateLedgerIndex(idx);
+            ILedgerIndex ledgerIndex = ledgerIndexFactory.Create(idx);
             indexes.Add(ledgerIndex);
             runningProof = HashUtility.ComputeHash($"{runningProof}{ledgerIndex.Hash}");
             
@@ -175,7 +173,7 @@ public class LedgerManager : ILedgerManager
         foreach (string idx in rows)
         {
             logger.LogInformation($"{count}: {idx}");
-            ILedgerIndex ledgerIndex = ledgerIndexFactory.CreateLedgerIndex(idx);
+            ILedgerIndex ledgerIndex = ledgerIndexFactory.Create(idx);
             indexes.Add(ledgerIndex);
             runningProof = HashUtility.ComputeHash($"{runningProof}{ledgerIndex.Hash}");
             
@@ -210,5 +208,25 @@ public class LedgerManager : ILedgerManager
         ledgers[0].SyncBlock(pb);
         logger.LogInformation($"Block {pb.Id} received");
         return pb;
+    }
+
+    protected Ledger CreateMasterLedger(IServiceProvider serviceProvider)
+    {
+        IConfiguration options = serviceProvider.GetRequiredService<IConfiguration>();
+        ILogger<Ledger> ledgerLogger = serviceProvider.GetRequiredService<ILogger<Ledger>>();
+        IPhysicalBlockValidator blockValidator = serviceProvider.GetRequiredService<IPhysicalBlockValidator>();
+        ILedgerReader reader = serviceProvider.GetRequiredService<ILedgerReader>();
+        ILedgerWriter writer = serviceProvider.GetRequiredService<ILedgerWriter>();
+        ILedgerIndexFactory indexFactory = serviceProvider.GetRequiredService<ILedgerIndexFactory>();
+        ILedgerPhysicalBlockFactory blockFactory = serviceProvider.GetRequiredService<ILedgerPhysicalBlockFactory>();
+        ILedgerSignBlockFactory signBlockFactory = serviceProvider.GetRequiredService<ILedgerSignBlockFactory>();
+
+        // 2 - open the master ledger index file and initialize the master ledger
+        // TODO maybe its time to clean up this, even make this DI
+        Ledger masterLedger = new Ledger(ledgerLogger, blockValidator, reader, writer, indexFactory, blockFactory,
+            signBlockFactory, MASTER_LEDGER_ID, options.FriendlyName);
+        ledgers.Add(masterLedger);
+
+        return masterLedger;
     }
 }

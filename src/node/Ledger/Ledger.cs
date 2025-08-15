@@ -58,37 +58,34 @@ public class Ledger : ILedger
     private string LedgerIndexFileName => System.IO.Path.Combine(LedgerPath, "index.txt");
 
     private IPhysicalBlockValidator blockValidator;
-
-    public Ledger(ILogger<Ledger> logger, IPhysicalBlockValidator blockValidator, int id, string name, string path)
+    private ILedgerPhysicalBlockFactory blockFactory;
+    private ILedgerSignBlockFactory signBlockFactory;
+    
+    public Ledger(ILogger<Ledger> logger, IPhysicalBlockValidator blockValidator,
+        ILedgerReader reader, ILedgerWriter writer, ILedgerIndexFactory indexFactory, 
+        ILedgerPhysicalBlockFactory blockFactory, ILedgerSignBlockFactory signBlockFactory,
+        int id, string name)
     {
         this.logger = logger;
+        this.blockValidator = blockValidator;
+        this.blockFactory = blockFactory;
+        this.signBlockFactory = signBlockFactory;
         Id = id;
         Name = name;
-        RootDataPath = path;
-        this.blockValidator = blockValidator;
-        // TODO: make this injectable
-        Writer = new DefaultTextFileLedgerWriter(LedgerPath);
-        Reader =  new DefaultTextFileLedgerReader(LedgerPath);
-        Indexes = new LedgerIndexManager(Name, LedgerPath);
+        Reader = reader;
+        Writer = writer;
+        Indexes = new LedgerIndexManager(Name, Reader, Writer, indexFactory);
     }
 
     #region Public methods, ILedger methods
     public void InitializeStorage()
     {
-        // TODO now that the reader/writer are separate, what does initialize storage mean?
-        if (false == Directory.Exists(LedgerPath))
-            Directory.CreateDirectory(LedgerPath);
+        Writer.InitializeStorage();
     }
 
     public void Check()
     {
-        // check that the directory exists
-        if (false == Directory.Exists(LedgerPath))
-            throw new LedgerNotFoundException($"Ledger directory not found {LedgerPath}");
-
-        // check that the index file exists
-        if (false == File.Exists(LedgerIndexFileName))
-            throw new LedgerNotFoundException($"Ledger index file not found {LedgerIndexFileName}");
+        Writer.CheckStorage();
     }
 
     /// <summary>
@@ -100,14 +97,17 @@ public class Ledger : ILedger
         InitializeStorage();
 
         Indexes.Initialize();
-        PhysicalBlock block = new PhysicalBlock(BlockStatus.System)
-        {
-            Id = Indexes.GetNextBlockId(),
-            LedgerId = Id,
-            ParentHash = HashUtility.ComputeHash(Nonce.New().ToString()),
-            TransactionData = System.Text.Encoding.ASCII.GetBytes("boot ledger initialized"),
-            SignBlock = new SignBlock()
-        };
+
+        string message = "Initializing boot ledger";
+        ILedgerPhysicalBlock block = blockFactory.Create(
+            Indexes.GetNextBlockId(),
+            BlockStatus.System,
+            HashUtility.ComputeHash(message),
+            -1,
+            Id,
+            System.Text.Encoding.ASCII.GetBytes(message),
+            signBlockFactory.Create()
+        );
         
         AddBlockInternal(block);
     }
@@ -169,13 +169,13 @@ public class Ledger : ILedger
         }
         catch(LedgerNotValidException lnve)
         {
-            logger.LogError($"{lnve.Message}");
+            logger.LogError($"Ledger validation Error.  Ledger not functional. {lnve.Message}");
             State = LedgerState.Nonfunctional;
             throw;
         }
         catch(Exception e)
         {
-            logger.LogError($"{e.Message}");
+            logger.LogError($"Unexplained Ledger Validation Error.  You may not have a valid ledger. {e.GetType().FullName}: {e.Message}");
             State = LedgerState.Nonfunctional;
             throw new LedgerException(Name, e);
         }
@@ -200,15 +200,9 @@ public class Ledger : ILedger
         int blockId = Indexes.GetNextBlockId();
         ILedgerIndex parent = Indexes.GetIndex(blockId - 1);
         
-        PhysicalBlock block = new PhysicalBlock(status)
-        {
-            Id = blockId,
-            ParentHash = parent.Hash,
-            ParentId = parent.BlockId,
-            LedgerId = Id,
-            TransactionData = data,
-            SignBlock = new SignBlock()
-        };
+        ILedgerPhysicalBlock block = blockFactory.Create(
+            blockId, status, parent.Hash, parent.BlockId, Id, data, signBlockFactory.Create());
+
         return AddBlock(block);
     }
 
@@ -218,26 +212,16 @@ public class Ledger : ILedger
         
         int blockId = Indexes.GetNextBlockId();
         ILedgerIndex parent = Indexes.GetIndex(blockId - 1);
+        ILedgerPhysicalBlock block = blockFactory.Create(
+            blockId, status, parent.Hash, parent.BlockId, pb.Id, pb.Hash, Id, pb.TransactionData, signBlockFactory.Create());
         
-        PhysicalBlock block = new PhysicalBlock(status)
-        {
-            Id = blockId,
-            ParentHash = parent.Hash,
-            ParentId = parent.BlockId,
-            ReferenceId = pb.Id,
-            ReferenceHash = pb.Hash,
-            LedgerId = Id,
-            TransactionData = pb.TransactionData,
-            SignBlock = new SignBlock()
-        };
         return AddBlock(block);
     }
 
     public ILedgerPhysicalBlock ReadBlock(int blockId)
     {
-        // TODO replace with a Block Factory function like we did with indexes
         ILedgerPhysicalBlock readBlock = Reader.GetLedgerPhysicalBlock(blockId, (data) => {
-            return PhysicalBlock.FromString(data);
+            return blockFactory.Create(data, signBlockFactory);
         });
         
         return readBlock;

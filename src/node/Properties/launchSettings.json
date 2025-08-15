@@ -18,10 +18,7 @@
         "ASPNETCORE_ENVIRONMENT": "Development",
         "IRONBAR_TYPE": "boot",
         "IRONBAR_DATA_PATH": "D:\\sysstuff\\downloads\\ironbar\\data",
-        "IRONBAR_WRITE_API_KEY": "829ABECB472A49FAAE8436730E3716EE",
-        "IRONBAR_READ_API_KEY": "D6C9EF21D256495985269548D5FF70AA",
-        "IRONBAR_READ_DETAILS_API_KEY": "CD0A9C4A7B7E4B1DB47F6FAF889A8FF6",
-        "IRONBAR_ADMIN_API_KEY": "789A3BC0A4189477FBCB931FE8BA480BC0"
+        "IRONBAR_STORAGE_TYPE": "azureblob"
       }
     },
     "child_node": {
@@ -35,7 +32,8 @@
         "IRONBAR_RPC_PORT": "50059",
         "IRONBAR_BOOT_SERVER": "http://localhost:50051",
         "IRONBAR_DATA_PATH": "D:\\sysstuff\\downloads\\ironbar\\data",
-        "IRONBAR_NODE_NAME": "node_rider"
+        "IRONBAR_NODE_NAME": "node_rider",
+        "IRONBAR_STORAGE_TYPE": "azureblob"
       }
     },
     "gc_child": {
@@ -49,7 +47,8 @@
         "IRONBAR_NODE_NAME": "gc_node_1b",
         "IRONBAR_RPC_PORT": "50051",
         "IRONBAR_BOOT_SERVER": "https://ironbar-bootnode-6iwlqscuzq-uc.a.run.app:443",
-        "IRONBAR_DATA_PATH": "D:\\sysstuff\\downloads\\ironbar\\data"
+        "IRONBAR_DATA_PATH": "D:\\sysstuff\\downloads\\ironbar\\data",
+        "IRONBAR_STORAGE_TYPE": "azureblob"
       }
     },
     "http": {

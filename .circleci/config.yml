@@ -8,3 +8,4 @@ jobs:
     steps:
       - checkout
       - run: dotnet build src/ironbar.sln
+      - run: dotnet test src/ironbar.sln --no-build

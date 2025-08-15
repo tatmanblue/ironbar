@@ -12,7 +12,7 @@ public class ChildLedgerManager : LedgerManager
     public ChildLedgerManager(IServiceProvider serviceProvider) : base(serviceProvider)
     {
         this.logger = serviceProvider.GetRequiredService<ILogger<ChildLedgerManager>>();
-        logger.LogInformation("Client Ledger Manager is now available");
+        logger.LogInformation("Client Ledger Manager is now created");
     }
 
     /// <summary>
@@ -23,15 +23,10 @@ public class ChildLedgerManager : LedgerManager
     /// <param name="serviceProvider"></param>
     public override void Start(IServiceProvider serviceProvider)
     {
-        IConfiguration options = serviceProvider.GetRequiredService<IConfiguration>();
-        ILogger<Ledger> ledgerLogger = serviceProvider.GetRequiredService<ILogger<Ledger>>();
-        IPhysicalBlockValidator blockValidator = serviceProvider.GetRequiredService<IPhysicalBlockValidator>();
+        ILedgerWriter writer = serviceProvider.GetRequiredService<ILedgerWriter>();
         
-        logger.LogInformation($"LedgerManager is started, using '{System.IO.Path.GetFullPath(options.DataPath)}' for data path");
-
-        
-        Ledger masterLedger = new Ledger(ledgerLogger, blockValidator, MASTER_LEDGER_ID, options.FriendlyName, options.DataPath);
-        ledgers.Add(masterLedger);
-        masterLedger.InitializeStorage();
+        logger.LogInformation($"ChildLedgerManager is started");
+        CreateMasterLedger(serviceProvider);
+        writer.InitializeStorage();
     }
 }

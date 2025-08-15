@@ -2,6 +2,7 @@
 using System.Reflection;
 using System.Text.Json.Serialization;
 using core;
+using core.Ledger;
 using core.Utility;
 using IConfiguration = core.IConfiguration;
 
@@ -35,6 +36,7 @@ public class ConfigurationOptions : IConfiguration
     public string PluginPath { get; set; } = "plugins";
     public string DataPath { get; set; } = "data";
     public bool IsBootNode { get; set; } = false;
+    public StorageType StorageType { get; set; } = StorageType.FileSystem;
     /// <summary>
     /// in KB. thus 1 is approximately 1K
     /// this limit is put in place because deployment might be expensive 
@@ -54,6 +56,7 @@ public class ConfigurationOptions : IConfiguration
                $"RPC Server: {BootAddress}\r\n" +
                $"RPC Port: {RPCPort}\r\n" +
                $"Version: {Version}\r\n" +
+               $"Storage Type: {StorageType}\r\n" +
                $"Assembly Version: {version}\r\n"
             ;
     }
@@ -78,7 +81,14 @@ public class ConfigurationOptions : IConfiguration
         options.PluginPath = FromEnvOrDefault("IRONBAR_PLUGIN_PATH", "plugins");
         options.GrpcMessageSizeLimit = FromEnvOrDefaultAsInt("IRONBAR_GRPC_LIMIT", "1");
         options.ServiceAddress = FromEnvOrDefault("IRONBAR_SVC_URI", "");
-        
+
+        options.StorageType = FromEnvOrDefault("IRONBAR_STORAGE_TYPE", "filesystem").ToLower() switch
+        {
+            "filesystem" or "file" or "fs" => StorageType.FileSystem,
+            "azureblob" or "azure" => StorageType.AzureBlob,
+            _ => StorageType.FileSystem
+        };
+
         return options;
     }
 

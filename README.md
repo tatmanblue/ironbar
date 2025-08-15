@@ -79,7 +79,7 @@ When there is only 1 node, the bootnode handles it all and there is no distribut
 
 ### Consuming Iron Bar services
 
-This is to be worked out, if the project is to cointue.  
+This is to be worked out, if the project is to continue.  
 
 1. gRPC clients should be able to interact with iron bar directly.  
 2. A separate webapp with both UI and RESTful api that will also allow for consuming iron bar services.

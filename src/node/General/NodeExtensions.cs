@@ -3,11 +3,61 @@ using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Node.grpc.service;
 using Node.Interfaces;
 using Node.Ledger;
+using storage;
 
 namespace Node.General;
 
 public static class NodeExtensions
 {
+    /// <summary>
+    /// Creates the appropriate ledger reader/writer based on configuration and registers them
+    /// in the DI container
+    /// </summary>
+    /// <param name="builder"></param>
+    /// <exception cref="InvalidOperationException"></exception>
+    /// <exception cref="ApplicationException"></exception>
+    public static void ConfigureStoreOptions(this WebApplicationBuilder builder)
+    {
+        core.IConfiguration options = builder.Services.BuildServiceProvider().GetService<core.IConfiguration>();
+        ILedgerReader reader;
+        ILedgerWriter writer;
+        ILedgerIndexFactory indexFactory;
+        ILedgerPhysicalBlockFactory blockFactory;
+        ILedgerSignBlockFactory signBlockFactory;
+
+        if (options.StorageType == StorageType.AzureBlob)
+        {
+
+            // may wont to consider moving this to the configuration options
+            string accountName = Environment.GetEnvironmentVariable("IRONBAR_AZURE_BLOB_ACCOUNT_NAME") ?? 
+                                 throw new ApplicationException("IRONBAR_AZURE_BLOB_ACCOUNT_NAME environment variable not set");
+            string accountKey = Environment.GetEnvironmentVariable("IRONBAR_AZURE_BLOB_ACCOUNT_KEY") ?? 
+                                throw new ApplicationException("IRONBAR_AZURE_BLOB_ACCOUNT_KEY environment variable not set");
+            
+            ILogger<AzureBlobReaderWriter> logger = builder.Services.BuildServiceProvider().GetRequiredService<ILogger<AzureBlobReaderWriter>>();
+            indexFactory = new JsonLedgerIndexTypeFactory();
+            blockFactory = new JsonPhysicalBlockTypeFactory();
+            signBlockFactory = new JsonSignBlockTypeFactory();
+            reader = new AzureBlobReaderWriter(logger, indexFactory, options.FriendlyName,  accountName, accountKey);
+            writer = reader as ILedgerWriter ?? throw new InvalidOperationException();
+        }
+        else
+        {
+            string ledgerPath = Path.Combine(options.DataPath, options.FriendlyName);
+            reader = new DefaultTextFileLedgerReader(ledgerPath);
+            writer = new DefaultTextFileLedgerWriter(ledgerPath);
+            indexFactory = new TextFileLedgerIndexTypeFactory();
+            blockFactory = new TextFilePhysicalBlockTypeFactory();
+            signBlockFactory = new TextFileSignBlockTypeFactory();
+        }
+        
+        builder.Services.AddSingleton<ILedgerReader>(reader);
+        builder.Services.AddSingleton<ILedgerWriter>(writer);
+        builder.Services.AddSingleton<ILedgerIndexFactory>(indexFactory);
+        builder.Services.AddSingleton<ILedgerPhysicalBlockFactory>(blockFactory);
+        builder.Services.AddSingleton<ILedgerSignBlockFactory>(signBlockFactory);
+    }
+    
     public static void ConfigureBootNodeServices(this WebApplicationBuilder builder, core.IConfiguration options)
     {
         if (options.IsBootNode == false)

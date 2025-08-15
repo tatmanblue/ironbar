@@ -4,37 +4,49 @@ using System.Text;
 using core.Ledger;
 using core.Security;
 using core.Utility;
+using Newtonsoft.Json;
 
 namespace Node.Ledger;
 
+/// <summary>
+/// The original design intended to protect the data structure by the interface and
+/// private setters for data.  However, this complicates deserialization with JSON.NET and other serializers.
+/// Thus, this is now a class with public setters.  We can revisit the design later if needed.
+/// </summary>
+[Serializable]
 public class PhysicalBlock : ILedgerPhysicalBlock
 {
     #region ILedgerPhysicalBlock properties
-    public int Id { get; internal set; } = -1;
+    public int Id { get; set; } = -1;
 
-    public int ParentId { get; internal set; } = -1;
-    public int ReferenceId { get; internal set; } = 0;
+    public int ParentId { get; set; } = -1;
+    public int ReferenceId { get; set; } = -1;
 
-    public string ParentHash { get; internal set; } = "0";
-    public string ReferenceHash { get; internal set; } = HashUtility.ComputeHash(Nonce.New().ToString());
+    public string ParentHash { get; set; } = "0";
+    public string ReferenceHash { get; set; } = HashUtility.ComputeHash(Nonce.New().ToString());
 
-    public int LedgerId { get; internal set; }
+    public int LedgerId { get; set; }
 
-    public DateTime TimeStamp { get; private set; } = DateTime.Now.ToUniversalTime();
+    public DateTime TimeStamp { get; set; } = DateTime.Now.ToUniversalTime();
 
-    public Nonce Nonce { get; private set; } = Nonce.New();
+    public Nonce Nonce { get; set; } = Nonce.New();
 
     public string Hash
     {
         get { return ComputeHash(); }
     }
 
-    public byte[] TransactionData { get; internal set; }
+    public byte[] TransactionData { get; set; }
 
-    public BlockStatus Status { get; private set; }
+    public BlockStatus Status { get; set; }
 
-    public ILedgerSignBlock SignBlock { get; internal set; }
+    public ILedgerSignBlock SignBlock { get; set; }
     #endregion
+    
+    public PhysicalBlock()
+    {
+        Status = BlockStatus.Error;
+    }
     
     protected internal PhysicalBlock(BlockStatus status)
     {
@@ -84,6 +96,11 @@ public class PhysicalBlock : ILedgerPhysicalBlock
         return objectString;
     }
 
+    public string ToJson()
+    {
+        return JsonConvert.SerializeObject(this);
+    }
+
     public static PhysicalBlock FromString(string data)
     {
         /*
@@ -128,5 +145,11 @@ public class PhysicalBlock : ILedgerPhysicalBlock
             throw new LedgerBlockException($"block {block.Id} PhysicalBlock failed to deserialize");
 
         return block;
+    }
+    
+    public static PhysicalBlock FromJson(string json, JsonSerializerSettings settings)
+    {
+        return JsonConvert.DeserializeObject<PhysicalBlock>(json, settings) ?? 
+               throw new LedgerBlockException("Failed to deserialize PhysicalBlock from JSON");
     }
 }

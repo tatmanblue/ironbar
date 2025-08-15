@@ -10,30 +10,27 @@ namespace Node.Ledger;
 /// </summary>
 public class LedgerIndexManager : ILedgerIndexManager
 {
-    public ILedgerWriter Writer { get; private set; }
-    public ILedgerReader Reader { get; private set; }
+    private readonly ILedgerWriter writer;
+    private readonly ILedgerReader reader;
+    private readonly ILedgerIndexFactory indexFactory;
     private List<ILedgerIndex> data = new List<ILedgerIndex>();
     private bool isLoaded = false;
     private string ledgerName = string.Empty;
 
-    public LedgerIndexManager(string name, string ledgerPath)
+    public LedgerIndexManager(string name, ILedgerReader reader, ILedgerWriter writer, ILedgerIndexFactory indexFactory)
     {
         ledgerName = name;
-        Writer = new DefaultTextFileLedgerWriter(ledgerPath);
-        Reader =  new DefaultTextFileLedgerReader(ledgerPath);
+        this.writer = writer;
+        this.reader =  reader;
+        this.indexFactory = indexFactory;
     }
 
     public ILedgerIndex Add(string hash, DateTime created, BlockStatus status)
     {
         if (false == isLoaded)
             throw new LedgerException(ledgerName, "Attempted to add index before loading");
-
-        LedgerIndex index = new LedgerIndex();
-        index.BlockId = GetNextBlockId();
-        index.Created = created;
-        index.Hash = hash;
-        index.Status = status;
-
+        
+        ILedgerIndex index = indexFactory.Create(GetNextBlockId(), hash, created, status);
         data.Add(index);
 
         return index;
@@ -76,9 +73,7 @@ public class LedgerIndexManager : ILedgerIndexManager
 
     public void Load()
     {
-        data = Reader.GetLedgerIndex((data) => {
-            return LedgerIndex.FromString(data);
-        });
+        data = reader.GetLedgerIndex((data) => indexFactory.Create(data));
         isLoaded = true;
     }
 
@@ -87,7 +82,7 @@ public class LedgerIndexManager : ILedgerIndexManager
     /// </summary>
     public void Save()
     {
-        Writer.SaveLedgerIndex(data);
+        writer.SaveLedgerIndex(data);
     }
 
     public int GetNextBlockId()

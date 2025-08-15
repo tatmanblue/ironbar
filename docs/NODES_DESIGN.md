@@ -23,16 +23,17 @@ At a hight level, the start up is the same regardless of storage type (file base
 table summarizes the key functions that are called during the start up process.
 
 
-| Function   | File Based                                                                                                                               | Object Based |
-|------------|------------------------------------------------------------------------------------------------------------------------------------------|--------------|
-| Check      | Checks that directory structures exist and index file exists.  Either of these missing means assumes first time run and no ledger exists |              |
-| Validate   | For now, some simple checks that some key blocks and index values match                                                                  |              |
-| Initialize | Creates the directory structure, index file and initial starting block                                                                   |              |
+| Function   | File Based                                                                                                                               | Object Based                                                        |
+|------------|------------------------------------------------------------------------------------------------------------------------------------------|---------------------------------------------------------------------|
+| Check      | Checks that directory structures exist and index file exists.  Either of these missing means assumes first time run and no ledger exists | Checks if the containers exist and the index.file exists            |
+| Validate   | For now, some simple checks that some key blocks and index values match                                                                  | Pulls data from object storage and ses the same logic as file based |
+| Initialize | Creates the directory structure, index file and initial starting block                                                                   | Creates the containers, index file and initial starting block       |
 
 
 
-When a child node starts up, it connects to the boot node.  The boot node shares the index of all blocks with the child node.
-The child node then requests any blocks it does not have.
-The boot node sends these blocks to the child node.
-The child node validates these blocks and adds them to its local store.
-The child node is now in sync with the boot node.
+When a child node starts up (see [src](https://github.com/tatmanblue/ironbar/blob/main/src/node/Ledger/ChildLedgerManager.cs)), it connects to the boot node.  The boot node shares the index of all blocks with the child node.
+1. The child node then requests any blocks it does not have.
+2. The boot node sends these blocks to the child node.
+3. The child node validates these blocks and adds them to its local store.
+4. The child node is now in sync with the boot node.
+

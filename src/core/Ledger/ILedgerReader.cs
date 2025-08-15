@@ -28,6 +28,7 @@ namespace core.Ledger
         /// <param name="indexAllocator"></param>
         /// <returns></returns>
         ILedgerIndex GetLedgerIndex(int index, Func<string, ILedgerIndex> indexAllocator);
+
         /// <summary>
         /// loads the entire ledger index into memory
         /// </summary>
