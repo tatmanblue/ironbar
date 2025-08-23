@@ -1,10 +1,7 @@
 # Overview
 updated: 2025.08.11
 
-Boot and child nodes can be run locally or on the cloud, or a combination of both.  When running a node on the cloud, it recommended the run
-the boot nodes locally due to the system using file system for storage.  If you want to run the boot nodes on the cloud, you will need to make sure
-the virtual machine has a persistent disk mounted to the file system.  Boot node and child nodes use a form of BFT for determining
-if a block is valid.  The boot node creates the genesis block on ledger initialization and manages the child nodes interactions.
+Boot and child nodes can be run locally or on the cloud, or a combination of both.  When running a node on the cloud, it recommended use the Azure Blob for storage.  Nodes running on iron can use the file system for storage.   Boot node and child nodes use a form of BFT for determining if a block is valid.  The boot node creates the genesis block on ledger initialization and manages the child nodes interactions.
 
 ## Goal:  flexible storage
 1. Extract out interfaces for storage (done)
