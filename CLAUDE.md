@@ -17,7 +17,12 @@ All changes must be approved before creating these changes.  Please prepare a pl
 
 
 ## Additional documentation
-[DeepWiki](https://deepwiki.com/tatmanblue/ironbar)  
+- [README.md](README.md)  
+- [API Reference](docs/API.md)  
+- [Node Design](docs/NODES_DESIGN.md)  
+- [Plugin System](docs/PLUGINS.md)  
+- [Terminology](docs/TERMS.md)  
+- [DeepWiki](https://deepwiki.com/tatmanblue/ironbar)  
 
 ## Architecture
 Iron Bar implements a hub-and-spoke distributed ledger architecture where a single boot node coordinates consensus among multiple child nodes. The boot node maintains authoritative control over block creation and validation orchestration, while child nodes participate in validation and maintain replicated ledger state.
