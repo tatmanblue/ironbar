@@ -36,7 +36,7 @@ Boot and child nodes can be run locally or on the cloud, or a combination of bot
 
 Key Architectural Principles:
 
-| -------------- | ------------------------- |  
+
 | Principle	     | Implementation            | 
 | -------------- | ------------------------- |  
 | Single Binary Model | One executable configured via environment variables | 
