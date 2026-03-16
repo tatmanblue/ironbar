@@ -1,4 +1,5 @@
-# Iron Bar
+# Iron Bar  
+[![Ask DeepWiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/tatmanblue/ironbar)  
 
 Iron is synonym for chain and bar is a synonym for block.  This project
 is to develop a [distributed ledger technologies](https://www.investopedia.com/terms/d/distributed-ledger-technology-dlt.asp) that can be used in various scenerios

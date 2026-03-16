@@ -1,11 +1,11 @@
 # Overview
 updated: 2025.08.11
 
-Boot and child nodes can be run locally or on the cloud, or a combination of both.  When running a node on the cloud, it recommended use the Azure Blob for storage.  Nodes running on iron can use the file system for storage.   Boot node and child nodes use a form of BFT for determining if a block is valid.  The boot node creates the genesis block on ledger initialization and manages the child nodes interactions.
+Boot and child nodes can be run locally or on the cloud, or a combination of both.  When running a node on the cloud, it recommended use the Azure Blob for storage.  Nodes running on bare metal can use any storage (currently either file based or Azure Blob).   Boot node and child nodes use a form of BFT for determining if a block is valid.  The boot node creates the genesis block on ledger initialization and manages the child nodes interactions.
 
 ## Goal:  flexible storage
 1. Extract out interfaces for storage (done)
-2. Support for object storage.  Considering using [minio](https://github.com/minio/minio-dotnet) since it supports S3, Azure, and Google Cloud Storage.
+2. Support for object storage.  Considering using [minio](https://github.com/minio/minio-dotnet) since it supports S3, Azure, and Google Cloud Storage.  
    2.1 Azure storage (done)
 3. Easy configuration of storage via json or environment variables (done)  
 4. Clean up the interfaces around Ledger, LedgerIndex and construction of objects
