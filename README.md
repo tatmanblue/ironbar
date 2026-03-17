@@ -23,7 +23,7 @@ The architecture of this project is still being worked out therefore there are p
 I do make corrections and improvements as I work through implementing changes. My apologizes for the scattered state of the project.
 
 ## File Revision
-2025.08.06
+2026.03.15
 
 
 # License
@@ -31,7 +31,7 @@ The [license](LICENSE.md) included applies only to the files in this repo.   As 
 the libraries and demos in this project.  The license here does not apply to 3rd party assets. You agree to purchase those assets and abide by their licensing terms. 
 
 ```
-   Copyright 2025 Matthew Raffel 
+   Copyright 2026 Matthew Raffel 
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
