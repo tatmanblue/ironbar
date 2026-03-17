@@ -1,10 +1,10 @@
 # Project
 
-Iron Bar is a distributed ledger technology (DLT) implementation built on .NET 9.0 that provides a blockchain-based data persistence layer suitable for multiple domains including gaming applications, Self-Sovereign Identity (SSI) systems, and custom enterprise workflows. The system achieves distributed consensus through Byzantine Fault Tolerance (BFT) and supports flexible deployment models ranging from single-node development environments to multi-node cloud infrastructures.
+Iron Bar is a distributed ledger technology (DLT) implementation built on .NET 10.0 that provides a blockchain-based data persistence layer suitable for multiple domains including gaming applications, Self-Sovereign Identity (SSI) systems, and custom enterprise workflows. The system achieves distributed consensus through Byzantine Fault Tolerance (BFT) and supports flexible deployment models ranging from single-node development environments to multi-node cloud infrastructures.
 
 The architecture prioritizes:
 
-Cross-platform operation - Runs on any operating system supporting .NET 9.0
+Cross-platform operation - Runs on any operating system supporting .NET 10.0
 Storage flexibility - Abstract storage layer supporting local filesystem and Azure Blob Storage
 Plugin extensibility - Domain-specific behaviors through IPlugin interface implementations
 Simplicity - Clear nomenclature and implementation patterns for maintainability
