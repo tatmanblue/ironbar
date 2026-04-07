@@ -51,7 +51,7 @@ var node = builder.AddProject<node>("BootNode")
 
 
 // configure the MCP server
-builder.AddProject<IronBar_MCP>("IronBarMCP")
+builder.AddProject<mcp>("IronBarMCP")
     .WithEnvironment("IRONBAR_BOOTNODE_ADDRESS", bootAddress)
     .WithEnvironment("IRONBAR_MCP_READ_API_KEY", mcpReadApiKey)
     .WithEnvironment("IRONBAR_MCP_READ_DETAILS_API_KEY", mcpReadDetailsApiKey)

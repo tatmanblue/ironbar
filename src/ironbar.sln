@@ -19,7 +19,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "storage", "storage\storage.
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "tests", "tests\tests.csproj", "{6435AF5C-49BF-4C8C-BC04-DCA992213364}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IronBar.MCP", "IronBar.MCP\IronBar.MCP.csproj", "{8B3F2A41-9C7D-4E5F-B2A8-1D3C6E7F8A09}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "mcp", "mcp\mcp.csproj", "{8B3F2A41-9C7D-4E5F-B2A8-1D3C6E7F8A09}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
