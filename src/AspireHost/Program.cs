@@ -29,6 +29,11 @@ string readApiKey = GetEnvVar("IRONBAR_READ_API_KEY", "");
 string readDetailApiKey = GetEnvVar("IRONBAR_READ_DETAIL_API_KEY", "");
 string adminApiKey = GetEnvVar("IRONBAR_ADMIN_API_KEY", "");
 
+string mcpReadApiKey = GetEnvVar("IRONBAR_MCP_READ_API_KEY", readApiKey);
+string mcpReadDetailsApiKey = GetEnvVar("IRONBAR_MCP_READ_DETAILS_API_KEY", readDetailApiKey);
+string mcpWriteApiKey = GetEnvVar("IRONBAR_MCP_WRITE_API_KEY", writeApiKey);
+string mcpAdminApiKey = GetEnvVar("IRONBAR_MCP_ADMIN_API_KEY", adminApiKey);
+
 // configure the bootnode
 var node = builder.AddProject<node>("BootNode")
     .WithEnvironment("IRONBAR_TYPE", type)
@@ -44,6 +49,14 @@ var node = builder.AddProject<node>("BootNode")
     .WithEnvironment("IRONBAR_READ_DETAIL_API_KEY", readDetailApiKey)
     .WithEnvironment("IRONBAR_ADMIN_API_KEY", adminApiKey);
 
+
+// configure the MCP server
+builder.AddProject<IronBar_MCP>("IronBarMCP")
+    .WithEnvironment("IRONBAR_BOOTNODE_ADDRESS", bootAddress)
+    .WithEnvironment("IRONBAR_MCP_READ_API_KEY", mcpReadApiKey)
+    .WithEnvironment("IRONBAR_MCP_READ_DETAILS_API_KEY", mcpReadDetailsApiKey)
+    .WithEnvironment("IRONBAR_MCP_WRITE_API_KEY", mcpWriteApiKey)
+    .WithEnvironment("IRONBAR_MCP_ADMIN_API_KEY", mcpAdminApiKey);
 
 if (storage == "azureblob")
 {

@@ -17,6 +17,7 @@
   <ItemGroup>
     <ProjectReference Include="..\core\core.csproj" />
     <ProjectReference Include="..\node\node.csproj" />
+    <ProjectReference Include="..\IronBar.MCP\IronBar.MCP.csproj" />
   </ItemGroup>
 
 </Project>

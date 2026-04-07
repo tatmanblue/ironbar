@@ -5,6 +5,7 @@ obj/
 temp/
 .idea/
 scripts/data/
+.claude/
 index.txt
 .env
 
