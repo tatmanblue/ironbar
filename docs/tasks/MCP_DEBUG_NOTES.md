@@ -2,7 +2,7 @@
 
 **Date:** 2026-04-07  
 **Branch:** `feature/mcp-server`  
-**Status:** In progress — `ironbar_create_block` unresolved
+**Status:** Resolved — all tools working
 
 ---
 
@@ -12,8 +12,8 @@
 |---|---|---|
 | `ironbar_list_blocks` | Working | Returns genesis block metadata |
 | `ironbar_get_block` | Working | Returns full block data including transactionData |
-| `ironbar_create_block` | Failing | See below |
-| `ironbar_list_nodes` | Untested | |
+| `ironbar_create_block` | Working | Fixed — see root cause below |
+| `ironbar_list_nodes` | Working | Returns empty array in single-node mode (correct) |
 
 ---
 
@@ -98,11 +98,21 @@ The block data reaching the node was confirmed in the debug log:
 
 ---
 
-## Next Steps
+## Resolution
 
-1. Read `BootNodePhysicalBlockValidator.cs` to identify what is null at line 23
-2. Determine if the null is `indexes` (the `ILedgerIndexManager`) or something on `block`
-3. Check `BootNodeRPCClient.cs:99` — `OnBlockCreated` — for how it calls `AdvanceBlock` and whether `indexes` is passed correctly in single-node mode
-4. Confirm whether the issue reproduces with filesystem storage after the config switch
-5. Once `create_block` is fixed, test `ironbar_list_nodes`
-6. Commit all changes on `feature/mcp-server` branch
+**Root cause:** `PhysicalBlock.ReferenceId` defaulted to `-1` but the validator's sentinel check
+was `if (0 == block.ReferenceId)`. Blocks created without a reference (via the 7-param factory)
+had `ReferenceId = -1`, bypassing the guard. `indexes.GetIndex(-1)` returned null, causing the
+NullReferenceException at line 23.
+
+**Fix applied (2026-04-08):**
+- `PhysicalBlock.cs` — changed `ReferenceId` default from `-1` to `0`
+- `TextFilePhysicalBlockTypeFactory.cs` — explicitly sets `ReferenceId = 0` in 7-param `Create`
+- `JsonPhysicalBlockTypeFactory.cs` — same fix
+- Added XML doc comments explaining `ReferenceId` semantics across all affected files
+
+**Also completed:**
+- Agent bearer token authentication added to the MCP server (`IRONBAR_MCP_ACCESS_TOKENS`)
+- `ironbar_list_blocks` exempt from token check (public)
+- All other tools require `Authorization: Bearer <token>` header
+- `docs/MCP.md` created — agent configuration guide
