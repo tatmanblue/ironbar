@@ -85,6 +85,9 @@ This is to be worked out, if the project is to continue.
 1. gRPC clients should be able to interact with iron bar directly.  
 2. A separate webapp with both UI and RESTful api that will also allow for consuming iron bar services.
 
+### Iron bar supports AI with the MCP host process.
+
+Please see the [MCP doc](docs/MCP.md) for details on how to use the MCP host process to run AI agents that can interact with iron bar.  The MCP host process is a separate process that can be used to run AI agents that can interact with iron bar through gRPC.  This allows for AI agents to be developed and tested independently of the iron bar core, while still being able to interact with it.
 
 ### The plug-in architecture
 Iron bar is designed to be extensible through plug-ins.  See the [plug-in doc](https://github.com/tatmanblue/ironbar/blob/master/docs/PLUGINS.md) for

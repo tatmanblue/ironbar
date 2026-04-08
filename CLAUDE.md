@@ -22,6 +22,7 @@ All changes must be approved before creating these changes.  Please prepare a pl
 - [Node Design](docs/NODES_DESIGN.md)  
 - [Plugin System](docs/PLUGINS.md)  
 - [Terminology](docs/TERMS.md)  
+- [MCP Server](docs/MCP.md)  
 - [DeepWiki](https://deepwiki.com/tatmanblue/ironbar)  
 - [Deploying Locally](publish/DEPLOY.md)  
 - [Deploying on AWS](publish/DEPLOY_AWS.md)  
