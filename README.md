@@ -16,7 +16,7 @@ the use cases are more varied.
 # Status
 Prototype/irregular updates
 
-This project is being updated with new functionality on an irregular basis.  Please review [work.md](https://github.com/tatmanblue/ironbar/blob/master/docs/WORK.md) 
+This project is being updated with new functionality on an irregular basis.  Please review [work.md](docs/WORK.md) 
 for details on goals and progress towards those goals.  There is no regular release schedule in place.  Work is completed on an adhoc schedule.
 
 The architecture of this project is still being worked out therefore there are parts that are ugly, incomplete, and even just wrong. This is due in part, several ideas started but not completed and designs started and not finished.
