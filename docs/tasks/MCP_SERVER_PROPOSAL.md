@@ -219,15 +219,28 @@ This approach is more invasive but reduces operational complexity. It is worth c
 
 2. **Scoping by intent** — The MCP server should be configured with only the minimum key tier needed for its intended use. An MCP server intended for read-only agents should not hold the Write key. Operators can deploy multiple MCP server instances with different key scopes if mixed access is needed.
 
-3. **Anonymous / unauthenticated agents** — It is desirable to allow unknown agents to call `ironbar_list_blocks` (index metadata only: block ID, hash, status, created timestamp) without providing any API key. This exposes no transaction data and mirrors the kind of public ledger transparency common in blockchain systems. All other tools — including `ironbar_get_block` (which returns `transactionData`) and `ironbar_create_block` — require a valid API key. The MCP server will implement this as a tiered auth check per tool rather than a single global gate.
+3. **Agent authentication** — The MCP server enforces a pre-shared bearer token check on all
+   inbound tool calls except `ironbar_list_blocks`. Agents must supply a valid token in the
+   `Authorization: Bearer <token>` HTTP header; requests without a valid token receive `401
+   Unauthorized` and the gRPC call is never made. Valid tokens are configured via
+   `IRONBAR_MCP_ACCESS_TOKENS` (comma-separated). An empty value disables enforcement for local
+   development. Agent tokens are entirely separate from the node API keys — agents never see the
+   keys the MCP server uses to talk to the boot node.
 
-4. **Agent identity (future work)** — API key authentication is sufficient for the initial implementation. A more expressive "agent identity" model (e.g., signed JWTs, DID-based identity) may be added in a future iteration to support auditable per-agent access logs.
+4. **Anonymous / unauthenticated agents** — `ironbar_list_blocks` is publicly accessible with no
+   bearer token required. It exposes only block metadata (ID, hash, status) and no transaction
+   data, mirroring the public ledger transparency common in blockchain systems. All other tools
+   require a valid bearer token.
 
-5. **Network boundary** — The MCP server should only be accessible from trusted hosts. In production, it should not be publicly exposed without careful consideration of what the anonymous read tier reveals.
+5. **Agent identity (future work)** — Pre-shared bearer tokens are sufficient for the initial
+   implementation. A more expressive "agent identity" model (e.g., signed JWTs, DID-based
+   identity) may be added in a future iteration to support auditable per-agent access logs.
 
-6. **Block data size** — Iron Bar currently imposes no size limit on block data. The MCP server will follow the same convention and not add its own limit, keeping behavior consistent across all clients.
+6. **Network boundary** — The MCP server should only be accessible from trusted hosts. In production, it should not be publicly exposed without careful consideration of what the anonymous read tier reveals.
 
-7. **No direct node-to-node access** — The MCP server communicates only with the boot node via `BlockHandlingApi`. It never touches `NodeToNodeConnection` — that protocol remains internal to the cluster.
+7. **Block data size** — Iron Bar currently imposes no size limit on block data. The MCP server will follow the same convention and not add its own limit, keeping behavior consistent across all clients.
+
+8. **No direct node-to-node access** — The MCP server communicates only with the boot node via `BlockHandlingApi`. It never touches `NodeToNodeConnection` — that protocol remains internal to the cluster.
 
 ---
 
