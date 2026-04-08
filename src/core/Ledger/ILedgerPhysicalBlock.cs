@@ -18,8 +18,11 @@ namespace core.Ledger
         /// </summary>
         int ParentId { get; }
         /// <summary>
-        /// ID of block that this block has a reference to.  Reference
-        /// implying a change in (or version of) the block data. Does not have to be sequential
+        /// ID of a block earlier in the chain whose data this block supersedes or advances.
+        /// Used in the BFT confirmation flow: the Confirmed block produced by AdvanceBlock points
+        /// back to the Unconfirmed block it is confirming.  A value of 0 means this block has no
+        /// reference (it is an original submission).  ReferenceHash must match the hash of the
+        /// referenced block; the validator enforces this when ReferenceId &gt; 0.
         /// </summary>
         int ReferenceId { get; }
         string ParentHash { get; }

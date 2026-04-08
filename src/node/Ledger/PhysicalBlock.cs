@@ -20,7 +20,14 @@ public class PhysicalBlock : ILedgerPhysicalBlock
     public int Id { get; set; } = -1;
 
     public int ParentId { get; set; } = -1;
-    public int ReferenceId { get; set; } = -1;
+
+    /// <summary>
+    /// ID of a block earlier in the chain whose data this block supersedes or advances.
+    /// Used in the BFT confirmation flow: the Confirmed block created by AdvanceBlock points back
+    /// to the Unconfirmed block it is confirming.  0 means this block has no reference (it is an
+    /// original submission, not an advancement of a prior block).
+    /// </summary>
+    public int ReferenceId { get; set; } = 0;
 
     public string ParentHash { get; set; } = "0";
     public string ReferenceHash { get; set; } = HashUtility.ComputeHash(Nonce.New().ToString());

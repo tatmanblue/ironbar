@@ -16,6 +16,7 @@ public class BootNodePhysicalBlockValidator : IPhysicalBlockValidator
         if (block.ParentId != lastParentIndex.BlockId)
             throw new LedgerNotValidException($"Invalid Chain. block {block.Id}");
 
+        // ReferenceId == 0 means no reference (original submission) — skip reference validation
         if (0 == block.ReferenceId)
             return;
         
