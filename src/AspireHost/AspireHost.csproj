@@ -1,4 +1,5 @@
 <Project Sdk="Microsoft.NET.Sdk">
+  <Sdk Name="Aspire.AppHost.Sdk" Version="9.5.2" />
 
   <PropertyGroup>
     <OutputType>Exe</OutputType>
@@ -10,13 +11,14 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Aspire.Hosting.AppHost" Version="8.2.2" />
+    <PackageReference Include="Aspire.Hosting.AppHost" Version="9.5.2" />
     <PackageReference Include="DotNetEnv" Version="3.1.1" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\core\core.csproj" />
+    <ProjectReference Include="..\core\core.csproj" IsAspireProjectResource="false" />
     <ProjectReference Include="..\node\node.csproj" />
+    <ProjectReference Include="..\mcp\mcp.csproj" />
   </ItemGroup>
 
 </Project>
